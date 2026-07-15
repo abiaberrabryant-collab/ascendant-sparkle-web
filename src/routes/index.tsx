@@ -10,16 +10,10 @@ import {
   Wrench,
   Rocket,
   Shield,
-  BarChart3,
-  Star,
   Smartphone,
-  Accessibility,
   Users,
-  Calendar,
   Check,
   ChevronDown,
-  ArrowUpRight,
-  Filter,
   Loader2,
 } from "lucide-react";
 import beforeSite from "@/assets/before-site.jpg";
@@ -375,16 +369,12 @@ function BeforeAfter() {
 const whyItems = [
   { icon: Layout, title: "Modern UI/UX", desc: "Interfaces engineered to feel effortless and premium." },
   { icon: Smartphone, title: "Mobile Responsive", desc: "Pixel-perfect on every device, from phones to 4K." },
-  { icon: Search, title: "SEO Optimization", desc: "Technical + on-page SEO baked into every build." },
   { icon: Zap, title: "Lightning Fast", desc: "Sub-second loads. 95+ Core Web Vitals." },
+  { icon: Search, title: "SEO Optimization", desc: "Technical + on-page SEO baked into every build." },
   { icon: Bot, title: "AI Integration", desc: "Chatbots, lead qualification, and smart automations." },
-  { icon: BarChart3, title: "Analytics", desc: "GA4, PostHog, or custom — we wire everything up." },
-  { icon: Users, title: "Lead Capture", desc: "Forms, popups, and funnels that actually convert." },
-  { icon: Shield, title: "Secure Hosting", desc: "SSL, DDoS mitigation, and 99.99% uptime." },
+  { icon: Users, title: "Lead Capture", desc: "Forms and funnels that actually convert." },
+  { icon: Shield, title: "Secure Hosting", desc: "SSL, CDN, and 99.99% uptime." },
   { icon: Wrench, title: "Ongoing Maintenance", desc: "Updates, backups, and monitoring — hands-off." },
-  { icon: Rocket, title: "Conversion Optimization", desc: "A/B tested layouts and CTAs." },
-  { icon: Accessibility, title: "ADA Accessible", desc: "WCAG 2.2 AA compliant by default." },
-  { icon: Calendar, title: "Booking Systems", desc: "Cal.com, Calendly, or custom flows." },
 ];
 
 function WhyUs() {
@@ -394,7 +384,7 @@ function WhyUs() {
         <div className="mb-14 max-w-3xl">
           <MonoLabel tone="secondary">// Why AscendantWeb</MonoLabel>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-            Every capability a modern business needs. Zero fluff.
+            Everything a modern business needs. Zero fluff.
           </h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -435,39 +425,18 @@ const services = [
     bullets: ["UX audit + strategy", "Modern rebuild", "Content migration", "Zero downtime launch"],
   },
   {
-    id: "landing",
-    icon: Sparkles,
-    title: "High-Converting Landing Pages",
-    tagline: "Purpose-built pages for ads, launches, and funnels.",
-    bullets: ["A/B ready", "Analytics wired", "Fast-turn delivery", "CRM integration"],
-  },
-  {
     id: "ai",
     icon: Bot,
     title: "AI Chatbots",
     tagline: "24/7 AI trained on your business.",
-    bullets: [
-      "FAQ + support",
-      "Lead qualification",
-      "Appointment booking",
-      "Product recommendations",
-      "Quote generation",
-      "CRM sync",
-    ],
+    bullets: ["FAQ + support", "Lead qualification", "Booking + CRM sync", "Quote generation"],
   },
   {
     id: "seo",
     icon: Search,
-    title: "SEO Optimization",
-    tagline: "Rank higher, get found, convert more.",
-    bullets: ["Technical SEO", "On-page optimization", "Schema markup", "Google indexing"],
-  },
-  {
-    id: "maintenance",
-    icon: Wrench,
-    title: "Website Maintenance",
-    tagline: "We keep your site fast, secure, and current.",
-    bullets: ["Updates & patches", "Security monitoring", "Automated backups", "Bug fixes"],
+    title: "SEO & Performance",
+    tagline: "Rank higher, load faster, convert more.",
+    bullets: ["Technical SEO", "On-page optimization", "Core Web Vitals tuning", "Schema markup"],
   },
 ];
 
@@ -553,7 +522,7 @@ const websiteTiers: Tier[] = [
     code: "01 / BASIC",
     name: "Basic",
     price: "$850",
-    cadence: "one-time",
+    cadence: "one-time + $100/mo",
     desc: "A clean, fast launchpad for businesses getting online the right way.",
     features: [
       "Up to 5 pages",
@@ -562,7 +531,7 @@ const websiteTiers: Tier[] = [
       "Contact form + email delivery",
       "Basic on-page SEO",
       "Analytics + SSL",
-      "2 revision rounds",
+      "$100/mo maintenance + basic AI chatbot",
       "Delivery in 1–2 weeks",
     ],
     cta: "Start with Basic",
@@ -572,7 +541,7 @@ const websiteTiers: Tier[] = [
     code: "02 / ADVANCED",
     name: "Advanced",
     price: "$1,250",
-    cadence: "one-time",
+    cadence: "one-time + $150/mo",
     desc: "For growing companies that need real firepower, automation, and conversions.",
     features: [
       "Everything in Basic",
@@ -582,7 +551,7 @@ const websiteTiers: Tier[] = [
       "Booking or lead-capture flow",
       "CRM / email integration",
       "Advanced SEO + speed tuning",
-      "AI chatbot (basic setup included)",
+      "$150/mo maintenance + AI chatbot (business-trained)",
       "Delivery in 2–3 weeks",
     ],
     cta: "Choose Advanced",
@@ -593,17 +562,16 @@ const websiteTiers: Tier[] = [
     code: "03 / ASCENDANT",
     name: "Ascendant",
     price: "$1,500",
-    cadence: "one-time",
+    cadence: "one-time + $200/mo",
     desc: "Our flagship build. Every capability, every optimization, fully dialed in.",
     features: [
       "Everything in Advanced",
       "Unlimited pages",
       "Premium bespoke design + animations",
       "Custom features & dashboards",
-      "Full AI chatbot trained on your business",
       "Advanced integrations & automations",
       "Premium SEO + schema markup",
-      "Priority support & unlimited build revisions",
+      "$200/mo maintenance + full AI chatbot with priority support",
       "Delivery in 3–4 weeks",
     ],
     cta: "Go Ascendant",
@@ -677,97 +645,25 @@ function Pricing() {
 
 /* ---------------- Portfolio ---------------- */
 
-const industries = [
-  "All",
-  "Healthcare",
-  "Law",
-  "Construction",
-  "Restaurants",
-  "Real Estate",
-  "Cleaning",
-  "HVAC",
-  "Electricians",
-  "Retail",
-  "E-commerce",
-];
-
-const projects = [
-  { title: "NorthStar Dental", industry: "Healthcare", metric: "+312% bookings", color: "from-primary/30 to-secondary/20" },
-  { title: "Harbor & Wells LLP", industry: "Law", metric: "+180% qualified leads", color: "from-secondary/30 to-primary/20" },
-  { title: "Ironclad Builders", industry: "Construction", metric: "+95 SEO score", color: "from-primary/30 to-secondary/20" },
-  { title: "Ember Kitchen", industry: "Restaurants", metric: "+240% reservations", color: "from-secondary/30 to-primary/20" },
-  { title: "Meridian Realty", industry: "Real Estate", metric: "+410% listing views", color: "from-primary/30 to-secondary/20" },
-  { title: "PureShine Co.", industry: "Cleaning", metric: "+275% quote requests", color: "from-secondary/30 to-primary/20" },
-  { title: "Arctic Air HVAC", industry: "HVAC", metric: "+220% service calls", color: "from-primary/30 to-secondary/20" },
-  { title: "Voltcraft Electric", industry: "Electricians", metric: "+190% conversions", color: "from-secondary/30 to-primary/20" },
-  { title: "Nova Apparel", industry: "E-commerce", metric: "+68% AOV", color: "from-primary/30 to-secondary/20" },
-];
-
 function Portfolio() {
-  const [filter, setFilter] = useState("All");
-  const visible = projects.filter((p) => filter === "All" || p.industry === filter);
   return (
     <section id="work" className="mx-auto max-w-7xl px-6 py-32">
-      <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-        <div className="max-w-2xl">
-          <MonoLabel tone="primary">// Portfolio</MonoLabel>
-          <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-            Recent deployments across every industry.
-          </h2>
-        </div>
-        <div className="hidden items-center gap-2 md:flex">
-          <Filter className="size-4 text-foreground/40" />
-          <MonoLabel>Filter</MonoLabel>
-        </div>
-      </div>
-
-      <div className="mb-8 flex flex-wrap gap-2">
-        {industries.map((i) => (
-          <button
-            key={i}
-            onClick={() => setFilter(i)}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
-              filter === i
-                ? "border-primary/50 bg-primary/15 text-primary"
-                : "border-glass-border bg-glass text-foreground/60 hover:text-foreground"
-            }`}
-          >
-            {i}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {visible.map((p) => (
-          <a
-            key={p.title}
-            href="#contact"
-            className="group relative overflow-hidden rounded-2xl border border-glass-border bg-glass p-1 transition-all hover:-translate-y-1 hover:border-primary/40"
-          >
-            <div className={`relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-gradient-to-br ${p.color}`}>
-              <div
-                className="absolute inset-0 opacity-40"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(oklch(1 0 0 / 0.15) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 0.15) 1px, transparent 1px)",
-                  backgroundSize: "24px 24px",
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
-                <div>
-                  <MonoLabel tone="primary">{p.industry}</MonoLabel>
-                  <div className="mt-1 text-lg font-bold">{p.title}</div>
-                </div>
-                <ArrowUpRight className="size-5 text-foreground/60 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between px-4 py-3">
-              <MonoLabel>Result</MonoLabel>
-              <span className="text-sm font-semibold text-primary">{p.metric}</span>
-            </div>
-          </a>
-        ))}
+      <div className="mx-auto max-w-3xl text-center">
+        <MonoLabel tone="primary">// Portfolio</MonoLabel>
+        <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
+          Case studies coming soon.
+        </h2>
+        <p className="mt-4 text-foreground/60">
+          We're building our first flagship launches right now. Real projects and results will
+          live here as they ship. Want your build to be one of the first showcased?
+        </p>
+        <a
+          href="#contact"
+          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-white/5"
+        >
+          Start your project
+          <ArrowRight className="size-4" />
+        </a>
       </div>
     </section>
   );
@@ -956,13 +852,13 @@ function TextArea({
 /* ---------------- FAQ ---------------- */
 
 const faqs = [
-  { q: "How long does a website take?", a: "Starter sites ship in 1–2 weeks. Growth builds land in 2–4 weeks. Enterprise projects are scoped custom." },
-  { q: "How much does it cost?", a: "Sites start at $2,900. Growth builds average $6,500. AI chatbots start at $149/mo. Full pricing is in the section above." },
+  { q: "How long does a website take?", a: "Basic sites ship in 1–2 weeks. Advanced builds land in 2–3 weeks. Ascendant flagship projects take 3–4 weeks." },
+  { q: "How much does it cost?", a: "Basic is $850, Advanced is $1,250, and Ascendant is $1,500 one-time. Each includes an ongoing plan ($100/$150/$200 per month) covering maintenance and your AI chatbot." },
   { q: "Do you offer hosting?", a: "Yes — premium managed hosting on globally distributed edge infrastructure with 99.99% uptime, SSL, and CDN included." },
-  { q: "Do you maintain websites?", a: "Yes. Every plan includes an optional monthly maintenance subscription covering updates, security, backups, and monitoring." },
+  { q: "What's included in the monthly plan?", a: "Updates, security monitoring, automated backups, uptime monitoring, small content edits, and your AI chatbot running 24/7." },
   { q: "Can I update it myself?", a: "Absolutely. We build on modern CMS options so your team can edit copy, images, and posts without touching code." },
   { q: "What industries do you work with?", a: "Healthcare, law, construction, restaurants, real estate, cleaning, HVAC, electricians, retail, and e-commerce." },
-  { q: "Do you offer AI chatbots?", a: "Yes — subscription-based AI assistants trained on your business for FAQ, booking, lead qualification, and CRM sync." },
+  { q: "Do you offer AI chatbots?", a: "Yes — every tier includes an AI chatbot trained on your business for FAQ, booking, lead qualification, and CRM sync." },
   { q: "Can you redesign my existing website?", a: "That's our specialty. We migrate content, preserve SEO equity, and relaunch faster, cleaner, and higher-converting." },
 ];
 
@@ -1076,10 +972,10 @@ function Contact() {
                 className="mt-1.5 w-full rounded-lg border border-glass-border bg-background/60 px-3 py-2.5 text-sm outline-none focus:border-primary/50"
               >
                 <option value="">Select…</option>
-                <option>Under $3K</option>
-                <option>$3K – $7K</option>
-                <option>$7K – $15K</option>
-                <option>$15K+</option>
+                <option>Basic — $850 + $100/mo</option>
+                <option>Advanced — $1,250 + $150/mo</option>
+                <option>Ascendant — $1,500 + $200/mo</option>
+                <option>Not sure yet</option>
               </select>
             </label>
             <label className="block">
