@@ -852,13 +852,13 @@ function TextArea({
 /* ---------------- FAQ ---------------- */
 
 const faqs = [
-  { q: "How long does a website take?", a: "Starter sites ship in 1–2 weeks. Growth builds land in 2–4 weeks. Enterprise projects are scoped custom." },
-  { q: "How much does it cost?", a: "Sites start at $2,900. Growth builds average $6,500. AI chatbots start at $149/mo. Full pricing is in the section above." },
+  { q: "How long does a website take?", a: "Basic sites ship in 1–2 weeks. Advanced builds land in 2–3 weeks. Ascendant flagship projects take 3–4 weeks." },
+  { q: "How much does it cost?", a: "Basic is $850, Advanced is $1,250, and Ascendant is $1,500 one-time. Each includes an ongoing plan ($100/$150/$200 per month) covering maintenance and your AI chatbot." },
   { q: "Do you offer hosting?", a: "Yes — premium managed hosting on globally distributed edge infrastructure with 99.99% uptime, SSL, and CDN included." },
-  { q: "Do you maintain websites?", a: "Yes. Every plan includes an optional monthly maintenance subscription covering updates, security, backups, and monitoring." },
+  { q: "What's included in the monthly plan?", a: "Updates, security monitoring, automated backups, uptime monitoring, small content edits, and your AI chatbot running 24/7." },
   { q: "Can I update it myself?", a: "Absolutely. We build on modern CMS options so your team can edit copy, images, and posts without touching code." },
   { q: "What industries do you work with?", a: "Healthcare, law, construction, restaurants, real estate, cleaning, HVAC, electricians, retail, and e-commerce." },
-  { q: "Do you offer AI chatbots?", a: "Yes — subscription-based AI assistants trained on your business for FAQ, booking, lead qualification, and CRM sync." },
+  { q: "Do you offer AI chatbots?", a: "Yes — every tier includes an AI chatbot trained on your business for FAQ, booking, lead qualification, and CRM sync." },
   { q: "Can you redesign my existing website?", a: "That's our specialty. We migrate content, preserve SEO equity, and relaunch faster, cleaner, and higher-converting." },
 ];
 
