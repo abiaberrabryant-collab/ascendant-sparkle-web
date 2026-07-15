@@ -222,13 +222,6 @@ function Hero() {
   );
 }
 
-// (removed hero dashboard preview block)
-function _HeroExtras() {
-  return null;
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- Trust Stats ---------------- */
 
