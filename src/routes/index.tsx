@@ -16,6 +16,14 @@ import {
   ChevronDown,
   Loader2,
 } from "lucide-react";
+import beforeSite from "@/assets/before-site.jpg";
+import afterSite from "@/assets/after-site.jpg";
+import industryElectrical from "@/assets/industry-electrical.jpg";
+import industryPlumbing from "@/assets/industry-plumbing.jpg";
+import industryLaw from "@/assets/industry-law.jpg";
+import industryRestaurant from "@/assets/industry-restaurant.jpg";
+import industryRealEstate from "@/assets/industry-realestate.jpg";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -235,6 +243,7 @@ const industries = [
   {
     code: "01",
     icon: Zap,
+    image: industryElectrical,
     name: "Electrical Contractors",
     tagline: "Wired to convert emergency calls into booked jobs.",
     features: [
@@ -247,6 +256,7 @@ const industries = [
   {
     code: "02",
     icon: Wrench,
+    image: industryPlumbing,
     name: "Plumbing & HVAC",
     tagline: "Booking-first design for service pros.",
     features: [
@@ -259,6 +269,7 @@ const industries = [
   {
     code: "03",
     icon: Shield,
+    image: industryLaw,
     name: "Law Firms",
     tagline: "Authority-forward design that earns trust on first scroll.",
     features: [
@@ -271,6 +282,7 @@ const industries = [
   {
     code: "04",
     icon: Sparkles,
+    image: industryRestaurant,
     name: "Restaurants & Cafés",
     tagline: "Mouth-watering visuals that fill your tables.",
     features: [
@@ -283,6 +295,7 @@ const industries = [
   {
     code: "05",
     icon: Layout,
+    image: industryRealEstate,
     name: "Real Estate Agents",
     tagline: "Listings that look like the property itself.",
     features: [
@@ -293,6 +306,135 @@ const industries = [
     ],
   },
 ];
+
+/* ---------------- Before / After Slider ---------------- */
+
+function BeforeAfter() {
+  const [pos, setPos] = useState(52);
+  const dragging = useRef(false);
+  const wrap = useRef<HTMLDivElement | null>(null);
+
+  const setFromClientX = (clientX: number) => {
+    const el = wrap.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const p = ((clientX - r.left) / r.width) * 100;
+    setPos(Math.max(4, Math.min(96, p)));
+  };
+
+  useEffect(() => {
+    const onUp = () => (dragging.current = false);
+    const onMove = (e: MouseEvent | TouchEvent) => {
+      if (!dragging.current) return;
+      const x = "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+      setFromClientX(x);
+    };
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchend", onUp);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchmove", onMove);
+    return () => {
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchend", onUp);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onMove);
+    };
+  }, []);
+
+  const criteria = [
+    { label: "Page Speed", before: "Sluggish", after: "Blazing" },
+    { label: "Design Quality", before: "Outdated", after: "Premium 2026" },
+    { label: "Mobile Experience", before: "Broken", after: "Pixel-perfect" },
+    { label: "SEO Health", before: "Weak", after: "Fully Optimized" },
+    { label: "AI Integration", before: "None", after: "Built-in Chatbot" },
+    { label: "Conversion Design", before: "Passive", after: "High-Intent" },
+    { label: "Accessibility", before: "Failing", after: "WCAG AA" },
+  ];
+
+  return (
+    <section className="mx-auto max-w-7xl px-6 py-32">
+      <div className="mb-14 max-w-3xl">
+        <MonoLabel tone="primary">// The Ascendant Upgrade</MonoLabel>
+        <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
+          Drag to see what a modern website really looks like.
+        </h2>
+        <p className="mt-4 text-foreground/60">
+          Every clunky second and every dated layout chips away at your brand. We don't just
+          redesign — we re-engineer.
+        </p>
+      </div>
+
+      <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+        <div
+          ref={wrap}
+          className="relative aspect-[4/3] w-full select-none overflow-hidden rounded-3xl border border-glass-border bg-black"
+          onMouseDown={(e) => {
+            dragging.current = true;
+            setFromClientX(e.clientX);
+          }}
+          onTouchStart={(e) => {
+            dragging.current = true;
+            setFromClientX(e.touches[0].clientX);
+          }}
+        >
+          <img
+            src={afterSite}
+            alt="Modern AscendantWeb redesign"
+            width={1200}
+            height={1200}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${pos}%` }}>
+            <img
+              src={beforeSite}
+              alt="Outdated legacy website"
+              width={1200}
+              height={1200}
+              loading="lazy"
+              className="absolute inset-0 h-full object-cover"
+              style={{ width: `${(100 / pos) * 100}%` }}
+            />
+          </div>
+
+          <div className="pointer-events-none absolute left-4 top-4 rounded-md bg-black/60 px-2 py-1 backdrop-blur">
+            <MonoLabel>Before</MonoLabel>
+          </div>
+          <div className="pointer-events-none absolute right-4 top-4 rounded-md bg-primary px-2 py-1">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white">
+              After
+            </span>
+          </div>
+
+          <div
+            className="absolute inset-y-0 z-10 w-px bg-primary shadow-[0_0_20px_oklch(0.62_0.19_258_/_0.7)]"
+            style={{ left: `${pos}%` }}
+          >
+            <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-full border-4 border-background bg-primary shadow-2xl">
+              <ArrowRight className="size-4 -rotate-180 text-white" />
+              <ArrowRight className="absolute size-4 text-white translate-x-3" />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3">
+          {criteria.map((c) => (
+            <div key={c.label} className="rounded-xl border border-glass-border bg-glass p-4 backdrop-blur">
+              <MonoLabel>{c.label}</MonoLabel>
+              <div className="mt-2 flex items-center justify-between gap-4 text-sm">
+                <span className="text-red-400/80 line-through">{c.before}</span>
+                <ArrowRight className="size-3 text-foreground/40" />
+                <span className="font-semibold text-primary">{c.after}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Industries ---------------- */
 
 function Industries() {
   return (
@@ -314,36 +456,48 @@ function Industries() {
           return (
             <div
               key={i.name}
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-white/5"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-white/5"
             >
-              <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-primary/10 opacity-0 blur-3xl transition-opacity group-hover:opacity-100" />
-              <div className="flex items-center justify-between">
-                <div className="grid size-11 place-items-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
-                  <Icon className="size-5" />
+              <div className="relative aspect-[4/3] overflow-hidden border-b border-glass-border bg-black">
+                <img
+                  src={i.image}
+                  alt={`${i.name} website design mockup`}
+                  width={1280}
+                  height={960}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                <div className="absolute left-3 top-3 rounded-md border border-glass-border bg-background/70 px-2 py-1 backdrop-blur">
+                  <MonoLabel tone="primary">{i.code}</MonoLabel>
                 </div>
-                <MonoLabel>{i.code}</MonoLabel>
+                <div className="absolute right-3 top-3 grid size-9 place-items-center rounded-lg border border-primary/30 bg-primary/20 text-primary backdrop-blur">
+                  <Icon className="size-4" />
+                </div>
               </div>
-              <h3 className="mt-5 text-xl font-bold">{i.name}</h3>
-              <p className="mt-1 text-sm text-foreground/60">{i.tagline}</p>
-              <ul className="mt-5 flex-1 space-y-2">
-                {i.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-foreground/80">
-                    <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#contact"
-                className="mt-6 inline-flex items-center justify-between rounded-xl border border-glass-border px-4 py-2.5 text-sm font-bold transition-colors hover:border-primary/40 hover:bg-white/5"
-              >
-                Build this style
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-              </a>
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="text-xl font-bold">{i.name}</h3>
+                <p className="mt-1 text-sm text-foreground/60">{i.tagline}</p>
+                <ul className="mt-5 flex-1 space-y-2">
+                  {i.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-foreground/80">
+                      <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#contact"
+                  className="mt-6 inline-flex items-center justify-between rounded-xl border border-glass-border px-4 py-2.5 text-sm font-bold transition-colors hover:border-primary/40 hover:bg-white/5"
+                >
+                  Build this style
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                </a>
+              </div>
             </div>
           );
         })}
-        <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 p-6">
+        <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 p-8">
           <MonoLabel tone="primary">// Not listed?</MonoLabel>
           <h3 className="mt-3 text-xl font-bold">Your industry, your rules.</h3>
           <p className="mt-2 text-sm text-foreground/70">
@@ -1077,6 +1231,7 @@ function HomePage() {
       <GlowBackground />
       <Nav />
       <Hero />
+      <BeforeAfter />
       <Industries />
       <WhyUs />
       <Services />
