@@ -82,17 +82,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "AscendantWeb builds lightning-fast, high-converting websites for modern businesses. Premium design, AI automation, and performance engineering.",
+          "AscendantWeb builds lightning-fast, high-converting websites for modern businesses. Premium design, AI chatbots, SEO, and performance engineering.",
       },
       { name: "author", content: "AscendantWeb" },
-      { property: "og:title", content: "AscendantWeb — Helping Businesses Ascend Online" },
+      { property: "og:title", content: "AscendantWeb — Websites that convert visitors into customers" },
       {
         property: "og:description",
         content:
-          "We build websites that generate customers, not just traffic. Modern design, AI, and speed engineered for growth.",
+          "AscendantWeb builds lightning-fast, high-converting websites for modern businesses. Premium design, AI chatbots, SEO, and performance engineering.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "AscendantWeb — Websites that convert visitors into customers" },
+      { name: "twitter:description", content: "AscendantWeb builds lightning-fast, high-converting websites for modern businesses. Premium design, AI chatbots, SEO, and performance engineering." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c3dbc80c-7e64-4b66-bddb-1b32ff996d87/id-preview-2b92229f--37d97dbd-e808-4579-b7db-d16d9e27fcf0.lovable.app-1784156263948.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c3dbc80c-7e64-4b66-bddb-1b32ff996d87/id-preview-2b92229f--37d97dbd-e808-4579-b7db-d16d9e27fcf0.lovable.app-1784156263948.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
