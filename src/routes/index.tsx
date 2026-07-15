@@ -640,31 +640,6 @@ function Pricing() {
   );
 }
 
-/* ---------------- Portfolio ---------------- */
-
-function Portfolio() {
-  return (
-    <section id="work" className="mx-auto max-w-7xl px-6 py-32">
-      <div className="mx-auto max-w-3xl text-center">
-        <MonoLabel tone="primary">// Portfolio</MonoLabel>
-        <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-          Case studies coming soon.
-        </h2>
-        <p className="mt-4 text-foreground/60">
-          We're building our first flagship launches right now. Real projects and results will
-          live here as they ship. Want your build to be one of the first showcased?
-        </p>
-        <a
-          href="#contact"
-          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-white/5"
-        >
-          Start your project
-          <ArrowRight className="size-4" />
-        </a>
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- Testimonials ---------------- */
 
@@ -697,7 +672,7 @@ function Testimonials() {
 
 function AuditTool() {
   const [state, setState] = useState<"idle" | "loading" | "done">("idle");
-  const [score, setScore] = useState(0);
+  const [rating, setRating] = useState<string>("");
   const [form, setForm] = useState({
     business: "",
     url: "",
@@ -711,7 +686,8 @@ function AuditTool() {
     e.preventDefault();
     setState("loading");
     setTimeout(() => {
-      setScore(38 + Math.floor(Math.random() * 25));
+      const options = ["Needs Work", "Underperforming", "Solid Foundation"];
+      setRating(options[Math.floor(Math.random() * options.length)]);
       setState("done");
     }, 1800);
   };
@@ -733,7 +709,7 @@ function AuditTool() {
               plain-English report within 24 hours.
             </p>
             <ul className="mt-8 space-y-3 text-sm text-foreground/80">
-              {["Core Web Vitals score", "Technical SEO checklist", "Conversion opportunities", "Competitor benchmark"].map((x) => (
+              {["Core Web Vitals review", "Technical SEO checklist", "Conversion opportunities", "Competitor benchmark"].map((x) => (
                 <li key={x} className="flex items-center gap-3">
                   <Check className="size-4 text-primary" /> {x}
                 </li>
@@ -770,8 +746,8 @@ function AuditTool() {
               </form>
             ) : (
               <div className="animate-fade-up text-center">
-                <MonoLabel tone="primary">Preliminary Score</MonoLabel>
-                <div className="mt-4 text-7xl font-extrabold text-gradient">{score}/100</div>
+                <MonoLabel tone="primary">Preliminary Assessment</MonoLabel>
+                <div className="mt-4 text-5xl font-extrabold text-gradient md:text-6xl">{rating}</div>
                 <p className="mt-4 text-foreground/70">
                   Room to grow. We've received your details — a full report is on its way to{" "}
                   <span className="font-semibold text-foreground">{form.email}</span> within 24 hours.
