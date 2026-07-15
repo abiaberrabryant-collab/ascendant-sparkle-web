@@ -775,76 +775,30 @@ function Portfolio() {
 
 /* ---------------- Testimonials ---------------- */
 
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    business: "NorthStar Dental",
-    quote:
-      "We tripled online bookings within 90 days. The site loads instantly and the chatbot handles half our front-desk questions.",
-    rating: 5,
-  },
-  {
-    name: "Marcus Reid",
-    business: "Ironclad Builders",
-    quote:
-      "AscendantWeb rebuilt our site in three weeks and we started ranking #1 for our city inside a month. Unreal.",
-    rating: 5,
-  },
-  {
-    name: "Elena Vasquez",
-    business: "Harbor & Wells LLP",
-    quote:
-      "They understood the tone a law firm needs and delivered a site that finally feels premium. Leads doubled.",
-    rating: 5,
-  },
-  {
-    name: "Dominic Park",
-    business: "Ember Kitchen",
-    quote:
-      "The reservation flow they built is smoother than anything we tested. Guests notice. Revenue is way up.",
-    rating: 5,
-  },
-];
-
 function Testimonials() {
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % testimonials.length), 6000);
-    return () => clearInterval(t);
-  }, []);
-  const t = testimonials[i];
   return (
     <section className="border-y border-glass-border bg-white/[0.02] py-32">
       <div className="mx-auto max-w-4xl px-6 text-center">
         <MonoLabel tone="secondary">// Client Signal</MonoLabel>
-        <div className="mt-6 flex justify-center gap-1">
-          {Array.from({ length: t.rating }).map((_, k) => (
-            <Star key={k} className="size-5 fill-primary text-primary" />
-          ))}
-        </div>
-        <blockquote key={i} className="animate-fade-up mt-6 text-2xl font-medium leading-relaxed text-foreground md:text-3xl">
-          "{t.quote}"
-        </blockquote>
-        <div className="mt-6">
-          <div className="font-bold">{t.name}</div>
-          <div className="text-sm text-foreground/50">{t.business}</div>
-        </div>
-        <div className="mt-8 flex justify-center gap-2">
-          {testimonials.map((_, k) => (
-            <button
-              key={k}
-              onClick={() => setI(k)}
-              aria-label={`Show testimonial ${k + 1}`}
-              className={`h-1.5 rounded-full transition-all ${
-                k === i ? "w-8 bg-primary" : "w-2 bg-white/20"
-              }`}
-            />
-          ))}
-        </div>
+        <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
+          Reviews coming soon.
+        </h2>
+        <p className="mt-4 text-foreground/60">
+          We're just getting started — client stories will live here as our first launches go live.
+          Want to be one of them?
+        </p>
+        <a
+          href="#contact"
+          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-white/5"
+        >
+          Become a founding client
+          <ArrowRight className="size-4" />
+        </a>
       </div>
     </section>
   );
 }
+
 
 /* ---------------- Audit Tool ---------------- */
 
