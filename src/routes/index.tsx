@@ -10,20 +10,16 @@ import {
   Wrench,
   Rocket,
   Shield,
-  BarChart3,
   Smartphone,
   Accessibility,
   Users,
   Calendar,
-  MessageSquare,
   Check,
   ChevronDown,
-  Star,
   ArrowUpRight,
   Filter,
   Loader2,
 } from "lucide-react";
-import heroDashboard from "@/assets/hero-dashboard.jpg";
 import beforeSite from "@/assets/before-site.jpg";
 import afterSite from "@/assets/after-site.jpg";
 
