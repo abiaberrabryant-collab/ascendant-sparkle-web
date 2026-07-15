@@ -972,10 +972,10 @@ function Contact() {
                 className="mt-1.5 w-full rounded-lg border border-glass-border bg-background/60 px-3 py-2.5 text-sm outline-none focus:border-primary/50"
               >
                 <option value="">Select…</option>
-                <option>Under $3K</option>
-                <option>$3K – $7K</option>
-                <option>$7K – $15K</option>
-                <option>$15K+</option>
+                <option>Basic — $850 + $100/mo</option>
+                <option>Advanced — $1,250 + $150/mo</option>
+                <option>Ascendant — $1,500 + $200/mo</option>
+                <option>Not sure yet</option>
               </select>
             </label>
             <label className="block">
