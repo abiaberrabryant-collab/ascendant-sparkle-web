@@ -217,45 +217,14 @@ function Hero() {
           </a>
         </div>
 
-        {/* Floating dashboard */}
-        <div className="relative mt-16 w-full max-w-5xl">
-          <div className="relative overflow-hidden rounded-3xl border border-glass-border bg-glass shadow-2xl">
-            <div className="absolute inset-x-0 top-0 z-10 h-px bg-primary/40 animate-scan" />
-            <img
-              src={heroDashboard}
-              alt="AscendantWeb analytics dashboard preview"
-              width={1600}
-              height={912}
-              className="w-full"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-          </div>
+      </div>
+    </section>
+  );
+}
 
-          <div className="animate-float absolute -right-2 -top-8 hidden w-48 rounded-2xl border border-glass-border bg-background/80 p-4 shadow-2xl backdrop-blur-xl md:block">
-            <MonoLabel tone="primary">Performance</MonoLabel>
-            <div className="mt-1 text-3xl font-bold">99<span className="text-sm text-foreground/40">/100</span></div>
-            <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
-              <div className="h-full w-[99%] bg-primary" />
-            </div>
-          </div>
-
-          <div
-            className="animate-float absolute -left-4 top-24 hidden w-56 rounded-2xl border border-glass-border bg-background/80 p-4 shadow-2xl backdrop-blur-xl md:block"
-            style={{ animationDelay: "1.2s" }}
-          >
-            <MonoLabel tone="secondary">Conversion Lift</MonoLabel>
-            <div className="mt-1 text-3xl font-bold">
-              +240<span className="text-sm text-foreground/40">%</span>
-            </div>
-            <div className="mt-2 flex items-end gap-1">
-              <div className="h-3 flex-1 rounded-sm bg-secondary/25" />
-              <div className="h-5 flex-1 rounded-sm bg-secondary/45" />
-              <div className="h-4 flex-1 rounded-sm bg-secondary/35" />
-              <div className="h-7 flex-1 rounded-sm bg-secondary" />
-              <div className="h-6 flex-1 rounded-sm bg-secondary/80" />
-            </div>
-          </div>
-        </div>
+// (removed hero dashboard preview block)
+function _HeroExtras() {
+  return null;
       </div>
     </section>
   );
