@@ -645,97 +645,25 @@ function Pricing() {
 
 /* ---------------- Portfolio ---------------- */
 
-const industries = [
-  "All",
-  "Healthcare",
-  "Law",
-  "Construction",
-  "Restaurants",
-  "Real Estate",
-  "Cleaning",
-  "HVAC",
-  "Electricians",
-  "Retail",
-  "E-commerce",
-];
-
-const projects = [
-  { title: "NorthStar Dental", industry: "Healthcare", metric: "+312% bookings", color: "from-primary/30 to-secondary/20" },
-  { title: "Harbor & Wells LLP", industry: "Law", metric: "+180% qualified leads", color: "from-secondary/30 to-primary/20" },
-  { title: "Ironclad Builders", industry: "Construction", metric: "+95 SEO score", color: "from-primary/30 to-secondary/20" },
-  { title: "Ember Kitchen", industry: "Restaurants", metric: "+240% reservations", color: "from-secondary/30 to-primary/20" },
-  { title: "Meridian Realty", industry: "Real Estate", metric: "+410% listing views", color: "from-primary/30 to-secondary/20" },
-  { title: "PureShine Co.", industry: "Cleaning", metric: "+275% quote requests", color: "from-secondary/30 to-primary/20" },
-  { title: "Arctic Air HVAC", industry: "HVAC", metric: "+220% service calls", color: "from-primary/30 to-secondary/20" },
-  { title: "Voltcraft Electric", industry: "Electricians", metric: "+190% conversions", color: "from-secondary/30 to-primary/20" },
-  { title: "Nova Apparel", industry: "E-commerce", metric: "+68% AOV", color: "from-primary/30 to-secondary/20" },
-];
-
 function Portfolio() {
-  const [filter, setFilter] = useState("All");
-  const visible = projects.filter((p) => filter === "All" || p.industry === filter);
   return (
     <section id="work" className="mx-auto max-w-7xl px-6 py-32">
-      <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-        <div className="max-w-2xl">
-          <MonoLabel tone="primary">// Portfolio</MonoLabel>
-          <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-            Recent deployments across every industry.
-          </h2>
-        </div>
-        <div className="hidden items-center gap-2 md:flex">
-          <Filter className="size-4 text-foreground/40" />
-          <MonoLabel>Filter</MonoLabel>
-        </div>
-      </div>
-
-      <div className="mb-8 flex flex-wrap gap-2">
-        {industries.map((i) => (
-          <button
-            key={i}
-            onClick={() => setFilter(i)}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
-              filter === i
-                ? "border-primary/50 bg-primary/15 text-primary"
-                : "border-glass-border bg-glass text-foreground/60 hover:text-foreground"
-            }`}
-          >
-            {i}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {visible.map((p) => (
-          <a
-            key={p.title}
-            href="#contact"
-            className="group relative overflow-hidden rounded-2xl border border-glass-border bg-glass p-1 transition-all hover:-translate-y-1 hover:border-primary/40"
-          >
-            <div className={`relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-gradient-to-br ${p.color}`}>
-              <div
-                className="absolute inset-0 opacity-40"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(oklch(1 0 0 / 0.15) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 0.15) 1px, transparent 1px)",
-                  backgroundSize: "24px 24px",
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
-                <div>
-                  <MonoLabel tone="primary">{p.industry}</MonoLabel>
-                  <div className="mt-1 text-lg font-bold">{p.title}</div>
-                </div>
-                <ArrowUpRight className="size-5 text-foreground/60 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between px-4 py-3">
-              <MonoLabel>Result</MonoLabel>
-              <span className="text-sm font-semibold text-primary">{p.metric}</span>
-            </div>
-          </a>
-        ))}
+      <div className="mx-auto max-w-3xl text-center">
+        <MonoLabel tone="primary">// Portfolio</MonoLabel>
+        <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
+          Case studies coming soon.
+        </h2>
+        <p className="mt-4 text-foreground/60">
+          We're building our first flagship launches right now. Real projects and results will
+          live here as they ship. Want your build to be one of the first showcased?
+        </p>
+        <a
+          href="#contact"
+          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-white/5"
+        >
+          Start your project
+          <ArrowRight className="size-4" />
+        </a>
       </div>
     </section>
   );
