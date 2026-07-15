@@ -672,8 +672,8 @@ const websiteTiers: Tier[] = [
     id: "basic",
     code: "01 / BASIC",
     name: "Basic",
-    price: "$850",
-    cadence: "one-time + $100/mo",
+    price: "$1,250",
+    cadence: "one-time + $150/mo",
     desc: "A clean, fast launchpad for businesses getting online the right way.",
     features: [
       "Up to 5 pages",
@@ -682,7 +682,7 @@ const websiteTiers: Tier[] = [
       "Contact form + email delivery",
       "Basic on-page SEO",
       "Analytics + SSL",
-      "$100/mo maintenance + basic AI chatbot",
+      "$150/mo maintenance + basic AI chatbot",
       "Delivery in 1–2 weeks",
     ],
     cta: "Start with Basic",
@@ -691,8 +691,8 @@ const websiteTiers: Tier[] = [
     id: "advanced",
     code: "02 / ADVANCED",
     name: "Advanced",
-    price: "$1,250",
-    cadence: "one-time + $150/mo",
+    price: "$1,750",
+    cadence: "one-time + $200/mo",
     desc: "For growing companies that need real firepower, automation, and conversions.",
     features: [
       "Everything in Basic",
@@ -702,7 +702,7 @@ const websiteTiers: Tier[] = [
       "Booking or lead-capture flow",
       "CRM / email integration",
       "Advanced SEO + speed tuning",
-      "$150/mo maintenance + AI chatbot (business-trained)",
+      "$200/mo maintenance + AI chatbot (business-trained)",
       "Delivery in 2–3 weeks",
     ],
     cta: "Choose Advanced",
@@ -712,8 +712,8 @@ const websiteTiers: Tier[] = [
     id: "ascendant",
     code: "03 / ASCENDANT",
     name: "Ascendant",
-    price: "$1,500",
-    cadence: "one-time + $200/mo",
+    price: "$2,000",
+    cadence: "one-time + $250/mo",
     desc: "Our flagship build. Every capability, every optimization, fully dialed in.",
     features: [
       "Everything in Advanced",
@@ -722,7 +722,7 @@ const websiteTiers: Tier[] = [
       "Custom features & dashboards",
       "Advanced integrations & automations",
       "Premium SEO + schema markup",
-      "$200/mo maintenance + full AI chatbot with priority support",
+      "$250/mo maintenance + full AI chatbot with priority support",
       "Delivery in 3–4 weeks",
     ],
     cta: "Go Ascendant",
@@ -980,7 +980,7 @@ function TextArea({
 
 const faqs = [
   { q: "How long does a website take?", a: "Basic sites ship in 1–2 weeks. Advanced builds land in 2–3 weeks. Ascendant flagship projects take 3–4 weeks." },
-  { q: "How much does it cost?", a: "Basic is $850, Advanced is $1,250, and Ascendant is $1,500 one-time. Each includes an ongoing plan ($100/$150/$200 per month) covering maintenance and your AI chatbot." },
+  { q: "How much does it cost?", a: "Basic is $1,250, Advanced is $1,750, and Ascendant is $2,000 one-time. Each includes an ongoing plan ($150/$200/$250 per month) covering maintenance and your AI chatbot." },
   { q: "Do you offer hosting?", a: "Yes — premium managed hosting on globally distributed edge infrastructure with 99.99% uptime, SSL, and CDN included." },
   { q: "What's included in the monthly plan?", a: "Updates, security monitoring, automated backups, uptime monitoring, small content edits, and your AI chatbot running 24/7." },
   { q: "Can I update it myself?", a: "Absolutely. We build on modern CMS options so your team can edit copy, images, and posts without touching code." },
@@ -1099,9 +1099,9 @@ function Contact() {
                 className="mt-1.5 w-full rounded-lg border border-glass-border bg-background/60 px-3 py-2.5 text-sm outline-none focus:border-primary/50"
               >
                 <option value="">Select…</option>
-                <option>Basic — $850 + $100/mo</option>
-                <option>Advanced — $1,250 + $150/mo</option>
-                <option>Ascendant — $1,500 + $200/mo</option>
+                <option>Basic — $1,250 + $150/mo</option>
+                <option>Advanced — $1,750 + $200/mo</option>
+                <option>Ascendant — $2,000 + $250/mo</option>
                 <option>Not sure yet</option>
               </select>
             </label>
