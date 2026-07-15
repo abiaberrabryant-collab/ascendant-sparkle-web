@@ -16,6 +16,14 @@ import {
   ChevronDown,
   Loader2,
 } from "lucide-react";
+import beforeSite from "@/assets/before-site.jpg";
+import afterSite from "@/assets/after-site.jpg";
+import industryElectrical from "@/assets/industry-electrical.jpg";
+import industryPlumbing from "@/assets/industry-plumbing.jpg";
+import industryLaw from "@/assets/industry-law.jpg";
+import industryRestaurant from "@/assets/industry-restaurant.jpg";
+import industryRealEstate from "@/assets/industry-realestate.jpg";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -235,6 +243,7 @@ const industries = [
   {
     code: "01",
     icon: Zap,
+    image: industryElectrical,
     name: "Electrical Contractors",
     tagline: "Wired to convert emergency calls into booked jobs.",
     features: [
@@ -247,6 +256,7 @@ const industries = [
   {
     code: "02",
     icon: Wrench,
+    image: industryPlumbing,
     name: "Plumbing & HVAC",
     tagline: "Booking-first design for service pros.",
     features: [
@@ -259,6 +269,7 @@ const industries = [
   {
     code: "03",
     icon: Shield,
+    image: industryLaw,
     name: "Law Firms",
     tagline: "Authority-forward design that earns trust on first scroll.",
     features: [
@@ -271,6 +282,7 @@ const industries = [
   {
     code: "04",
     icon: Sparkles,
+    image: industryRestaurant,
     name: "Restaurants & Cafés",
     tagline: "Mouth-watering visuals that fill your tables.",
     features: [
@@ -283,6 +295,7 @@ const industries = [
   {
     code: "05",
     icon: Layout,
+    image: industryRealEstate,
     name: "Real Estate Agents",
     tagline: "Listings that look like the property itself.",
     features: [
@@ -314,36 +327,48 @@ function Industries() {
           return (
             <div
               key={i.name}
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-white/5"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-white/5"
             >
-              <div className="pointer-events-none absolute -right-10 -top-10 size-40 rounded-full bg-primary/10 opacity-0 blur-3xl transition-opacity group-hover:opacity-100" />
-              <div className="flex items-center justify-between">
-                <div className="grid size-11 place-items-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
-                  <Icon className="size-5" />
+              <div className="relative aspect-[4/3] overflow-hidden border-b border-glass-border bg-black">
+                <img
+                  src={i.image}
+                  alt={`${i.name} website design mockup`}
+                  width={1280}
+                  height={960}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                <div className="absolute left-3 top-3 rounded-md border border-glass-border bg-background/70 px-2 py-1 backdrop-blur">
+                  <MonoLabel tone="primary">{i.code}</MonoLabel>
                 </div>
-                <MonoLabel>{i.code}</MonoLabel>
+                <div className="absolute right-3 top-3 grid size-9 place-items-center rounded-lg border border-primary/30 bg-primary/20 text-primary backdrop-blur">
+                  <Icon className="size-4" />
+                </div>
               </div>
-              <h3 className="mt-5 text-xl font-bold">{i.name}</h3>
-              <p className="mt-1 text-sm text-foreground/60">{i.tagline}</p>
-              <ul className="mt-5 flex-1 space-y-2">
-                {i.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-foreground/80">
-                    <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#contact"
-                className="mt-6 inline-flex items-center justify-between rounded-xl border border-glass-border px-4 py-2.5 text-sm font-bold transition-colors hover:border-primary/40 hover:bg-white/5"
-              >
-                Build this style
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-              </a>
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="text-xl font-bold">{i.name}</h3>
+                <p className="mt-1 text-sm text-foreground/60">{i.tagline}</p>
+                <ul className="mt-5 flex-1 space-y-2">
+                  {i.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-foreground/80">
+                      <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#contact"
+                  className="mt-6 inline-flex items-center justify-between rounded-xl border border-glass-border px-4 py-2.5 text-sm font-bold transition-colors hover:border-primary/40 hover:bg-white/5"
+                >
+                  Build this style
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                </a>
+              </div>
             </div>
           );
         })}
-        <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 p-6">
+        <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl border border-dashed border-primary/30 bg-gradient-to-br from-primary/10 to-secondary/10 p-8">
           <MonoLabel tone="primary">// Not listed?</MonoLabel>
           <h3 className="mt-3 text-xl font-bold">Your industry, your rules.</h3>
           <p className="mt-2 text-sm text-foreground/70">
