@@ -671,8 +671,6 @@ function Pricing() {
           ))}
         </div>
       </div>
-
-      </div>
     </section>
   );
 }
