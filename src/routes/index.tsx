@@ -307,6 +307,135 @@ const industries = [
   },
 ];
 
+/* ---------------- Before / After Slider ---------------- */
+
+function BeforeAfter() {
+  const [pos, setPos] = useState(52);
+  const dragging = useRef(false);
+  const wrap = useRef<HTMLDivElement | null>(null);
+
+  const setFromClientX = (clientX: number) => {
+    const el = wrap.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const p = ((clientX - r.left) / r.width) * 100;
+    setPos(Math.max(4, Math.min(96, p)));
+  };
+
+  useEffect(() => {
+    const onUp = () => (dragging.current = false);
+    const onMove = (e: MouseEvent | TouchEvent) => {
+      if (!dragging.current) return;
+      const x = "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+      setFromClientX(x);
+    };
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchend", onUp);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchmove", onMove);
+    return () => {
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchend", onUp);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onMove);
+    };
+  }, []);
+
+  const criteria = [
+    { label: "Page Speed", before: "Sluggish", after: "Blazing" },
+    { label: "Design Quality", before: "Outdated", after: "Premium 2026" },
+    { label: "Mobile Experience", before: "Broken", after: "Pixel-perfect" },
+    { label: "SEO Health", before: "Weak", after: "Fully Optimized" },
+    { label: "AI Integration", before: "None", after: "Built-in Chatbot" },
+    { label: "Conversion Design", before: "Passive", after: "High-Intent" },
+    { label: "Accessibility", before: "Failing", after: "WCAG AA" },
+  ];
+
+  return (
+    <section className="mx-auto max-w-7xl px-6 py-32">
+      <div className="mb-14 max-w-3xl">
+        <MonoLabel tone="primary">// The Ascendant Upgrade</MonoLabel>
+        <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
+          Drag to see what a modern website really looks like.
+        </h2>
+        <p className="mt-4 text-foreground/60">
+          Every clunky second and every dated layout chips away at your brand. We don't just
+          redesign — we re-engineer.
+        </p>
+      </div>
+
+      <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
+        <div
+          ref={wrap}
+          className="relative aspect-[4/3] w-full select-none overflow-hidden rounded-3xl border border-glass-border bg-black"
+          onMouseDown={(e) => {
+            dragging.current = true;
+            setFromClientX(e.clientX);
+          }}
+          onTouchStart={(e) => {
+            dragging.current = true;
+            setFromClientX(e.touches[0].clientX);
+          }}
+        >
+          <img
+            src={afterSite}
+            alt="Modern AscendantWeb redesign"
+            width={1200}
+            height={1200}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${pos}%` }}>
+            <img
+              src={beforeSite}
+              alt="Outdated legacy website"
+              width={1200}
+              height={1200}
+              loading="lazy"
+              className="absolute inset-0 h-full object-cover"
+              style={{ width: `${(100 / pos) * 100}%` }}
+            />
+          </div>
+
+          <div className="pointer-events-none absolute left-4 top-4 rounded-md bg-black/60 px-2 py-1 backdrop-blur">
+            <MonoLabel>Before</MonoLabel>
+          </div>
+          <div className="pointer-events-none absolute right-4 top-4 rounded-md bg-primary px-2 py-1">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white">
+              After
+            </span>
+          </div>
+
+          <div
+            className="absolute inset-y-0 z-10 w-px bg-primary shadow-[0_0_20px_oklch(0.62_0.19_258_/_0.7)]"
+            style={{ left: `${pos}%` }}
+          >
+            <div className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-full border-4 border-background bg-primary shadow-2xl">
+              <ArrowRight className="size-4 -rotate-180 text-white" />
+              <ArrowRight className="absolute size-4 text-white translate-x-3" />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3">
+          {criteria.map((c) => (
+            <div key={c.label} className="rounded-xl border border-glass-border bg-glass p-4 backdrop-blur">
+              <MonoLabel>{c.label}</MonoLabel>
+              <div className="mt-2 flex items-center justify-between gap-4 text-sm">
+                <span className="text-red-400/80 line-through">{c.before}</span>
+                <ArrowRight className="size-3 text-foreground/40" />
+                <span className="font-semibold text-primary">{c.after}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Industries ---------------- */
+
 function Industries() {
   return (
     <section id="industries" className="mx-auto max-w-7xl px-6 py-32">
@@ -1102,6 +1231,7 @@ function HomePage() {
       <GlowBackground />
       <Nav />
       <Hero />
+      <BeforeAfter />
       <Industries />
       <WhyUs />
       <Services />
