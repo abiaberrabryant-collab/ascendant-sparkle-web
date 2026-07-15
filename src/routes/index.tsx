@@ -10,16 +10,10 @@ import {
   Wrench,
   Rocket,
   Shield,
-  BarChart3,
-  Star,
   Smartphone,
-  Accessibility,
   Users,
-  Calendar,
   Check,
   ChevronDown,
-  ArrowUpRight,
-  Filter,
   Loader2,
 } from "lucide-react";
 import beforeSite from "@/assets/before-site.jpg";
@@ -375,16 +369,12 @@ function BeforeAfter() {
 const whyItems = [
   { icon: Layout, title: "Modern UI/UX", desc: "Interfaces engineered to feel effortless and premium." },
   { icon: Smartphone, title: "Mobile Responsive", desc: "Pixel-perfect on every device, from phones to 4K." },
-  { icon: Search, title: "SEO Optimization", desc: "Technical + on-page SEO baked into every build." },
   { icon: Zap, title: "Lightning Fast", desc: "Sub-second loads. 95+ Core Web Vitals." },
+  { icon: Search, title: "SEO Optimization", desc: "Technical + on-page SEO baked into every build." },
   { icon: Bot, title: "AI Integration", desc: "Chatbots, lead qualification, and smart automations." },
-  { icon: BarChart3, title: "Analytics", desc: "GA4, PostHog, or custom — we wire everything up." },
-  { icon: Users, title: "Lead Capture", desc: "Forms, popups, and funnels that actually convert." },
-  { icon: Shield, title: "Secure Hosting", desc: "SSL, DDoS mitigation, and 99.99% uptime." },
+  { icon: Users, title: "Lead Capture", desc: "Forms and funnels that actually convert." },
+  { icon: Shield, title: "Secure Hosting", desc: "SSL, CDN, and 99.99% uptime." },
   { icon: Wrench, title: "Ongoing Maintenance", desc: "Updates, backups, and monitoring — hands-off." },
-  { icon: Rocket, title: "Conversion Optimization", desc: "A/B tested layouts and CTAs." },
-  { icon: Accessibility, title: "ADA Accessible", desc: "WCAG 2.2 AA compliant by default." },
-  { icon: Calendar, title: "Booking Systems", desc: "Cal.com, Calendly, or custom flows." },
 ];
 
 function WhyUs() {
@@ -394,7 +384,7 @@ function WhyUs() {
         <div className="mb-14 max-w-3xl">
           <MonoLabel tone="secondary">// Why AscendantWeb</MonoLabel>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-            Every capability a modern business needs. Zero fluff.
+            Everything a modern business needs. Zero fluff.
           </h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
