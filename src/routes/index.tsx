@@ -670,21 +670,8 @@ function Pricing() {
             <PricingCard key={t.id} tier={t} />
           ))}
         </div>
+      </div>
 
-        <div className="mx-auto mb-14 mt-32 max-w-3xl text-center">
-          <MonoLabel tone="secondary">// AI Chatbot Subscriptions</MonoLabel>
-          <h3 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-            Bolt on a 24/7 AI teammate.
-          </h3>
-          <p className="mt-4 text-foreground/60">
-            Includes hosting, updates, prompt tuning, and analytics — cancel anytime.
-          </p>
-        </div>
-        <div className="grid gap-8 md:grid-cols-3">
-          {aiTiers.map((t) => (
-            <PricingCard key={t.id} tier={t} />
-          ))}
-        </div>
       </div>
     </section>
   );
