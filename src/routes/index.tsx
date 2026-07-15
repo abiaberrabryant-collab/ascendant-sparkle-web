@@ -11,19 +11,17 @@ import {
   Rocket,
   Shield,
   BarChart3,
+  Star,
   Smartphone,
   Accessibility,
   Users,
   Calendar,
-  MessageSquare,
   Check,
   ChevronDown,
-  Star,
   ArrowUpRight,
   Filter,
   Loader2,
 } from "lucide-react";
-import heroDashboard from "@/assets/hero-dashboard.jpg";
 import beforeSite from "@/assets/before-site.jpg";
 import afterSite from "@/assets/after-site.jpg";
 
@@ -217,49 +215,11 @@ function Hero() {
           </a>
         </div>
 
-        {/* Floating dashboard */}
-        <div className="relative mt-16 w-full max-w-5xl">
-          <div className="relative overflow-hidden rounded-3xl border border-glass-border bg-glass shadow-2xl">
-            <div className="absolute inset-x-0 top-0 z-10 h-px bg-primary/40 animate-scan" />
-            <img
-              src={heroDashboard}
-              alt="AscendantWeb analytics dashboard preview"
-              width={1600}
-              height={912}
-              className="w-full"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-          </div>
-
-          <div className="animate-float absolute -right-2 -top-8 hidden w-48 rounded-2xl border border-glass-border bg-background/80 p-4 shadow-2xl backdrop-blur-xl md:block">
-            <MonoLabel tone="primary">Performance</MonoLabel>
-            <div className="mt-1 text-3xl font-bold">99<span className="text-sm text-foreground/40">/100</span></div>
-            <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
-              <div className="h-full w-[99%] bg-primary" />
-            </div>
-          </div>
-
-          <div
-            className="animate-float absolute -left-4 top-24 hidden w-56 rounded-2xl border border-glass-border bg-background/80 p-4 shadow-2xl backdrop-blur-xl md:block"
-            style={{ animationDelay: "1.2s" }}
-          >
-            <MonoLabel tone="secondary">Conversion Lift</MonoLabel>
-            <div className="mt-1 text-3xl font-bold">
-              +240<span className="text-sm text-foreground/40">%</span>
-            </div>
-            <div className="mt-2 flex items-end gap-1">
-              <div className="h-3 flex-1 rounded-sm bg-secondary/25" />
-              <div className="h-5 flex-1 rounded-sm bg-secondary/45" />
-              <div className="h-4 flex-1 rounded-sm bg-secondary/35" />
-              <div className="h-7 flex-1 rounded-sm bg-secondary" />
-              <div className="h-6 flex-1 rounded-sm bg-secondary/80" />
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
 }
+
 
 /* ---------------- Trust Stats ---------------- */
 
@@ -589,111 +549,64 @@ type Tier = {
 
 const websiteTiers: Tier[] = [
   {
-    id: "starter",
-    code: "01 / STARTER",
-    name: "Starter",
-    price: "$2,900",
+    id: "basic",
+    code: "01 / BASIC",
+    name: "Basic",
+    price: "$850",
     cadence: "one-time",
-    desc: "Perfect for local businesses launching or refreshing online.",
+    desc: "A clean, fast launchpad for businesses getting online the right way.",
     features: [
       "Up to 5 pages",
       "Fully mobile responsive",
-      "Contact forms",
-      "Basic SEO",
+      "Modern custom design",
+      "Contact form + email delivery",
+      "Basic on-page SEO",
       "Analytics + SSL",
       "2 revision rounds",
       "Delivery in 1–2 weeks",
-      "Optional AI chatbot add-on",
     ],
-    cta: "Launch Starter",
+    cta: "Start with Basic",
   },
   {
-    id: "growth",
-    code: "02 / GROWTH",
-    name: "Growth",
-    price: "$6,500",
+    id: "advanced",
+    code: "02 / ADVANCED",
+    name: "Advanced",
+    price: "$1,250",
     cadence: "one-time",
-    desc: "For growing companies that need firepower and automation.",
+    desc: "For growing companies that need real firepower, automation, and conversions.",
     features: [
-      "Up to 15 pages",
-      "Advanced custom design",
-      "Blog + CMS",
-      "Booking system",
-      "CRM integration",
-      "Advanced SEO + speed",
-      "Analytics dashboard",
-      "AI chatbot (first month free)",
-      "Delivery in 2–4 weeks",
+      "Everything in Basic",
+      "Up to 12 pages",
+      "Advanced custom design system",
+      "Blog + editable CMS",
+      "Booking or lead-capture flow",
+      "CRM / email integration",
+      "Advanced SEO + speed tuning",
+      "AI chatbot (basic setup included)",
+      "Delivery in 2–3 weeks",
     ],
-    cta: "Select Growth",
+    cta: "Choose Advanced",
     popular: true,
   },
   {
-    id: "enterprise",
-    code: "03 / ENTERPRISE",
-    name: "Enterprise",
-    price: "Custom",
-    desc: "Everything included. For serious operators and scaling brands.",
+    id: "ascendant",
+    code: "03 / ASCENDANT",
+    name: "Ascendant",
+    price: "$1,500",
+    cadence: "one-time",
+    desc: "Our flagship build. Every capability, every optimization, fully dialed in.",
     features: [
+      "Everything in Advanced",
       "Unlimited pages",
+      "Premium bespoke design + animations",
       "Custom features & dashboards",
-      "Customer & member portals",
-      "API + automation workflows",
-      "Premium SEO",
-      "Dedicated PM + priority support",
-      "AI chatbot included",
-      "Unlimited revisions in build",
-      "Ongoing optimization",
+      "Full AI chatbot trained on your business",
+      "Advanced integrations & automations",
+      "Premium SEO + schema markup",
+      "Priority support & unlimited build revisions",
+      "Delivery in 3–4 weeks",
     ],
-    cta: "Talk to Sales",
-  },
-];
-
-const aiTiers: Tier[] = [
-  {
-    id: "ai-starter",
-    code: "AI / STARTER",
-    name: "Starter AI",
-    price: "$149",
-    cadence: "/mo",
-    desc: "Answer FAQs and capture leads 24/7.",
-    features: ["1,000 msgs / mo", "1 knowledge source", "Lead capture", "Email transcripts", "Basic analytics"],
-    cta: "Deploy Starter AI",
-  },
-  {
-    id: "ai-growth",
-    code: "AI / GROWTH",
-    name: "Growth AI",
-    price: "$349",
-    cadence: "/mo",
-    desc: "Automate booking, quoting, and support.",
-    features: [
-      "10,000 msgs / mo",
-      "5 knowledge sources",
-      "Booking + CRM sync",
-      "Prompt optimization",
-      "Monthly training updates",
-      "Advanced analytics",
-    ],
-    cta: "Deploy Growth AI",
-    popular: true,
-  },
-  {
-    id: "ai-enterprise",
-    code: "AI / ENTERPRISE",
-    name: "Enterprise AI",
-    price: "$899",
-    cadence: "/mo",
-    desc: "White-glove AI with custom integrations.",
-    features: [
-      "Unlimited msgs",
-      "Unlimited knowledge",
-      "Custom integrations",
-      "Dedicated model tuning",
-      "SLA + priority support",
-      "Quarterly strategy reviews",
-    ],
-    cta: "Talk to Sales",
+    cta: "Go Ascendant",
   },
 ];
 
@@ -754,21 +667,6 @@ function Pricing() {
         </div>
         <div className="grid gap-8 md:grid-cols-3">
           {websiteTiers.map((t) => (
-            <PricingCard key={t.id} tier={t} />
-          ))}
-        </div>
-
-        <div className="mx-auto mb-14 mt-32 max-w-3xl text-center">
-          <MonoLabel tone="secondary">// AI Chatbot Subscriptions</MonoLabel>
-          <h3 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">
-            Bolt on a 24/7 AI teammate.
-          </h3>
-          <p className="mt-4 text-foreground/60">
-            Includes hosting, updates, prompt tuning, and analytics — cancel anytime.
-          </p>
-        </div>
-        <div className="grid gap-8 md:grid-cols-3">
-          {aiTiers.map((t) => (
             <PricingCard key={t.id} tier={t} />
           ))}
         </div>
@@ -877,76 +775,30 @@ function Portfolio() {
 
 /* ---------------- Testimonials ---------------- */
 
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    business: "NorthStar Dental",
-    quote:
-      "We tripled online bookings within 90 days. The site loads instantly and the chatbot handles half our front-desk questions.",
-    rating: 5,
-  },
-  {
-    name: "Marcus Reid",
-    business: "Ironclad Builders",
-    quote:
-      "AscendantWeb rebuilt our site in three weeks and we started ranking #1 for our city inside a month. Unreal.",
-    rating: 5,
-  },
-  {
-    name: "Elena Vasquez",
-    business: "Harbor & Wells LLP",
-    quote:
-      "They understood the tone a law firm needs and delivered a site that finally feels premium. Leads doubled.",
-    rating: 5,
-  },
-  {
-    name: "Dominic Park",
-    business: "Ember Kitchen",
-    quote:
-      "The reservation flow they built is smoother than anything we tested. Guests notice. Revenue is way up.",
-    rating: 5,
-  },
-];
-
 function Testimonials() {
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % testimonials.length), 6000);
-    return () => clearInterval(t);
-  }, []);
-  const t = testimonials[i];
   return (
     <section className="border-y border-glass-border bg-white/[0.02] py-32">
       <div className="mx-auto max-w-4xl px-6 text-center">
         <MonoLabel tone="secondary">// Client Signal</MonoLabel>
-        <div className="mt-6 flex justify-center gap-1">
-          {Array.from({ length: t.rating }).map((_, k) => (
-            <Star key={k} className="size-5 fill-primary text-primary" />
-          ))}
-        </div>
-        <blockquote key={i} className="animate-fade-up mt-6 text-2xl font-medium leading-relaxed text-foreground md:text-3xl">
-          "{t.quote}"
-        </blockquote>
-        <div className="mt-6">
-          <div className="font-bold">{t.name}</div>
-          <div className="text-sm text-foreground/50">{t.business}</div>
-        </div>
-        <div className="mt-8 flex justify-center gap-2">
-          {testimonials.map((_, k) => (
-            <button
-              key={k}
-              onClick={() => setI(k)}
-              aria-label={`Show testimonial ${k + 1}`}
-              className={`h-1.5 rounded-full transition-all ${
-                k === i ? "w-8 bg-primary" : "w-2 bg-white/20"
-              }`}
-            />
-          ))}
-        </div>
+        <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
+          Reviews coming soon.
+        </h2>
+        <p className="mt-4 text-foreground/60">
+          We're just getting started — client stories will live here as our first launches go live.
+          Want to be one of them?
+        </p>
+        <a
+          href="#contact"
+          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-white/5"
+        >
+          Become a founding client
+          <ArrowRight className="size-4" />
+        </a>
       </div>
     </section>
   );
 }
+
 
 /* ---------------- Audit Tool ---------------- */
 
@@ -1356,7 +1208,7 @@ function HomePage() {
       <GlowBackground />
       <Nav />
       <Hero />
-      <TrustStats />
+      
       <BeforeAfter />
       <WhyUs />
       <Services />
