@@ -1208,7 +1208,7 @@ function HomePage() {
       <GlowBackground />
       <Nav />
       <Hero />
-      <TrustStats />
+      
       <BeforeAfter />
       <WhyUs />
       <Services />
