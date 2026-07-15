@@ -1077,13 +1077,12 @@ function HomePage() {
       <GlowBackground />
       <Nav />
       <Hero />
-      
-      <BeforeAfter />
+      <Industries />
       <WhyUs />
       <Services />
       <Pricing />
-      <Portfolio />
       <Testimonials />
+
       <AuditTool />
       <FAQ />
       <Contact />
