@@ -10,6 +10,8 @@ import {
   Wrench,
   Rocket,
   Shield,
+  BarChart3,
+  Star,
   Smartphone,
   Accessibility,
   Users,
