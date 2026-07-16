@@ -23,6 +23,8 @@ import industryPlumbing from "@/assets/industry-plumbing.jpg";
 import industryLaw from "@/assets/industry-law.jpg";
 import industryRestaurant from "@/assets/industry-restaurant.jpg";
 import industryRealEstate from "@/assets/industry-realestate.jpg";
+import { CheckoutDialog } from "@/components/CheckoutDialog";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 
 export const Route = createFileRoute("/")({
@@ -729,7 +731,7 @@ const websiteTiers: Tier[] = [
   },
 ];
 
-function PricingCard({ tier }: { tier: Tier }) {
+function PricingCard({ tier, onSelect }: { tier: Tier; onSelect: (id: string) => void }) {
   return (
     <div
       className={`relative flex flex-col overflow-hidden rounded-3xl border p-8 transition-all ${
@@ -759,8 +761,8 @@ function PricingCard({ tier }: { tier: Tier }) {
           </li>
         ))}
       </ul>
-      <a
-        href="#contact"
+      <button
+        onClick={() => onSelect(tier.id)}
         className={`mt-8 inline-flex items-center justify-center rounded-xl px-6 py-3 font-bold transition-all ${
           tier.popular
             ? "bg-primary text-white shadow-lg shadow-primary/40 hover:shadow-primary/60"
@@ -768,28 +770,38 @@ function PricingCard({ tier }: { tier: Tier }) {
         }`}
       >
         {tier.cta}
-      </a>
+      </button>
     </div>
   );
 }
 
 function Pricing() {
+  const [selectedTier, setSelectedTier] = useState<"basic" | "advanced" | "ascendant" | null>(null);
   return (
     <section id="pricing" className="border-y border-glass-border bg-white/[0.02] py-32">
+      <PaymentTestModeBanner />
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <MonoLabel tone="primary">// Pricing</MonoLabel>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
             Transparent pricing. Serious ROI.
           </h2>
-          <p className="mt-4 text-foreground/60">Choose the engine that fits your mission.</p>
+          <p className="mt-4 text-foreground/60">
+            One checkout — pay the one-time build fee today, and your monthly maintenance +
+            AI chatbot starts immediately and renews every month.
+          </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
           {websiteTiers.map((t) => (
-            <PricingCard key={t.id} tier={t} />
+            <PricingCard
+              key={t.id}
+              tier={t}
+              onSelect={(id) => setSelectedTier(id as "basic" | "advanced" | "ascendant")}
+            />
           ))}
         </div>
       </div>
+      <CheckoutDialog tier={selectedTier} onClose={() => setSelectedTier(null)} />
     </section>
   );
 }
