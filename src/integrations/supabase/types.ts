@@ -341,6 +341,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_chatbot_settings: {
+        Args: never
+        Returns: {
+          brand_color: string
+          enabled: boolean
+          greeting: string
+          suggested_prompts: Json
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
