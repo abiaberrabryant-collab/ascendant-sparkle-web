@@ -300,3 +300,236 @@ function Td({ children, className = "" }: { children: React.ReactNode; className
 function Empty({ label }: { label: string }) {
   return <div className="p-10 text-center text-foreground/50">{label}</div>;
 }
+
+function ChatbotSettingsPanel() {
+  const [settings, setSettings] = useState<any>(null);
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [promptsRaw, setPromptsRaw] = useState("");
+
+  useEffect(() => {
+    getChatbotSettingsAdmin().then((s: any) => {
+      setSettings(s);
+      setPromptsRaw((s?.suggested_prompts ?? []).join("\n"));
+    });
+  }, []);
+
+  if (!settings) return <div className="text-foreground/60">Loading…</div>;
+
+  const save = async () => {
+    setSaving(true);
+    setMsg(null);
+    try {
+      await updateChatbotSettings({
+        data: {
+          enabled: settings.enabled,
+          model: settings.model,
+          system_prompt: settings.system_prompt,
+          business_knowledge: settings.business_knowledge,
+          greeting: settings.greeting,
+          brand_color: settings.brand_color,
+          suggested_prompts: promptsRaw
+            .split("\n")
+            .map((p) => p.trim())
+            .filter(Boolean)
+            .slice(0, 6),
+        },
+      });
+      setMsg("Saved.");
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Save failed.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const field = (label: string, node: React.ReactNode) => (
+    <label className="block">
+      <div className="mb-1 font-mono text-[10px] uppercase tracking-widest text-foreground/60">{label}</div>
+      {node}
+    </label>
+  );
+  const inputCls =
+    "w-full rounded-md border border-glass-border bg-white/50 px-3 py-2 text-sm outline-none focus:border-primary";
+
+  return (
+    <div className="space-y-5 rounded-2xl border border-glass-border bg-glass p-6">
+      <div className="flex items-center gap-3">
+        <input
+          type="checkbox"
+          checked={!!settings.enabled}
+          onChange={(e) => setSettings({ ...settings, enabled: e.target.checked })}
+        />
+        <span className="text-sm">Chatbot enabled on site</span>
+      </div>
+
+      {field(
+        "Model",
+        <select
+          value={settings.model}
+          onChange={(e) => setSettings({ ...settings, model: e.target.value })}
+          className={inputCls}
+        >
+          <option value="google/gemini-2.5-flash">Gemini 2.5 Flash (fast, cheap)</option>
+          <option value="google/gemini-2.5-pro">Gemini 2.5 Pro (smart)</option>
+          <option value="google/gemini-3.5-flash">Gemini 3.5 Flash</option>
+          <option value="openai/gpt-5.4-mini">GPT-5.4 mini</option>
+          <option value="openai/gpt-5.5">GPT-5.5 (best)</option>
+        </select>,
+      )}
+      {field(
+        "Greeting (first message visitors see)",
+        <textarea
+          rows={2}
+          className={inputCls}
+          value={settings.greeting}
+          onChange={(e) => setSettings({ ...settings, greeting: e.target.value })}
+        />,
+      )}
+      {field(
+        "Suggested prompts (one per line, max 6)",
+        <textarea
+          rows={4}
+          className={inputCls}
+          value={promptsRaw}
+          onChange={(e) => setPromptsRaw(e.target.value)}
+        />,
+      )}
+      {field(
+        "System prompt (personality + rules)",
+        <textarea
+          rows={6}
+          className={inputCls}
+          value={settings.system_prompt}
+          onChange={(e) => setSettings({ ...settings, system_prompt: e.target.value })}
+        />,
+      )}
+      {field(
+        "Business knowledge (services, pricing, FAQs — the bot uses this to answer)",
+        <textarea
+          rows={12}
+          className={inputCls}
+          value={settings.business_knowledge}
+          onChange={(e) => setSettings({ ...settings, business_knowledge: e.target.value })}
+          placeholder="Paste everything: services, packages, prices, timelines, refund policy, FAQs, past client examples…"
+        />,
+      )}
+      {field(
+        "Brand color",
+        <input
+          type="color"
+          value={settings.brand_color}
+          onChange={(e) => setSettings({ ...settings, brand_color: e.target.value })}
+          className="h-10 w-20 rounded border border-glass-border"
+        />,
+      )}
+
+      <div className="flex items-center gap-3">
+        <button
+          onClick={save}
+          disabled={saving}
+          className="rounded-md bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+        >
+          {saving ? "Saving…" : "Save changes"}
+        </button>
+        {msg && <span className="text-sm text-foreground/60">{msg}</span>}
+      </div>
+    </div>
+  );
+}
+
+function ConversationsPanel() {
+  const [convs, setConvs] = useState<any[]>([]);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [msgs, setMsgs] = useState<any[]>([]);
+
+  useEffect(() => {
+    listConversations().then(setConvs);
+  }, []);
+  useEffect(() => {
+    if (selected) getConversationMessages({ data: { id: selected } }).then(setMsgs);
+  }, [selected]);
+
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-[280px_1fr]">
+      <div className="max-h-[600px] overflow-y-auto rounded-2xl border border-glass-border bg-glass">
+        {convs.length === 0 ? (
+          <Empty label="No conversations yet." />
+        ) : (
+          convs.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setSelected(c.id)}
+              className={`block w-full border-b border-glass-border/60 px-4 py-3 text-left text-sm hover:bg-white/5 ${
+                selected === c.id ? "bg-white/10" : ""
+              }`}
+            >
+              <div className="font-semibold">{c.visitor_email ?? c.visitor_name ?? "Anonymous visitor"}</div>
+              <div className="text-xs text-foreground/50">{new Date(c.updated_at).toLocaleString()}</div>
+              {c.page_url && <div className="mt-1 truncate text-[10px] text-foreground/40">{c.page_url}</div>}
+            </button>
+          ))
+        )}
+      </div>
+      <div className="max-h-[600px] overflow-y-auto rounded-2xl border border-glass-border bg-glass p-4">
+        {!selected ? (
+          <div className="text-foreground/50">Select a conversation.</div>
+        ) : msgs.length === 0 ? (
+          <div className="text-foreground/50">Loading…</div>
+        ) : (
+          <div className="space-y-3">
+            {msgs.map((m, i) => (
+              <div
+                key={i}
+                className={`rounded-lg px-3 py-2 text-sm ${
+                  m.role === "user" ? "ml-auto max-w-[80%] bg-primary/10" : "mr-auto max-w-[85%] bg-white/5"
+                }`}
+              >
+                <div className="mb-1 font-mono text-[9px] uppercase tracking-wider text-foreground/40">
+                  {m.role}
+                </div>
+                <div className="whitespace-pre-wrap">{m.content}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ChatLeadsPanel() {
+  const [leads, setLeads] = useState<any[]>([]);
+  useEffect(() => {
+    listChatLeads().then(setLeads);
+  }, []);
+  if (!leads.length) return <div className="rounded-2xl border border-glass-border bg-glass"><Empty label="No chatbot leads yet." /></div>;
+  return (
+    <div className="overflow-x-auto rounded-2xl border border-glass-border bg-glass">
+      <table className="w-full text-sm">
+        <thead className="bg-white/5 text-left">
+          <tr>
+            <Th>Date</Th>
+            <Th>Name</Th>
+            <Th>Email</Th>
+            <Th>Phone</Th>
+            <Th>Budget</Th>
+            <Th>Message</Th>
+          </tr>
+        </thead>
+        <tbody>
+          {leads.map((l) => (
+            <tr key={l.id} className="border-t border-glass-border/60">
+              <Td>{new Date(l.created_at).toLocaleDateString()}</Td>
+              <Td>{l.name ?? "—"}</Td>
+              <Td>{l.email}</Td>
+              <Td>{l.phone ?? "—"}</Td>
+              <Td>{l.budget ?? "—"}</Td>
+              <Td className="max-w-xs">{l.message ?? "—"}</Td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
