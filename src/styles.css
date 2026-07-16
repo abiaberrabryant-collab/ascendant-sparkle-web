@@ -37,36 +37,36 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
-  --shadow-glow-primary: 0 20px 60px -20px oklch(0.62 0.19 258 / 0.55);
-  --shadow-glow-secondary: 0 20px 60px -20px oklch(0.63 0.24 300 / 0.5);
+  --shadow-glow-primary: 0 20px 60px -20px oklch(0.62 0.19 258 / 0.35);
+  --shadow-glow-secondary: 0 20px 60px -20px oklch(0.63 0.24 300 / 0.3);
 }
 
 :root {
   --radius: 0.75rem;
 
-  /* Command-deck dark theme (approx of #050507 / #f8fafc / #3b82f6 / #a855f7) */
-  --background: oklch(0.13 0.01 260);
-  --foreground: oklch(0.985 0.003 247);
-  --card: oklch(0.16 0.012 260);
-  --card-foreground: oklch(0.985 0.003 247);
-  --popover: oklch(0.16 0.012 260);
-  --popover-foreground: oklch(0.985 0.003 247);
-  --primary: oklch(0.62 0.19 258);
-  --primary-foreground: oklch(0.985 0.003 247);
-  --secondary: oklch(0.63 0.24 300);
-  --secondary-foreground: oklch(0.985 0.003 247);
-  --muted: oklch(0.22 0.015 260);
-  --muted-foreground: oklch(0.7 0.015 260);
-  --accent: oklch(0.22 0.02 280);
-  --accent-foreground: oklch(0.985 0.003 247);
-  --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: oklch(0.985 0.003 247);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.62 0.19 258);
+  /* Bright/light theme — off-white bg, near-black ink, indigo primary, violet secondary */
+  --background: oklch(0.995 0.002 250);
+  --foreground: oklch(0.18 0.01 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.01 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.01 260);
+  --primary: oklch(0.58 0.2 262);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.58 0.24 300);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.96 0.005 260);
+  --muted-foreground: oklch(0.45 0.01 260);
+  --accent: oklch(0.94 0.02 280);
+  --accent-foreground: oklch(0.18 0.01 260);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0 0 0 / 10%);
+  --input: oklch(0 0 0 / 14%);
+  --ring: oklch(0.58 0.2 262);
 
-  --glass: oklch(1 0 0 / 3%);
-  --glass-border: oklch(1 0 0 / 8%);
+  --glass: oklch(0 0 0 / 3%);
+  --glass-border: oklch(0 0 0 / 8%);
 }
 
 .dark {
@@ -93,9 +93,33 @@
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
 @keyframes shimmer {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes tilt {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 oklch(0.58 0.2 262 / 0.5); }
+  100% { box-shadow: 0 0 0 18px oklch(0.58 0.2 262 / 0); }
+}
+@keyframes gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 @utility animate-aurora {
@@ -109,6 +133,28 @@
 }
 @utility animate-fade-up {
   animation: fade-up 0.7s ease-out both;
+}
+@utility animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
+}
+@utility animate-scale-in {
+  animation: scale-in 0.3s ease-out both;
+}
+@utility animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+@utility animate-tilt {
+  animation: tilt 6s ease-in-out infinite;
+}
+@utility animate-pulse-ring {
+  animation: pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@utility animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-pan 8s ease infinite;
+}
+@utility hover-lift {
+  transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 300ms;
 }
 @utility text-gradient {
   background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
@@ -131,5 +177,9 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: oklch(0.58 0.2 262 / 0.2);
+    color: var(--color-foreground);
   }
 }

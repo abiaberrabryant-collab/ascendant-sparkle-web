@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "AscendantWeb builds lightning-fast, high-converting websites for modern businesses. Premium design, AI chatbots, SEO, and performance engineering.",
+          "AscendantWeb designs and builds fast, modern websites for growing businesses — with real design, SEO, and an AI chatbot included.",
       },
     ],
   }),
@@ -56,7 +56,7 @@ function GlowBackground() {
         className="absolute inset-0 opacity-[0.035]"
         style={{
           backgroundImage:
-            "linear-gradient(oklch(1 0 0 / 0.6) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 0.6) 1px, transparent 1px)",
+            "linear-gradient(oklch(0 0 0 / 0.35) 1px, transparent 1px), linear-gradient(90deg, oklch(0 0 0 / 0.35) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
           maskImage: "radial-gradient(ellipse at center, black 20%, transparent 75%)",
         }}
@@ -94,7 +94,7 @@ function Nav() {
     { href: "#contact", label: "Contact" },
   ];
   return (
-    <nav className="sticky top-0 z-50 border-b border-glass-border bg-background/70 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 border-b border-glass-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a href="#top" className="flex items-center gap-2">
           <div className="grid size-8 place-items-center rounded-lg bg-gradient-to-tr from-primary to-secondary font-bold text-white shadow-lg shadow-primary/30">
@@ -115,7 +115,7 @@ function Nav() {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-white/5 md:inline-flex"
+                  className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex"
                 >
                   Admin
                 </Link>
@@ -221,30 +221,30 @@ function Hero() {
           "radial-gradient(600px circle at var(--mx,50%) var(--my,50%), oklch(0.62 0.19 258 / 0.08), transparent 60%)",
       }}
     >
-      <div className="flex flex-col items-center text-center">
-        <SectionEyebrow>System Online · Now Accepting Q1 Partners</SectionEyebrow>
+      <div className="flex flex-col items-center text-center animate-fade-up">
+        <SectionEyebrow>Booking Q1 · a few spots left</SectionEyebrow>
 
         <h1 className="mt-6 max-w-5xl text-balance text-5xl font-extrabold leading-[1.05] tracking-tighter md:text-7xl lg:text-8xl">
-          Your Website Should <span className="text-gradient">Work as Hard</span> as You Do.
+          Your website should <span className="text-gradient">pull its weight</span>.
         </h1>
         <p className="mt-6 max-w-2xl text-pretty text-lg text-foreground/60">
-          We build lightning-fast websites that convert visitors into customers — using modern design,
-          AI automation, and performance optimization.
+          We design and build websites that turn visitors into paying customers — real design,
+          fast pages, and an AI chatbot that actually helps.
         </p>
 
-        <div className="mt-10 flex w-full flex-col justify-center gap-4 sm:flex-row">
+        <div className="mt-10 flex w-full flex-col justify-center gap-4 sm:flex-row" style={{ animationDelay: "120ms" }}>
           <a
             href="#audit"
-            className="group inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 font-bold text-white shadow-lg shadow-primary/30 transition-all hover:shadow-primary/60"
+            className="group inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 font-bold text-white shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-primary/60"
           >
-            Get a Free Website Audit
+            Grab a free audit
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
           </a>
           <a
             href="#industries"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-8 py-4 font-bold backdrop-blur transition-all hover:bg-white/5"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-8 py-4 font-bold backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-black/5"
           >
-            See Industry Designs
+            See what we build
           </a>
         </div>
 
@@ -258,7 +258,7 @@ function Hero() {
 
 function TrustStats() {
   return (
-    <section className="border-y border-glass-border bg-white/[0.02] py-14">
+    <section className="border-y border-glass-border bg-black/[0.02] py-14">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 md:grid-cols-5">
         <Stat target={280} suffix="+" label="Websites Built" tone="primary" />
         <Stat target={190} suffix="+" label="Businesses Helped" tone="secondary" />
@@ -278,12 +278,12 @@ const industries = [
     icon: Zap,
     image: industryElectrical,
     name: "Electrical Contractors",
-    tagline: "Wired to convert emergency calls into booked jobs.",
+    tagline: "Turn emergency calls into booked jobs.",
     features: [
-      "One-tap emergency call CTA",
-      "Service area + licensing badges",
-      "Instant quote request form",
-      "Reviews + trust signals",
+      "One-tap call button up top",
+      "Service area + license badges",
+      "Quick quote form",
+      "Real reviews front and center",
     ],
   },
   {
@@ -291,12 +291,12 @@ const industries = [
     icon: Wrench,
     image: industryPlumbing,
     name: "Plumbing & HVAC",
-    tagline: "Booking-first design for service pros.",
+    tagline: "Built around getting people to book.",
     features: [
       "Online booking widget",
-      "Transparent service menu",
-      "Before/after project gallery",
-      "SMS-ready contact flow",
+      "Clear service menu with prices",
+      "Before/after job gallery",
+      "SMS-friendly contact flow",
     ],
   },
   {
@@ -304,12 +304,12 @@ const industries = [
     icon: Shield,
     image: industryLaw,
     name: "Law Firms",
-    tagline: "Authority-forward design that earns trust on first scroll.",
+    tagline: "Looks the part on the first scroll.",
     features: [
-      "Practice area landing pages",
+      "One page per practice area",
       "Attorney bios + credentials",
-      "Confidential case intake form",
-      "Refined editorial typography",
+      "Private case intake form",
+      "Clean, serious typography",
     ],
   },
   {
@@ -317,12 +317,12 @@ const industries = [
     icon: Sparkles,
     image: industryRestaurant,
     name: "Restaurants & Cafés",
-    tagline: "Mouth-watering visuals that fill your tables.",
+    tagline: "Photos that put people in seats.",
     features: [
-      "Menu + specials showcase",
+      "Menu + weekly specials",
       "Reservation integration",
-      "Location, hours & map",
-      "Gallery + press mentions",
+      "Hours, map, and directions",
+      "Photo gallery + press",
     ],
   },
   {
@@ -330,12 +330,12 @@ const industries = [
     icon: Layout,
     image: industryRealEstate,
     name: "Real Estate Agents",
-    tagline: "Listings that look like the property itself.",
+    tagline: "Listings that look as good as the homes.",
     features: [
-      "Dynamic listings grid",
+      "Live listings grid",
       "Agent + brokerage profile",
-      "Lead capture on every listing",
-      "Neighborhood guides + SEO",
+      "Lead form on every listing",
+      "Neighborhood pages for SEO",
     ],
   },
 ];
@@ -375,11 +375,11 @@ function BeforeAfter() {
   }, []);
 
   const criteria = [
-    { label: "Page Speed", before: "Sluggish", after: "Blazing" },
+    { label: "Page speed", before: "Slow", after: "Quick" },
     { label: "Design Quality", before: "Outdated", after: "Premium 2026" },
     { label: "Mobile Experience", before: "Broken", after: "Pixel-perfect" },
     { label: "SEO Health", before: "Weak", after: "Fully Optimized" },
-    { label: "AI Integration", before: "None", after: "Built-in Chatbot" },
+    { label: "AI chatbot", before: "None", after: "Built-in Chatbot" },
     { label: "Conversion Design", before: "Passive", after: "High-Intent" },
     { label: "Accessibility", before: "Failing", after: "WCAG AA" },
   ];
@@ -387,20 +387,20 @@ function BeforeAfter() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-32">
       <div className="mb-14 max-w-3xl">
-        <MonoLabel tone="primary">// The Ascendant Upgrade</MonoLabel>
+        <MonoLabel tone="primary">// Before / After</MonoLabel>
         <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-          Drag to see what a modern website really looks like.
+          Drag the slider. See the difference.
         </h2>
         <p className="mt-4 text-foreground/60">
-          Every clunky second and every dated layout chips away at your brand. We don't just
-          redesign — we re-engineer.
+          A slow, dated site quietly loses customers every day. We rebuild it end to end —
+          not just a fresh coat of paint.
         </p>
       </div>
 
       <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
         <div
           ref={wrap}
-          className="relative aspect-[4/3] w-full select-none overflow-hidden rounded-3xl border border-glass-border bg-black"
+          className="relative aspect-[4/3] w-full select-none overflow-hidden rounded-3xl border border-glass-border bg-neutral-100"
           onMouseDown={(e) => {
             dragging.current = true;
             setFromClientX(e.clientX);
@@ -430,7 +430,7 @@ function BeforeAfter() {
             />
           </div>
 
-          <div className="pointer-events-none absolute left-4 top-4 rounded-md bg-black/60 px-2 py-1 backdrop-blur">
+          <div className="pointer-events-none absolute left-4 top-4 rounded-md bg-white/70 px-2 py-1 backdrop-blur">
             <MonoLabel>Before</MonoLabel>
           </div>
           <div className="pointer-events-none absolute right-4 top-4 rounded-md bg-primary px-2 py-1">
@@ -473,13 +473,12 @@ function Industries() {
   return (
     <section id="industries" className="mx-auto max-w-7xl px-6 py-32">
       <div className="mb-14 max-w-3xl">
-        <MonoLabel tone="primary">// Built for your industry</MonoLabel>
+        <MonoLabel tone="primary">// Industries</MonoLabel>
         <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-          Model websites, tuned to how your customers actually buy.
+          Templates tuned to how your customers actually buy.
         </h2>
         <p className="mt-4 text-foreground/60">
-          Every industry has a different buying pattern. These are the blueprints we start from —
-          then bend them around your brand.
+          Every industry sells differently. We start from a proven blueprint — then shape it around your brand.
         </p>
       </div>
 
@@ -489,9 +488,9 @@ function Industries() {
           return (
             <div
               key={i.name}
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-white/5"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-black/5"
             >
-              <div className="relative aspect-[4/3] overflow-hidden border-b border-glass-border bg-black">
+              <div className="relative aspect-[4/3] overflow-hidden border-b border-glass-border bg-neutral-100">
                 <img
                   src={i.image}
                   alt={`${i.name} website design mockup`}
@@ -501,7 +500,7 @@ function Industries() {
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                <div className="absolute left-3 top-3 rounded-md border border-glass-border bg-background/70 px-2 py-1 backdrop-blur">
+                <div className="absolute left-3 top-3 rounded-md border border-glass-border bg-background/80 px-2 py-1 backdrop-blur">
                   <MonoLabel tone="primary">{i.code}</MonoLabel>
                 </div>
                 <div className="absolute right-3 top-3 grid size-9 place-items-center rounded-lg border border-primary/30 bg-primary/20 text-primary backdrop-blur">
@@ -521,7 +520,7 @@ function Industries() {
                 </ul>
                 <a
                   href="#contact"
-                  className="mt-6 inline-flex items-center justify-between rounded-xl border border-glass-border px-4 py-2.5 text-sm font-bold transition-colors hover:border-primary/40 hover:bg-white/5"
+                  className="mt-6 inline-flex items-center justify-between rounded-xl border border-glass-border px-4 py-2.5 text-sm font-bold transition-colors hover:border-primary/40 hover:bg-black/5"
                 >
                   Build this style
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
@@ -551,31 +550,31 @@ function Industries() {
 /* ---------------- Why Choose Us ---------------- */
 
 const whyItems = [
-  { icon: Layout, title: "Modern UI/UX", desc: "Interfaces engineered to feel effortless and premium." },
-  { icon: Smartphone, title: "Mobile Responsive", desc: "Pixel-perfect on every device, from phones to 4K." },
-  { icon: Zap, title: "Lightning Fast", desc: "Dramatically faster loads and top-tier performance." },
-  { icon: Search, title: "SEO Optimization", desc: "Technical + on-page SEO baked into every build." },
-  { icon: Bot, title: "AI Integration", desc: "Chatbots, lead qualification, and smart automations." },
-  { icon: Users, title: "Lead Capture", desc: "Forms and funnels that actually convert." },
-  { icon: Shield, title: "Secure Hosting", desc: "SSL, CDN, and 99.99% uptime." },
-  { icon: Wrench, title: "Ongoing Maintenance", desc: "Updates, backups, and monitoring — hands-off." },
+  { icon: Layout, title: "Modern design", desc: "Clean, current design that feels good to use." },
+  { icon: Smartphone, title: "Mobile Responsive", desc: "Looks right on phones, tablets, and desktops." },
+  { icon: Zap, title: "Fast pages", desc: "Loads quickly, feels snappy — how it should." },
+  { icon: Search, title: "SEO Optimization", desc: "Technical and on-page SEO handled from day one." },
+  { icon: Bot, title: "AI chatbot", desc: "Answers questions, qualifies leads, books calls." },
+  { icon: Users, title: "Lead Capture", desc: "Forms and pages built to actually convert." },
+  { icon: Shield, title: "Managed hosting", desc: "SSL, CDN, backups, and boring reliability." },
+  { icon: Wrench, title: "Ongoing upkeep", desc: "Updates and monitoring you never have to think about." },
 ];
 
 function WhyUs() {
   return (
-    <section className="border-y border-glass-border bg-white/[0.02] py-32">
+    <section className="border-y border-glass-border bg-black/[0.02] py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-14 max-w-3xl">
           <MonoLabel tone="secondary">// Why AscendantWeb</MonoLabel>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-            Everything a modern business needs. Zero fluff.
+            The essentials, done properly.
           </h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {whyItems.map(({ icon: Icon, title, desc }) => (
             <div
               key={title}
-              className="group relative overflow-hidden rounded-2xl border border-glass-border bg-glass p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-white/5"
+              className="group relative overflow-hidden rounded-2xl border border-glass-border bg-glass p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-black/5"
             >
               <div className="pointer-events-none absolute -right-8 -top-8 size-32 rounded-full bg-primary/10 opacity-0 blur-2xl transition-opacity group-hover:opacity-100" />
               <div className="grid size-10 place-items-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
@@ -598,28 +597,28 @@ const services = [
     id: "custom",
     icon: Layout,
     title: "Custom Website Development",
-    tagline: "Bespoke websites engineered from scratch.",
-    bullets: ["Custom design system", "Headless CMS", "Blazing performance", "SEO foundation"],
+    tagline: "Custom sites built from scratch.",
+    bullets: ["Custom design", "Editable CMS", "Fast by default", "SEO fundamentals"],
   },
   {
     id: "redesign",
     icon: Rocket,
     title: "Website Redesign",
-    tagline: "Transform outdated sites into revenue machines.",
+    tagline: "Take an old site and make it earn its keep.",
     bullets: ["UX audit + strategy", "Modern rebuild", "Content migration", "Zero downtime launch"],
   },
   {
     id: "ai",
     icon: Bot,
     title: "AI Chatbots",
-    tagline: "24/7 AI trained on your business.",
+    tagline: "A chatbot that actually knows your business.",
     bullets: ["FAQ + support", "Lead qualification", "Booking + CRM sync", "Quote generation"],
   },
   {
     id: "seo",
     icon: Search,
     title: "SEO & Performance",
-    tagline: "Rank higher, load faster, convert more.",
+    tagline: "Rank higher. Load faster. Convert more.",
     bullets: ["Technical SEO", "On-page optimization", "Core Web Vitals tuning", "Schema markup"],
   },
 ];
@@ -631,7 +630,7 @@ function Services() {
       <div className="mb-14 max-w-3xl">
         <MonoLabel tone="primary">// Services</MonoLabel>
         <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-          Everything you need to dominate online.
+          Four things we do — really well.
         </h2>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
@@ -645,7 +644,7 @@ function Services() {
               className={`group relative overflow-hidden rounded-2xl border p-6 text-left transition-all ${
                 isOpen
                   ? "border-primary/40 bg-gradient-to-b from-primary/10 to-transparent"
-                  : "border-glass-border bg-glass hover:border-white/20 hover:bg-white/5"
+                  : "border-glass-border bg-glass hover:border-black/20 hover:bg-black/5"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -707,7 +706,7 @@ const websiteTiers: Tier[] = [
     name: "Basic",
     price: "$1,250",
     cadence: "one-time + $150/mo",
-    desc: "A clean, fast launchpad for businesses getting online the right way.",
+    desc: "A clean, fast site for getting online properly.",
     features: [
       "Up to 5 pages",
       "Fully mobile responsive",
@@ -716,7 +715,7 @@ const websiteTiers: Tier[] = [
       "Basic on-page SEO",
       "Analytics + SSL",
       "$150/mo maintenance + basic AI chatbot",
-      "Delivery in 1–2 weeks",
+      "Live in 1–2 weeks",
     ],
     cta: "Start with Basic",
   },
@@ -726,7 +725,7 @@ const websiteTiers: Tier[] = [
     name: "Advanced",
     price: "$1,750",
     cadence: "one-time + $200/mo",
-    desc: "For growing companies that need real firepower, automation, and conversions.",
+    desc: "For growing businesses that need more room and more features.",
     features: [
       "Everything in Basic",
       "Up to 12 pages",
@@ -736,7 +735,7 @@ const websiteTiers: Tier[] = [
       "CRM / email integration",
       "Advanced SEO + speed tuning",
       "$200/mo maintenance + AI chatbot (business-trained)",
-      "Delivery in 2–3 weeks",
+      "Live in 2–3 weeks",
     ],
     cta: "Choose Advanced",
     popular: true,
@@ -747,7 +746,7 @@ const websiteTiers: Tier[] = [
     name: "Ascendant",
     price: "$2,000",
     cadence: "one-time + $250/mo",
-    desc: "Our flagship build. Every capability, every optimization, fully dialed in.",
+    desc: "Our top build. Everything on the table, nothing held back.",
     features: [
       "Everything in Advanced",
       "Unlimited pages",
@@ -756,7 +755,7 @@ const websiteTiers: Tier[] = [
       "Advanced integrations & automations",
       "Premium SEO + schema markup",
       "$250/mo maintenance + full AI chatbot with priority support",
-      "Delivery in 3–4 weeks",
+      "Live in 3–4 weeks",
     ],
     cta: "Go Ascendant",
   },
@@ -768,7 +767,7 @@ function PricingCard({ tier, onSelect }: { tier: Tier; onSelect: (id: string) =>
       className={`relative flex flex-col overflow-hidden rounded-3xl border p-8 transition-all ${
         tier.popular
           ? "border-primary/40 bg-gradient-to-b from-primary/10 to-transparent shadow-2xl shadow-primary/20"
-          : "border-glass-border bg-glass hover:border-white/20"
+          : "border-glass-border bg-glass hover:border-black/20"
       }`}
     >
       {tier.popular && (
@@ -797,7 +796,7 @@ function PricingCard({ tier, onSelect }: { tier: Tier; onSelect: (id: string) =>
         className={`mt-8 inline-flex items-center justify-center rounded-xl px-6 py-3 font-bold transition-all ${
           tier.popular
             ? "bg-primary text-white shadow-lg shadow-primary/40 hover:shadow-primary/60"
-            : "border border-glass-border hover:bg-white/5"
+            : "border border-glass-border hover:bg-black/5"
         }`}
       >
         {tier.cta}
@@ -821,16 +820,16 @@ function Pricing() {
   };
 
   return (
-    <section id="pricing" className="border-y border-glass-border bg-white/[0.02] py-32">
+    <section id="pricing" className="border-y border-glass-border bg-black/[0.02] py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <MonoLabel tone="primary">// Pricing</MonoLabel>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-            Transparent pricing. Serious ROI.
+            Simple pricing. No games.
           </h2>
           <p className="mt-4 text-foreground/60">
-            One checkout — pay the one-time build fee today, and your monthly maintenance +
-            AI chatbot starts immediately and renews every month.{" "}
+            One checkout. Setup fee plus your first month today, then the maintenance and
+            chatbot subscription renews every month.{" "}
             {!user && "You'll need to sign in first."}
           </p>
         </div>
@@ -854,21 +853,20 @@ function Pricing() {
 
 function Testimonials() {
   return (
-    <section className="border-y border-glass-border bg-white/[0.02] py-32">
+    <section className="border-y border-glass-border bg-black/[0.02] py-32">
       <div className="mx-auto max-w-4xl px-6 text-center">
-        <MonoLabel tone="secondary">// Client Signal</MonoLabel>
+        <MonoLabel tone="secondary">// Reviews</MonoLabel>
         <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
           Reviews coming soon.
         </h2>
         <p className="mt-4 text-foreground/60">
-          We're just getting started — client stories will live here as our first launches go live.
-          Want to be one of them?
+          We're just getting started. Real client stories will land here as our first sites go live. Want to be one of them?
         </p>
         <a
           href="#contact"
-          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-white/5"
+          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-black/5"
         >
-          Become a founding client
+          Be a founding client
           <ArrowRight className="size-4" />
         </a>
       </div>
@@ -930,14 +928,13 @@ function AuditTool() {
           <div>
             <MonoLabel tone="primary">// Free Website Audit</MonoLabel>
             <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-              Find out what your site is really costing you.
+              See what your current site is costing you.
             </h2>
             <p className="mt-4 text-foreground/60">
-              We'll analyze speed, SEO, mobile UX, and conversion signals — then send you a
-              plain-English report within 24 hours.
+              We'll look at speed, SEO, mobile, and conversion — then send you a plain-English writeup within 24 hours.
             </p>
             <ul className="mt-8 space-y-3 text-sm text-foreground/80">
-              {["Core Web Vitals review", "Technical SEO checklist", "Conversion opportunities", "Competitor benchmark"].map((x) => (
+              {["Speed check", "SEO checklist", "Conversion notes", "Competitor comparison"].map((x) => (
                 <li key={x} className="flex items-center gap-3">
                   <Check className="size-4 text-primary" /> {x}
                 </li>
@@ -945,7 +942,7 @@ function AuditTool() {
             </ul>
           </div>
 
-          <div className="rounded-2xl border border-glass-border bg-background/70 p-6 backdrop-blur-xl md:p-8">
+          <div className="rounded-2xl border border-glass-border bg-background/80 p-6 backdrop-blur-xl md:p-8">
             {state !== "done" ? (
               <form onSubmit={submit} className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -955,7 +952,7 @@ function AuditTool() {
                   <Input label="Phone" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
                   <Input label="Industry" value={form.industry} onChange={(v) => setForm({ ...form, industry: v })} />
                 </div>
-                <TextArea label="Current Issues" value={form.issues} onChange={(v) => setForm({ ...form, issues: v })} placeholder="Slow, ugly, no leads, hard to update…" />
+                <TextArea label="Current Issues" value={form.issues} onChange={(v) => setForm({ ...form, issues: v })} placeholder="Slow, ugly, no leads, hard to update?" />
                 <button
                   type="submit"
                   disabled={state === "loading"}
@@ -963,28 +960,28 @@ function AuditTool() {
                 >
                   {state === "loading" ? (
                     <>
-                      <Loader2 className="size-4 animate-spin" /> Analyzing your site…
+                      <Loader2 className="size-4 animate-spin" /> Sending…
                     </>
                   ) : (
                     <>
-                      Run Free Audit <ArrowRight className="size-4" />
+                      Send it <ArrowRight className="size-4" />
                     </>
                   )}
                 </button>
               </form>
             ) : (
               <div className="animate-fade-up text-center">
-                <MonoLabel tone="primary">Preliminary Assessment</MonoLabel>
+                <MonoLabel tone="primary">First look</MonoLabel>
                 <div className="mt-4 text-5xl font-extrabold text-gradient md:text-6xl">{rating}</div>
                 <p className="mt-4 text-foreground/70">
-                  Room to grow. We've received your details — a full report is on its way to{" "}
+                  Got it. Your full report is on the way to{" "}
                   <span className="font-semibold text-foreground">{form.email}</span> within 24 hours.
                 </p>
                 <button
                   onClick={() => setState("idle")}
-                  className="mt-6 rounded-xl border border-glass-border px-6 py-2 text-sm font-medium hover:bg-white/5"
+                  className="mt-6 rounded-xl border border-glass-border px-6 py-2 text-sm font-medium hover:bg-black/5"
                 >
-                  Run another
+                  Do another
                 </button>
               </div>
             )}
@@ -1066,15 +1063,15 @@ const faqs = [
 function FAQ() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="border-y border-glass-border bg-white/[0.02] py-32">
+    <section className="border-y border-glass-border bg-black/[0.02] py-32">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[1fr_1.3fr]">
         <div>
           <MonoLabel tone="primary">// FAQ</MonoLabel>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-            Questions, answered.
+            Common questions.
           </h2>
           <p className="mt-4 text-foreground/60">
-            Still unsure? Drop us a note in the contact form — we usually reply within a few hours.
+            Not sure about something? Send us a note — we usually reply the same day.
           </p>
         </div>
         <div className="divide-y divide-glass-border">
@@ -1168,10 +1165,10 @@ function Contact() {
       <div className="mx-auto mb-14 max-w-3xl text-center">
         <MonoLabel tone="secondary">// Contact</MonoLabel>
         <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-          Let's build something worth showing off.
+          Let's build something good.
         </h2>
         <p className="mt-4 text-foreground/60">
-          Tell us about your project. We'll get back within one business day.
+          Tell us about your project. We reply within one business day.
         </p>
       </div>
 
@@ -1181,7 +1178,7 @@ function Contact() {
             <div className="mx-auto grid size-16 place-items-center rounded-full bg-primary/15 text-primary">
               <Check className="size-8" />
             </div>
-            <h3 className="mt-6 text-2xl font-bold">Message received.</h3>
+            <h3 className="mt-6 text-2xl font-bold">Got it.</h3>
             <p className="mt-2 text-foreground/60">
               Thanks {form.firstName || "there"} — we'll be in touch shortly.
             </p>
@@ -1254,7 +1251,7 @@ function Contact() {
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </button>
               <p className="mt-3 text-center text-xs text-foreground/40">
-                Prefer to schedule a call? <a href="#audit" className="text-primary hover:underline">Book a discovery call</a>.
+                Prefer to schedule a call? <a href="#audit" className="text-primary hover:underline">Book a call</a>.
               </p>
             </div>
           </form>
@@ -1278,8 +1275,7 @@ function Footer() {
             <span className="text-lg font-bold tracking-tight">ASCENDANTWEB</span>
           </div>
           <p className="mt-4 max-w-sm text-sm text-foreground/60">
-            Helping businesses ascend online. Premium websites, AI automation, and performance
-            engineering.
+            Websites, chatbots, and hosting for growing businesses. Nothing fancy — just work that ships.
           </p>
           <form
             onSubmit={(e) => e.preventDefault()}
@@ -1302,7 +1298,7 @@ function Footer() {
       </div>
       <div className="border-t border-glass-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-6 md:flex-row">
-          <MonoLabel>© 2026 AscendantWeb · All Systems Operational</MonoLabel>
+          <MonoLabel>© 2026 AscendantWeb</MonoLabel>
           <div className="flex gap-4">
             {["Twitter", "LinkedIn", "Instagram"].map((s) => (
               <a key={s} href="#" className="text-xs text-foreground/50 hover:text-foreground">
