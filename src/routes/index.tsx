@@ -1247,9 +1247,10 @@ function Contact() {
             <div className="md:col-span-2">
               <button
                 type="submit"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-white shadow-lg shadow-primary/40 transition-all hover:shadow-primary/60"
+                disabled={submitting}
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-white shadow-lg shadow-primary/40 transition-all hover:shadow-primary/60 disabled:opacity-50"
               >
-                Send Message
+                {submitting ? "Sending…" : "Send Message"}
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </button>
               <p className="mt-3 text-center text-xs text-foreground/40">
