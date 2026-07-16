@@ -18,13 +18,10 @@ export const getPublicChatbotSettings = createServerFn({ method: "GET" }).handle
       },
     },
   });
-  const { data } = await supa
-    .from("chatbot_settings")
-    .select("enabled, greeting, suggested_prompts, brand_color")
-    .eq("singleton", true)
-    .maybeSingle();
+  const { data } = await supa.rpc("get_public_chatbot_settings").maybeSingle();
   return data ?? { enabled: false, greeting: "", suggested_prompts: [], brand_color: "#3b82f6" };
 });
+
 
 // PUBLIC: capture a lead from the widget
 const LeadSchema = z.object({
