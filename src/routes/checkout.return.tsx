@@ -29,7 +29,7 @@ function CheckoutReturn() {
       setVerified({ ok: false, message: "No session information found." });
       return;
     }
-    verifyCheckoutSession({ data: { sessionId, environment: getStripeEnvironment() } })
+    verifyCheckoutSession({ data: { sessionId: sessionId!, environment: getStripeEnvironment() } })
       .then((res) => {
         if ("error" in res) {
           setVerified({ ok: false, message: res.error });
