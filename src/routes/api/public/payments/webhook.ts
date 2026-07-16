@@ -14,6 +14,14 @@ function getSupabase() {
   return _supabase;
 }
 
+function tierFromPrice(priceId: string | null | undefined): string | null {
+  if (!priceId) return null;
+  if (priceId.startsWith("basic")) return "basic";
+  if (priceId.startsWith("advanced")) return "advanced";
+  if (priceId.startsWith("ascendant")) return "ascendant";
+  return null;
+}
+
 async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
   const userId = subscription.metadata?.userId ?? null;
   const item = subscription.items?.data?.[0];
@@ -64,11 +72,92 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
     email: session.customer_details?.email ?? null,
     tier: session.metadata?.tier ?? "unknown",
     stripe_session_id: session.id,
+    stripe_payment_intent:
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : session.payment_intent?.id ?? null,
     amount_cents: session.amount_total ?? 0,
     currency: session.currency ?? "usd",
     status: session.payment_status ?? "complete",
     environment: env,
   });
+}
+
+// Recurring renewal payments arrive as invoice.paid; record each as an order row.
+async function handleInvoicePaid(invoice: any, env: StripeEnv) {
+  // Skip the very first invoice — checkout.session.completed already records it
+  if (invoice.billing_reason === "subscription_create") return;
+
+  const line = invoice.lines?.data?.[0];
+  const priceId = line?.price?.lookup_key || line?.price?.id;
+  const tier = tierFromPrice(priceId) ?? "unknown";
+  const customerId =
+    typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+
+  // Look up user_id via the subscription row so renewals stay attributable
+  let userId: string | null = null;
+  if (invoice.subscription) {
+    const subId =
+      typeof invoice.subscription === "string"
+        ? invoice.subscription
+        : invoice.subscription.id;
+    const { data: sub } = await getSupabase()
+      .from("subscriptions")
+      .select("user_id")
+      .eq("stripe_subscription_id", subId)
+      .maybeSingle();
+    userId = (sub?.user_id as string | null) ?? null;
+  }
+
+  await getSupabase().from("orders").insert({
+    user_id: userId,
+    email: invoice.customer_email ?? null,
+    tier,
+    stripe_session_id: invoice.id,
+    stripe_payment_intent:
+      typeof invoice.payment_intent === "string"
+        ? invoice.payment_intent
+        : invoice.payment_intent?.id ?? null,
+    amount_cents: invoice.amount_paid ?? 0,
+    currency: invoice.currency ?? "usd",
+    status: "paid_renewal",
+    environment: env,
+  });
+
+  // Also update subscription period info from the invoice if present
+  if (invoice.subscription && line?.period) {
+    const subId =
+      typeof invoice.subscription === "string"
+        ? invoice.subscription
+        : invoice.subscription.id;
+    await getSupabase()
+      .from("subscriptions")
+      .update({
+        current_period_start: line.period.start
+          ? new Date(line.period.start * 1000).toISOString()
+          : null,
+        current_period_end: line.period.end
+          ? new Date(line.period.end * 1000).toISOString()
+          : null,
+        status: "active",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("stripe_subscription_id", subId)
+      .eq("environment", env);
+  }
+}
+
+async function handleInvoiceFailed(invoice: any, env: StripeEnv) {
+  if (!invoice.subscription) return;
+  const subId =
+    typeof invoice.subscription === "string"
+      ? invoice.subscription
+      : invoice.subscription.id;
+  await getSupabase()
+    .from("subscriptions")
+    .update({ status: "past_due", updated_at: new Date().toISOString() })
+    .eq("stripe_subscription_id", subId)
+    .eq("environment", env);
 }
 
 async function handleWebhook(req: Request, env: StripeEnv) {
@@ -83,6 +172,13 @@ async function handleWebhook(req: Request, env: StripeEnv) {
       break;
     case "customer.subscription.deleted":
       await handleSubscriptionDeleted(event.data.object, env);
+      break;
+    case "invoice.paid":
+    case "invoice.payment_succeeded":
+      await handleInvoicePaid(event.data.object, env);
+      break;
+    case "invoice.payment_failed":
+      await handleInvoiceFailed(event.data.object, env);
       break;
     default:
       console.log("Unhandled webhook event:", event.type);
