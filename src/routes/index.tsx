@@ -1113,6 +1113,8 @@ function FAQ() {
 
 function Contact() {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -1127,6 +1129,40 @@ function Contact() {
     notes: "",
     contactMethod: "Email",
   });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      const message = [
+        form.business && `Business: ${form.business}`,
+        form.phone && `Phone: ${form.phone}`,
+        form.industry && `Industry: ${form.industry}`,
+        form.timeline && `Timeline: ${form.timeline}`,
+        form.services && `Services: ${form.services}`,
+        form.contactMethod && `Preferred contact: ${form.contactMethod}`,
+        form.notes && `Notes: ${form.notes}`,
+      ].filter(Boolean).join("\n");
+      const result = await submitInquiry({
+        data: {
+          name: `${form.firstName} ${form.lastName}`.trim(),
+          email: form.email,
+          source: "contact",
+          budget: form.budget || null,
+          website_url: form.website || null,
+          message: message || null,
+        },
+      });
+      if ("error" in result) throw new Error(result.error);
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <section id="contact" className="mx-auto max-w-6xl px-6 py-32">
       <div className="mx-auto mb-14 max-w-3xl text-center">
@@ -1151,13 +1187,12 @@ function Contact() {
             </p>
           </div>
         ) : (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
-            className="grid gap-4 md:grid-cols-2"
-          >
+          <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            {error && (
+              <div className="md:col-span-2 rounded-lg border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-400">
+                {error}
+              </div>
+            )}
             <Input label="First Name" value={form.firstName} onChange={(v) => setForm({ ...form, firstName: v })} required />
             <Input label="Last Name" value={form.lastName} onChange={(v) => setForm({ ...form, lastName: v })} required />
             <Input label="Business Name" value={form.business} onChange={(v) => setForm({ ...form, business: v })} />
