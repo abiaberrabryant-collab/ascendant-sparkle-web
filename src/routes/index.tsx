@@ -400,7 +400,7 @@ function BeforeAfter() {
       <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
         <div
           ref={wrap}
-          className="relative aspect-[4/3] w-full select-none overflow-hidden rounded-3xl border border-glass-border bg-black"
+          className="relative aspect-[4/3] w-full select-none overflow-hidden rounded-3xl border border-glass-border bg-neutral-100"
           onMouseDown={(e) => {
             dragging.current = true;
             setFromClientX(e.clientX);
@@ -491,7 +491,7 @@ function Industries() {
               key={i.name}
               className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-black/5"
             >
-              <div className="relative aspect-[4/3] overflow-hidden border-b border-glass-border bg-black">
+              <div className="relative aspect-[4/3] overflow-hidden border-b border-glass-border bg-neutral-100">
                 <img
                   src={i.image}
                   alt={`${i.name} website design mockup`}
@@ -645,7 +645,7 @@ function Services() {
               className={`group relative overflow-hidden rounded-2xl border p-6 text-left transition-all ${
                 isOpen
                   ? "border-primary/40 bg-gradient-to-b from-primary/10 to-transparent"
-                  : "border-glass-border bg-glass hover:border-white/20 hover:bg-black/5"
+                  : "border-glass-border bg-glass hover:border-black/20 hover:bg-black/5"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -768,7 +768,7 @@ function PricingCard({ tier, onSelect }: { tier: Tier; onSelect: (id: string) =>
       className={`relative flex flex-col overflow-hidden rounded-3xl border p-8 transition-all ${
         tier.popular
           ? "border-primary/40 bg-gradient-to-b from-primary/10 to-transparent shadow-2xl shadow-primary/20"
-          : "border-glass-border bg-glass hover:border-white/20"
+          : "border-glass-border bg-glass hover:border-black/20"
       }`}
     >
       {tier.popular && (
