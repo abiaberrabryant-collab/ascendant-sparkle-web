@@ -92,11 +92,13 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
         ui_mode: "embedded_page",
         return_url: data.returnUrl,
         customer: customerId,
-        line_items: [{ price: monthlyPrice.id, quantity: 1 }],
+        line_items: [
+          { price: monthlyPrice.id, quantity: 1 },
+          { price: setupPrice.id, quantity: 1 },
+        ],
         subscription_data: {
-          description: `${config.name} — includes one-time build fee + monthly maintenance & AI chatbot`,
+          description: `${config.name} — one-time build fee + monthly maintenance & AI chatbot`,
           metadata: { tier: data.tier, userId },
-          add_invoice_items: [{ price: setupPrice.id, quantity: 1 }],
         },
         metadata: { tier: data.tier, userId },
         managed_payments: { enabled: true },
