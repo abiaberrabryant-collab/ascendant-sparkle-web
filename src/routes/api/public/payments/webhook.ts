@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
 
-let _supabase: ReturnType<typeof createClient> | null = null;
+let _supabase: ReturnType<typeof createClient<Database>> | null = null;
 function getSupabase() {
   if (!_supabase) {
-    _supabase = createClient(
+    _supabase = createClient<Database>(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
@@ -60,18 +61,11 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
 async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   await getSupabase().from("orders").insert({
     user_id: session.metadata?.userId ?? null,
-    customer_email: session.customer_details?.email ?? null,
-    customer_name: session.customer_details?.name ?? null,
-    tier: session.metadata?.tier ?? null,
+    email: session.customer_details?.email ?? null,
+    tier: session.metadata?.tier ?? "unknown",
     stripe_session_id: session.id,
-    stripe_customer_id:
-      typeof session.customer === "string" ? session.customer : session.customer?.id,
-    stripe_subscription_id:
-      typeof session.subscription === "string"
-        ? session.subscription
-        : session.subscription?.id,
-    amount_total: session.amount_total ?? null,
-    currency: session.currency ?? null,
+    amount_cents: session.amount_total ?? 0,
+    currency: session.currency ?? "usd",
     status: session.payment_status ?? "complete",
     environment: env,
   });
