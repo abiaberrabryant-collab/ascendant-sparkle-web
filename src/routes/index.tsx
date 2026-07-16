@@ -56,7 +56,7 @@ function GlowBackground() {
         className="absolute inset-0 opacity-[0.035]"
         style={{
           backgroundImage:
-            "linear-gradient(oklch(1 0 0 / 0.6) 1px, transparent 1px), linear-gradient(90deg, oklch(1 0 0 / 0.6) 1px, transparent 1px)",
+            "linear-gradient(oklch(0 0 0 / 0.35) 1px, transparent 1px), linear-gradient(90deg, oklch(0 0 0 / 0.35) 1px, transparent 1px)",
           backgroundSize: "48px 48px",
           maskImage: "radial-gradient(ellipse at center, black 20%, transparent 75%)",
         }}
@@ -94,7 +94,7 @@ function Nav() {
     { href: "#contact", label: "Contact" },
   ];
   return (
-    <nav className="sticky top-0 z-50 border-b border-glass-border bg-background/70 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 border-b border-glass-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a href="#top" className="flex items-center gap-2">
           <div className="grid size-8 place-items-center rounded-lg bg-gradient-to-tr from-primary to-secondary font-bold text-white shadow-lg shadow-primary/30">
@@ -115,7 +115,7 @@ function Nav() {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-white/5 md:inline-flex"
+                  className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex"
                 >
                   Admin
                 </Link>
@@ -242,7 +242,7 @@ function Hero() {
           </a>
           <a
             href="#industries"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-8 py-4 font-bold backdrop-blur transition-all hover:bg-white/5"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-8 py-4 font-bold backdrop-blur transition-all hover:bg-black/5"
           >
             See Industry Designs
           </a>
@@ -258,7 +258,7 @@ function Hero() {
 
 function TrustStats() {
   return (
-    <section className="border-y border-glass-border bg-white/[0.02] py-14">
+    <section className="border-y border-glass-border bg-black/[0.02] py-14">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 md:grid-cols-5">
         <Stat target={280} suffix="+" label="Websites Built" tone="primary" />
         <Stat target={190} suffix="+" label="Businesses Helped" tone="secondary" />
@@ -430,7 +430,7 @@ function BeforeAfter() {
             />
           </div>
 
-          <div className="pointer-events-none absolute left-4 top-4 rounded-md bg-black/60 px-2 py-1 backdrop-blur">
+          <div className="pointer-events-none absolute left-4 top-4 rounded-md bg-white/70 px-2 py-1 backdrop-blur">
             <MonoLabel>Before</MonoLabel>
           </div>
           <div className="pointer-events-none absolute right-4 top-4 rounded-md bg-primary px-2 py-1">
@@ -489,7 +489,7 @@ function Industries() {
           return (
             <div
               key={i.name}
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-white/5"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-glass-border bg-glass backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-black/5"
             >
               <div className="relative aspect-[4/3] overflow-hidden border-b border-glass-border bg-black">
                 <img
@@ -501,7 +501,7 @@ function Industries() {
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                <div className="absolute left-3 top-3 rounded-md border border-glass-border bg-background/70 px-2 py-1 backdrop-blur">
+                <div className="absolute left-3 top-3 rounded-md border border-glass-border bg-background/80 px-2 py-1 backdrop-blur">
                   <MonoLabel tone="primary">{i.code}</MonoLabel>
                 </div>
                 <div className="absolute right-3 top-3 grid size-9 place-items-center rounded-lg border border-primary/30 bg-primary/20 text-primary backdrop-blur">
@@ -521,7 +521,7 @@ function Industries() {
                 </ul>
                 <a
                   href="#contact"
-                  className="mt-6 inline-flex items-center justify-between rounded-xl border border-glass-border px-4 py-2.5 text-sm font-bold transition-colors hover:border-primary/40 hover:bg-white/5"
+                  className="mt-6 inline-flex items-center justify-between rounded-xl border border-glass-border px-4 py-2.5 text-sm font-bold transition-colors hover:border-primary/40 hover:bg-black/5"
                 >
                   Build this style
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
@@ -563,7 +563,7 @@ const whyItems = [
 
 function WhyUs() {
   return (
-    <section className="border-y border-glass-border bg-white/[0.02] py-32">
+    <section className="border-y border-glass-border bg-black/[0.02] py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-14 max-w-3xl">
           <MonoLabel tone="secondary">// Why AscendantWeb</MonoLabel>
@@ -575,7 +575,7 @@ function WhyUs() {
           {whyItems.map(({ icon: Icon, title, desc }) => (
             <div
               key={title}
-              className="group relative overflow-hidden rounded-2xl border border-glass-border bg-glass p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-white/5"
+              className="group relative overflow-hidden rounded-2xl border border-glass-border bg-glass p-6 backdrop-blur transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-black/5"
             >
               <div className="pointer-events-none absolute -right-8 -top-8 size-32 rounded-full bg-primary/10 opacity-0 blur-2xl transition-opacity group-hover:opacity-100" />
               <div className="grid size-10 place-items-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
@@ -645,7 +645,7 @@ function Services() {
               className={`group relative overflow-hidden rounded-2xl border p-6 text-left transition-all ${
                 isOpen
                   ? "border-primary/40 bg-gradient-to-b from-primary/10 to-transparent"
-                  : "border-glass-border bg-glass hover:border-white/20 hover:bg-white/5"
+                  : "border-glass-border bg-glass hover:border-white/20 hover:bg-black/5"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -797,7 +797,7 @@ function PricingCard({ tier, onSelect }: { tier: Tier; onSelect: (id: string) =>
         className={`mt-8 inline-flex items-center justify-center rounded-xl px-6 py-3 font-bold transition-all ${
           tier.popular
             ? "bg-primary text-white shadow-lg shadow-primary/40 hover:shadow-primary/60"
-            : "border border-glass-border hover:bg-white/5"
+            : "border border-glass-border hover:bg-black/5"
         }`}
       >
         {tier.cta}
@@ -821,7 +821,7 @@ function Pricing() {
   };
 
   return (
-    <section id="pricing" className="border-y border-glass-border bg-white/[0.02] py-32">
+    <section id="pricing" className="border-y border-glass-border bg-black/[0.02] py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <MonoLabel tone="primary">// Pricing</MonoLabel>
@@ -854,7 +854,7 @@ function Pricing() {
 
 function Testimonials() {
   return (
-    <section className="border-y border-glass-border bg-white/[0.02] py-32">
+    <section className="border-y border-glass-border bg-black/[0.02] py-32">
       <div className="mx-auto max-w-4xl px-6 text-center">
         <MonoLabel tone="secondary">// Client Signal</MonoLabel>
         <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
@@ -866,7 +866,7 @@ function Testimonials() {
         </p>
         <a
           href="#contact"
-          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-white/5"
+          className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-6 py-3 text-sm font-bold backdrop-blur transition-all hover:bg-black/5"
         >
           Become a founding client
           <ArrowRight className="size-4" />
@@ -945,7 +945,7 @@ function AuditTool() {
             </ul>
           </div>
 
-          <div className="rounded-2xl border border-glass-border bg-background/70 p-6 backdrop-blur-xl md:p-8">
+          <div className="rounded-2xl border border-glass-border bg-background/80 p-6 backdrop-blur-xl md:p-8">
             {state !== "done" ? (
               <form onSubmit={submit} className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -982,7 +982,7 @@ function AuditTool() {
                 </p>
                 <button
                   onClick={() => setState("idle")}
-                  className="mt-6 rounded-xl border border-glass-border px-6 py-2 text-sm font-medium hover:bg-white/5"
+                  className="mt-6 rounded-xl border border-glass-border px-6 py-2 text-sm font-medium hover:bg-black/5"
                 >
                   Run another
                 </button>
@@ -1066,7 +1066,7 @@ const faqs = [
 function FAQ() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="border-y border-glass-border bg-white/[0.02] py-32">
+    <section className="border-y border-glass-border bg-black/[0.02] py-32">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[1fr_1.3fr]">
         <div>
           <MonoLabel tone="primary">// FAQ</MonoLabel>
