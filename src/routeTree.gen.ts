@@ -17,6 +17,7 @@ import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
+import { Route as AuthenticatedChatbotRouteImport } from './routes/_authenticated/chatbot'
 import { Route as ApiPublicChatRouteImport } from './routes/api/public/chat'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
@@ -59,6 +60,9 @@ const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedChatbotRoute = AuthenticatedChatbotRouteImport.update({
+  id: '/chatbot', path: '/chatbot', getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
   id: '/api/public/chat',
   path: '/api/public/chat',
@@ -76,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/chatbot': typeof AuthenticatedChatbotRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
@@ -87,6 +92,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/account': typeof AuthenticatedAccountRoute
+  '/chatbot': typeof AuthenticatedChatbotRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
@@ -100,6 +106,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
+  '/_authenticated/chatbot': typeof AuthenticatedChatbotRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
@@ -113,6 +120,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/account'
+    | '/chatbot'
     | '/admin'
     | '/auth/reset-password'
     | '/checkout/return'
@@ -124,6 +132,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/account'
+    | '/chatbot'
     | '/admin'
     | '/auth/reset-password'
     | '/checkout/return'
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/_authenticated/account'
+    | '/_authenticated/chatbot'
     | '/_authenticated/admin'
     | '/auth/reset-password'
     | '/checkout/return'
@@ -211,6 +221,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAccountRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/chatbot': {
+      id: '/_authenticated/chatbot'
+      path: '/chatbot'
+      fullPath: '/chatbot'
+      preLoaderRoute: typeof AuthenticatedChatbotRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/chat': {
       id: '/api/public/chat'
       path: '/api/public/chat'
@@ -230,11 +247,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
+  AuthenticatedChatbotRoute: typeof AuthenticatedChatbotRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
+  AuthenticatedChatbotRoute: AuthenticatedChatbotRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
 }
 
