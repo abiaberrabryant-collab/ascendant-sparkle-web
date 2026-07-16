@@ -26,6 +26,7 @@ import industryRealEstate from "@/assets/industry-realestate.jpg";
 import { CheckoutDialog } from "@/components/CheckoutDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { submitInquiry } from "@/utils/contact.functions";
+import { ChatWidget } from "@/components/ChatWidget";
 
 
 export const Route = createFileRoute("/")({
@@ -1348,6 +1349,7 @@ function HomePage() {
       <FAQ />
       <Contact />
       <Footer />
+      <ChatWidget />
     </div>
   );
 }
