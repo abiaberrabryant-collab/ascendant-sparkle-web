@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { createTierCheckoutSession } from "@/utils/payments.functions";
-import { supabase } from "@/integrations/supabase/client";
 
 type Tier = "basic" | "advanced" | "ascendant";
 
@@ -18,22 +17,22 @@ interface Props {
 }
 
 export function CheckoutDialog({ tier, onClose }: Props) {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [started, setStarted] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [key, setKey] = useState(0);
+
+  useEffect(() => {
+    if (tier) {
+      setError(null);
+      setKey((k) => k + 1);
+    }
+  }, [tier]);
 
   if (!tier) return null;
 
   const fetchClientSecret = async (): Promise<string> => {
-    const { data: authData } = await supabase.auth.getUser();
     const result = await createTierCheckoutSession({
       data: {
         tier,
-        customerEmail: email,
-        customerName: name,
-        userId: authData.user?.id,
         returnUrl: `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
         environment: getStripeEnvironment(),
       },
@@ -41,23 +40,6 @@ export function CheckoutDialog({ tier, onClose }: Props) {
     if ("error" in result) throw new Error(result.error);
     if (!result.clientSecret) throw new Error("Stripe did not return a client secret");
     return result.clientSecret;
-  };
-
-  const handleStart = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    if (!email || !name) {
-      setError("Name and email are required.");
-      return;
-    }
-    setLoading(true);
-    try {
-      setStarted(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -75,51 +57,18 @@ export function CheckoutDialog({ tier, onClose }: Props) {
           </div>
           <h2 className="mt-2 text-2xl font-extrabold tracking-tight">{TIER_LABELS[tier]}</h2>
           <p className="mt-1 text-sm text-foreground/60">
-            One-time build fee is charged today. Monthly maintenance + AI chatbot start immediately and recur every month.
+            One-time build fee charged today. Monthly maintenance + AI chatbot starts immediately
+            and renews every month. Stripe handles tax and receipts automatically.
           </p>
         </div>
 
-        {!started ? (
-          <form onSubmit={handleStart} className="space-y-4">
-            <div>
-              <label className="mb-1 block text-xs font-mono uppercase tracking-widest text-foreground/60">
-                Full name
-              </label>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-glass-border bg-white/5 px-3 py-2 text-sm outline-none focus:border-primary"
-                required
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-mono uppercase tracking-widest text-foreground/60">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-glass-border bg-white/5 px-3 py-2 text-sm outline-none focus:border-primary"
-                required
-              />
-            </div>
-            {error && <div className="text-sm text-red-400">{error}</div>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl bg-primary px-6 py-3 font-bold text-white shadow-lg shadow-primary/40 hover:shadow-primary/60 disabled:opacity-50"
-            >
-              {loading ? "Loading…" : "Continue to payment"}
-            </button>
-          </form>
-        ) : (
-          <div id="checkout" className="rounded-xl bg-white p-2">
-            <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
-              <EmbeddedCheckout />
-            </EmbeddedCheckoutProvider>
-          </div>
-        )}
+        {error && <div className="mb-4 text-sm text-red-400">{error}</div>}
+
+        <div id="checkout" key={key} className="overflow-hidden rounded-xl bg-white p-2">
+          <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
+            <EmbeddedCheckout />
+          </EmbeddedCheckoutProvider>
+        </div>
       </div>
     </div>
   );

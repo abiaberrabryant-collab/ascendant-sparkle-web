@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -24,7 +24,8 @@ import industryLaw from "@/assets/industry-law.jpg";
 import industryRestaurant from "@/assets/industry-restaurant.jpg";
 import industryRealEstate from "@/assets/industry-realestate.jpg";
 import { CheckoutDialog } from "@/components/CheckoutDialog";
-import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { useAuth } from "@/hooks/useAuth";
+import { submitInquiry } from "@/utils/contact.functions";
 
 
 export const Route = createFileRoute("/")({
@@ -84,6 +85,7 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
 /* ---------------- Nav ---------------- */
 
 function Nav() {
+  const { user, isAdmin } = useAuth();
   const links = [
     { href: "#services", label: "Services" },
     { href: "#industries", label: "Industries" },
@@ -107,12 +109,41 @@ function Nav() {
             </a>
           ))}
         </div>
-        <a
-          href="#audit"
-          className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
-        >
-          Free Audit
-        </a>
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-white/5 md:inline-flex"
+                >
+                  Admin
+                </Link>
+              )}
+              <Link
+                to="/account"
+                className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
+              >
+                My account
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/auth"
+                className="hidden text-sm font-medium text-foreground/60 transition-colors hover:text-foreground md:inline-flex"
+              >
+                Sign in
+              </Link>
+              <a
+                href="#audit"
+                className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
+              >
+                Free Audit
+              </a>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
@@ -776,10 +807,21 @@ function PricingCard({ tier, onSelect }: { tier: Tier; onSelect: (id: string) =>
 }
 
 function Pricing() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedTier, setSelectedTier] = useState<"basic" | "advanced" | "ascendant" | null>(null);
+
+  const handleSelect = (id: string) => {
+    const tier = id as "basic" | "advanced" | "ascendant";
+    if (!user) {
+      navigate({ to: "/auth", search: { next: "/#pricing" } });
+      return;
+    }
+    setSelectedTier(tier);
+  };
+
   return (
     <section id="pricing" className="border-y border-glass-border bg-white/[0.02] py-32">
-      <PaymentTestModeBanner />
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <MonoLabel tone="primary">// Pricing</MonoLabel>
@@ -788,7 +830,8 @@ function Pricing() {
           </h2>
           <p className="mt-4 text-foreground/60">
             One checkout — pay the one-time build fee today, and your monthly maintenance +
-            AI chatbot starts immediately and renews every month.
+            AI chatbot starts immediately and renews every month.{" "}
+            {!user && "You'll need to sign in first."}
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
@@ -796,7 +839,7 @@ function Pricing() {
             <PricingCard
               key={t.id}
               tier={t}
-              onSelect={(id) => setSelectedTier(id as "basic" | "advanced" | "ascendant")}
+              onSelect={handleSelect}
             />
           ))}
         </div>
@@ -848,14 +891,33 @@ function AuditTool() {
     issues: "",
   });
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setState("loading");
-    setTimeout(() => {
+    try {
+      const result = await submitInquiry({
+        data: {
+          name: form.business,
+          email: form.email,
+          source: "audit",
+          website_url: form.url || null,
+          message: [
+            form.industry && `Industry: ${form.industry}`,
+            form.phone && `Phone: ${form.phone}`,
+            form.issues && `Current issues: ${form.issues}`,
+          ]
+            .filter(Boolean)
+            .join("\n"),
+        },
+      });
+      if ("error" in result) throw new Error(result.error);
       const options = ["Needs Work", "Underperforming", "Solid Foundation"];
       setRating(options[Math.floor(Math.random() * options.length)]);
       setState("done");
-    }, 1800);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setState("idle");
+    }
   };
 
   return (
@@ -1051,6 +1113,8 @@ function FAQ() {
 
 function Contact() {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -1065,6 +1129,40 @@ function Contact() {
     notes: "",
     contactMethod: "Email",
   });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      const message = [
+        form.business && `Business: ${form.business}`,
+        form.phone && `Phone: ${form.phone}`,
+        form.industry && `Industry: ${form.industry}`,
+        form.timeline && `Timeline: ${form.timeline}`,
+        form.services && `Services: ${form.services}`,
+        form.contactMethod && `Preferred contact: ${form.contactMethod}`,
+        form.notes && `Notes: ${form.notes}`,
+      ].filter(Boolean).join("\n");
+      const result = await submitInquiry({
+        data: {
+          name: `${form.firstName} ${form.lastName}`.trim(),
+          email: form.email,
+          source: "contact",
+          budget: form.budget || null,
+          website_url: form.website || null,
+          message: message || null,
+        },
+      });
+      if ("error" in result) throw new Error(result.error);
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <section id="contact" className="mx-auto max-w-6xl px-6 py-32">
       <div className="mx-auto mb-14 max-w-3xl text-center">
@@ -1089,13 +1187,12 @@ function Contact() {
             </p>
           </div>
         ) : (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
-            className="grid gap-4 md:grid-cols-2"
-          >
+          <form onSubmit={handleSubmit} className="grid gap-4 md:grid-cols-2">
+            {error && (
+              <div className="md:col-span-2 rounded-lg border border-red-400/30 bg-red-500/10 p-3 text-sm text-red-400">
+                {error}
+              </div>
+            )}
             <Input label="First Name" value={form.firstName} onChange={(v) => setForm({ ...form, firstName: v })} required />
             <Input label="Last Name" value={form.lastName} onChange={(v) => setForm({ ...form, lastName: v })} required />
             <Input label="Business Name" value={form.business} onChange={(v) => setForm({ ...form, business: v })} />
@@ -1150,9 +1247,10 @@ function Contact() {
             <div className="md:col-span-2">
               <button
                 type="submit"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-white shadow-lg shadow-primary/40 transition-all hover:shadow-primary/60"
+                disabled={submitting}
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-white shadow-lg shadow-primary/40 transition-all hover:shadow-primary/60 disabled:opacity-50"
               >
-                Send Message
+                {submitting ? "Sending…" : "Send Message"}
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </button>
               <p className="mt-3 text-center text-xs text-foreground/40">

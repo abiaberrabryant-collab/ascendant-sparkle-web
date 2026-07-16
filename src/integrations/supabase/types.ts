@@ -21,9 +21,11 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          message: string
+          message: string | null
           name: string
+          source: string
           status: string
+          website_url: string | null
         }
         Insert: {
           budget?: string | null
@@ -31,9 +33,11 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
-          message: string
+          message?: string | null
           name: string
+          source?: string
           status?: string
+          website_url?: string | null
         }
         Update: {
           budget?: string | null
@@ -41,9 +45,11 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
-          message?: string
+          message?: string | null
           name?: string
+          source?: string
           status?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -130,7 +136,7 @@ export type Database = {
           stripe_customer_id: string
           stripe_subscription_id: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           cancel_at_period_end?: boolean | null
@@ -145,7 +151,7 @@ export type Database = {
           stripe_customer_id: string
           stripe_subscription_id: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           cancel_at_period_end?: boolean | null
@@ -160,7 +166,7 @@ export type Database = {
           stripe_customer_id?: string
           stripe_subscription_id?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }

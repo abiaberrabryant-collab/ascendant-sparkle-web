@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import Stripe from "stripe";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   type StripeEnv,
   createStripeClient,
@@ -55,22 +56,24 @@ async function resolveLookupPrice(stripe: Stripe, lookupKey: string): Promise<St
   return prices.data[0];
 }
 
+// Signed-in-only checkout. Uses the session user's id + verified email.
 export const createTierCheckoutSession = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator(
-    (data: {
-      tier: Tier;
-      customerEmail?: string;
-      customerName?: string;
-      userId?: string;
-      returnUrl: string;
-      environment: StripeEnv;
-    }) => {
+    (data: { tier: Tier; returnUrl: string; environment: StripeEnv }) => {
       if (!TIER_CONFIG[data.tier]) throw new Error("Invalid tier");
       return data;
     },
   )
-  .handler(async ({ data }): Promise<CheckoutSessionResult> => {
+  .handler(async ({ data, context }): Promise<CheckoutSessionResult> => {
     try {
+      const { supabase, userId } = context;
+      const { data: userData } = await supabase.auth.getUser();
+      const email = userData.user?.email;
+      const fullName =
+        (userData.user?.user_metadata as any)?.full_name ??
+        (userData.user?.user_metadata as any)?.name;
+
       const stripe = createStripeClient(data.environment);
       const config = TIER_CONFIG[data.tier];
 
@@ -79,39 +82,50 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
         resolveLookupPrice(stripe, config.setup),
       ]);
 
-      const customerId =
-        data.customerEmail || data.userId
-          ? await resolveOrCreateCustomer(stripe, {
-              email: data.customerEmail,
-              userId: data.userId,
-            })
-          : undefined;
-
-      if (customerId && data.customerName) {
-        await stripe.customers.update(customerId, { name: data.customerName });
+      const customerId = await resolveOrCreateCustomer(stripe, { email, userId });
+      if (fullName) {
+        await stripe.customers.update(customerId, { name: fullName });
       }
 
       const session = await stripe.checkout.sessions.create({
         mode: "subscription",
         ui_mode: "embedded_page",
         return_url: data.returnUrl,
+        customer: customerId,
         line_items: [{ price: monthlyPrice.id, quantity: 1 }],
         subscription_data: {
           description: `${config.name} — includes one-time build fee + monthly maintenance & AI chatbot`,
-          metadata: {
-            tier: data.tier,
-            ...(data.userId && { userId: data.userId }),
-          },
+          metadata: { tier: data.tier, userId },
           add_invoice_items: [{ price: setupPrice.id, quantity: 1 }],
         },
-        ...(customerId && { customer: customerId }),
-        metadata: {
-          tier: data.tier,
-          ...(data.userId && { userId: data.userId }),
-        },
+        metadata: { tier: data.tier, userId },
+        managed_payments: { enabled: true },
       } as Stripe.Checkout.SessionCreateParams);
 
       return { clientSecret: session.client_secret ?? "" };
+    } catch (error) {
+      return { error: getStripeErrorMessage(error) };
+    }
+  });
+
+// Verify a session server-side so the return page can trust the result.
+export const verifyCheckoutSession = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { sessionId: string; environment: StripeEnv }) => {
+    if (!/^cs_[a-zA-Z0-9_]+$/.test(data.sessionId)) throw new Error("Invalid sessionId");
+    return data;
+  })
+  .handler(async ({ data }) => {
+    try {
+      const stripe = createStripeClient(data.environment);
+      const session = await stripe.checkout.sessions.retrieve(data.sessionId);
+      return {
+        status: session.status,
+        payment_status: session.payment_status,
+        customer_email: session.customer_details?.email ?? null,
+        amount_total: session.amount_total,
+        currency: session.currency,
+      };
     } catch (error) {
       return { error: getStripeErrorMessage(error) };
     }
