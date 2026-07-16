@@ -7,6 +7,13 @@ import {
   listAllInquiries,
   updateInquiryStatus,
 } from "@/utils/admin.functions";
+import {
+  getChatbotSettingsAdmin,
+  updateChatbotSettings,
+  listConversations,
+  getConversationMessages,
+  listChatLeads,
+} from "@/utils/chatbot.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -15,7 +22,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "orders" | "subscriptions" | "inquiries";
+type Tab = "orders" | "subscriptions" | "inquiries" | "chatbot" | "conversations" | "chat-leads";
 
 function AdminPage() {
   const { isAdmin, isLoading } = useAuth();
@@ -85,8 +92,8 @@ function AdminPage() {
           <Stat label="New leads" value={newLeads} />
         </div>
 
-        <div className="mt-8 flex gap-2 border-b border-glass-border">
-          {(["orders", "subscriptions", "inquiries"] as Tab[]).map((t) => (
+        <div className="mt-8 flex flex-wrap gap-2 border-b border-glass-border">
+          {(["orders", "subscriptions", "inquiries", "chatbot", "conversations", "chat-leads"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -96,7 +103,7 @@ function AdminPage() {
                   : "text-foreground/50 hover:text-foreground"
               }`}
             >
-              {t}
+              {t.replace("-", " ")}
             </button>
           ))}
         </div>
@@ -106,18 +113,23 @@ function AdminPage() {
         ) : error ? (
           <div className="mt-8 text-red-400">{error}</div>
         ) : (
-          <div className="mt-6 overflow-x-auto rounded-2xl border border-glass-border bg-glass">
-            {tab === "orders" && <OrdersTable rows={orders} />}
-            {tab === "subscriptions" && <SubsTable rows={subs} />}
+          <div className="mt-6">
+            {tab === "orders" && <div className="overflow-x-auto rounded-2xl border border-glass-border bg-glass"><OrdersTable rows={orders} /></div>}
+            {tab === "subscriptions" && <div className="overflow-x-auto rounded-2xl border border-glass-border bg-glass"><SubsTable rows={subs} /></div>}
             {tab === "inquiries" && (
-              <InquiriesTable
-                rows={inquiries}
-                onUpdate={async (id, status) => {
-                  await updateInquiryStatus({ data: { id, status } });
-                  load();
-                }}
-              />
+              <div className="overflow-x-auto rounded-2xl border border-glass-border bg-glass">
+                <InquiriesTable
+                  rows={inquiries}
+                  onUpdate={async (id, status) => {
+                    await updateInquiryStatus({ data: { id, status } });
+                    load();
+                  }}
+                />
+              </div>
             )}
+            {tab === "chatbot" && <ChatbotSettingsPanel />}
+            {tab === "conversations" && <ConversationsPanel />}
+            {tab === "chat-leads" && <ChatLeadsPanel />}
           </div>
         )}
       </div>
