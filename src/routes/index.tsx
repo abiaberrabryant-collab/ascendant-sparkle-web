@@ -891,14 +891,33 @@ function AuditTool() {
     issues: "",
   });
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setState("loading");
-    setTimeout(() => {
+    try {
+      const result = await submitInquiry({
+        data: {
+          name: form.business,
+          email: form.email,
+          source: "audit",
+          website_url: form.url || null,
+          message: [
+            form.industry && `Industry: ${form.industry}`,
+            form.phone && `Phone: ${form.phone}`,
+            form.issues && `Current issues: ${form.issues}`,
+          ]
+            .filter(Boolean)
+            .join("\n"),
+        },
+      });
+      if ("error" in result) throw new Error(result.error);
       const options = ["Needs Work", "Underperforming", "Solid Foundation"];
       setRating(options[Math.floor(Math.random() * options.length)]);
       setState("done");
-    }, 1800);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setState("idle");
+    }
   };
 
   return (
