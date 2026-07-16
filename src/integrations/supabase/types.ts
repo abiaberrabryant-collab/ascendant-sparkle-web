@@ -130,7 +130,7 @@ export type Database = {
           stripe_customer_id: string
           stripe_subscription_id: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           cancel_at_period_end?: boolean | null
@@ -145,7 +145,7 @@ export type Database = {
           stripe_customer_id: string
           stripe_subscription_id: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           cancel_at_period_end?: boolean | null
@@ -160,7 +160,7 @@ export type Database = {
           stripe_customer_id?: string
           stripe_subscription_id?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
