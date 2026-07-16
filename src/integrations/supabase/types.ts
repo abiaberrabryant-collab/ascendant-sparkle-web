@@ -14,6 +14,151 @@ export type Database = {
   }
   public: {
     Tables: {
+      chat_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          page_url: string | null
+          updated_at: string
+          visitor_email: string | null
+          visitor_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          page_url?: string | null
+          updated_at?: string
+          visitor_email?: string | null
+          visitor_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          page_url?: string | null
+          updated_at?: string
+          visitor_email?: string | null
+          visitor_name?: string | null
+        }
+        Relationships: []
+      }
+      chat_leads: {
+        Row: {
+          budget: string | null
+          conversation_id: string | null
+          created_at: string
+          email: string | null
+          id: string
+          message: string | null
+          name: string | null
+          phone: string | null
+          status: string
+        }
+        Insert: {
+          budget?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          status?: string
+        }
+        Update: {
+          budget?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_leads_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chatbot_settings: {
+        Row: {
+          brand_color: string
+          business_knowledge: string
+          created_at: string
+          enabled: boolean
+          greeting: string
+          id: string
+          model: string
+          singleton: boolean
+          suggested_prompts: Json
+          system_prompt: string
+          updated_at: string
+        }
+        Insert: {
+          brand_color?: string
+          business_knowledge?: string
+          created_at?: string
+          enabled?: boolean
+          greeting?: string
+          id?: string
+          model?: string
+          singleton?: boolean
+          suggested_prompts?: Json
+          system_prompt?: string
+          updated_at?: string
+        }
+        Update: {
+          brand_color?: string
+          business_knowledge?: string
+          created_at?: string
+          enabled?: boolean
+          greeting?: string
+          id?: string
+          model?: string
+          singleton?: boolean
+          suggested_prompts?: Json
+          system_prompt?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_inquiries: {
         Row: {
           budget: string | null
