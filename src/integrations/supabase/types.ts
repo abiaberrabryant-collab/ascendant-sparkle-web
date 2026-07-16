@@ -21,9 +21,11 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          message: string
+          message: string | null
           name: string
+          source: string
           status: string
+          website_url: string | null
         }
         Insert: {
           budget?: string | null
@@ -31,9 +33,11 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
-          message: string
+          message?: string | null
           name: string
+          source?: string
           status?: string
+          website_url?: string | null
         }
         Update: {
           budget?: string | null
@@ -41,9 +45,11 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
-          message?: string
+          message?: string | null
           name?: string
+          source?: string
           status?: string
+          website_url?: string | null
         }
         Relationships: []
       }
