@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -24,7 +24,8 @@ import industryLaw from "@/assets/industry-law.jpg";
 import industryRestaurant from "@/assets/industry-restaurant.jpg";
 import industryRealEstate from "@/assets/industry-realestate.jpg";
 import { CheckoutDialog } from "@/components/CheckoutDialog";
-import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { useAuth } from "@/hooks/useAuth";
+import { submitInquiry } from "@/utils/contact.functions";
 
 
 export const Route = createFileRoute("/")({
@@ -84,6 +85,7 @@ function SectionEyebrow({ children }: { children: React.ReactNode }) {
 /* ---------------- Nav ---------------- */
 
 function Nav() {
+  const { user, isAdmin } = useAuth();
   const links = [
     { href: "#services", label: "Services" },
     { href: "#industries", label: "Industries" },
@@ -107,12 +109,41 @@ function Nav() {
             </a>
           ))}
         </div>
-        <a
-          href="#audit"
-          className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
-        >
-          Free Audit
-        </a>
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-white/5 md:inline-flex"
+                >
+                  Admin
+                </Link>
+              )}
+              <Link
+                to="/account"
+                className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
+              >
+                My account
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/auth"
+                className="hidden text-sm font-medium text-foreground/60 transition-colors hover:text-foreground md:inline-flex"
+              >
+                Sign in
+              </Link>
+              <a
+                href="#audit"
+                className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
+              >
+                Free Audit
+              </a>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
