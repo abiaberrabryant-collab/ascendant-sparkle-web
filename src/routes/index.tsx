@@ -807,10 +807,21 @@ function PricingCard({ tier, onSelect }: { tier: Tier; onSelect: (id: string) =>
 }
 
 function Pricing() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedTier, setSelectedTier] = useState<"basic" | "advanced" | "ascendant" | null>(null);
+
+  const handleSelect = (id: string) => {
+    const tier = id as "basic" | "advanced" | "ascendant";
+    if (!user) {
+      navigate({ to: "/auth", search: { next: "/#pricing" } });
+      return;
+    }
+    setSelectedTier(tier);
+  };
+
   return (
     <section id="pricing" className="border-y border-glass-border bg-white/[0.02] py-32">
-      <PaymentTestModeBanner />
       <div className="mx-auto max-w-7xl px-6">
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <MonoLabel tone="primary">// Pricing</MonoLabel>
@@ -819,7 +830,8 @@ function Pricing() {
           </h2>
           <p className="mt-4 text-foreground/60">
             One checkout — pay the one-time build fee today, and your monthly maintenance +
-            AI chatbot starts immediately and renews every month.
+            AI chatbot starts immediately and renews every month.{" "}
+            {!user && "You'll need to sign in first."}
           </p>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
@@ -827,7 +839,7 @@ function Pricing() {
             <PricingCard
               key={t.id}
               tier={t}
-              onSelect={(id) => setSelectedTier(id as "basic" | "advanced" | "ascendant")}
+              onSelect={handleSelect}
             />
           ))}
         </div>
