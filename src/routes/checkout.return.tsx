@@ -30,15 +30,15 @@ function CheckoutReturn() {
       return;
     }
     verifyCheckoutSession({ data: { sessionId: sessionId!, environment: getStripeEnvironment() } })
-      .then((res) => {
-        if ("error" in res) {
-          setVerified({ ok: false, message: res.error });
-        } else if (res.status === "complete" && res.payment_status !== "unpaid") {
+      .then((res: any) => {
+        if (res?.error) {
+          setVerified({ ok: false, message: String(res.error) });
+        } else if (res?.status === "complete" && res?.payment_status !== "unpaid") {
           setVerified({ ok: true, message: "" });
         } else {
           setVerified({
             ok: false,
-            message: `Checkout status: ${res.status} / ${res.payment_status}`,
+            message: `Checkout status: ${res?.status} / ${res?.payment_status}`,
           });
         }
       })
