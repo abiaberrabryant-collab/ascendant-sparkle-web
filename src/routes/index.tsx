@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "AscendantWeb builds lightning-fast, high-converting websites for modern businesses. Premium design, AI chatbots, SEO, and performance engineering.",
+          "AscendantWeb designs and builds fast, modern websites for growing businesses — with real design, SEO, and an AI chatbot included.",
       },
     ],
   }),
@@ -375,7 +375,7 @@ function BeforeAfter() {
   }, []);
 
   const criteria = [
-    { label: "Page Speed", before: "Sluggish", after: "Blazing" },
+    { label: "Page speed", before: "Slow", after: "Quick" },
     { label: "Design Quality", before: "Outdated", after: "Premium 2026" },
     { label: "Mobile Experience", before: "Broken", after: "Pixel-perfect" },
     { label: "SEO Health", before: "Weak", after: "Fully Optimized" },
@@ -387,13 +387,13 @@ function BeforeAfter() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-32">
       <div className="mb-14 max-w-3xl">
-        <MonoLabel tone="primary">// The Ascendant Upgrade</MonoLabel>
+        <MonoLabel tone="primary">// Before / After</MonoLabel>
         <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
           Drag to see what a modern website really looks like.
         </h2>
         <p className="mt-4 text-foreground/60">
-          Every clunky second and every dated layout chips away at your brand. We don't just
-          redesign — we re-engineer.
+          A slow, dated site quietly loses customers every day. We rebuild it end to end —
+          not just a fresh coat of paint.
         </p>
       </div>
 
@@ -568,7 +568,7 @@ function WhyUs() {
         <div className="mb-14 max-w-3xl">
           <MonoLabel tone="secondary">// Why AscendantWeb</MonoLabel>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-            Everything a modern business needs. Zero fluff.
+            The essentials, done properly.
           </h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -599,7 +599,7 @@ const services = [
     icon: Layout,
     title: "Custom Website Development",
     tagline: "Bespoke websites engineered from scratch.",
-    bullets: ["Custom design system", "Headless CMS", "Blazing performance", "SEO foundation"],
+    bullets: ["Custom design", "Editable CMS", "Fast by default", "SEO fundamentals"],
   },
   {
     id: "redesign",
@@ -631,7 +631,7 @@ function Services() {
       <div className="mb-14 max-w-3xl">
         <MonoLabel tone="primary">// Services</MonoLabel>
         <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">
-          Everything you need to dominate online.
+          Four things we do — really well.
         </h2>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
@@ -716,7 +716,7 @@ const websiteTiers: Tier[] = [
       "Basic on-page SEO",
       "Analytics + SSL",
       "$150/mo maintenance + basic AI chatbot",
-      "Delivery in 1–2 weeks",
+      "Live in 1–2 weeks",
     ],
     cta: "Start with Basic",
   },
@@ -736,7 +736,7 @@ const websiteTiers: Tier[] = [
       "CRM / email integration",
       "Advanced SEO + speed tuning",
       "$200/mo maintenance + AI chatbot (business-trained)",
-      "Delivery in 2–3 weeks",
+      "Live in 2–3 weeks",
     ],
     cta: "Choose Advanced",
     popular: true,
@@ -756,7 +756,7 @@ const websiteTiers: Tier[] = [
       "Advanced integrations & automations",
       "Premium SEO + schema markup",
       "$250/mo maintenance + full AI chatbot with priority support",
-      "Delivery in 3–4 weeks",
+      "Live in 3–4 weeks",
     ],
     cta: "Go Ascendant",
   },
@@ -963,7 +963,7 @@ function AuditTool() {
                 >
                   {state === "loading" ? (
                     <>
-                      <Loader2 className="size-4 animate-spin" /> Analyzing your site…
+                      <Loader2 className="size-4 animate-spin" /> Sending…
                     </>
                   ) : (
                     <>
