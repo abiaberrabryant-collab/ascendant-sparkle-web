@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { streamText, type CoreMessage } from "ai";
+import { streamText, type ModelMessage } from "ai";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 
 type ChatBody = {
@@ -63,9 +63,9 @@ export const Route = createFileRoute("/api/public/chat")({
           `\n\nRules: Be concise, warm, and helpful. If you don't know something, say so — never invent facts. If the visitor shows buying intent, ask for their name and email so a human can follow up. Use the /contact page for anything you can't handle.`,
         ].join("");
 
-        const messages: CoreMessage[] = [
+        const messages: ModelMessage[] = [
           { role: "system", content: systemPrompt },
-          ...body.messages.map((m) => ({ role: m.role, content: m.content }) as CoreMessage),
+          ...body.messages.map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
         ];
 
         const gateway = createLovableAiGatewayProvider(key);
