@@ -221,30 +221,30 @@ function Hero() {
           "radial-gradient(600px circle at var(--mx,50%) var(--my,50%), oklch(0.62 0.19 258 / 0.08), transparent 60%)",
       }}
     >
-      <div className="flex flex-col items-center text-center">
-        <SectionEyebrow>System Online · Now Accepting Q1 Partners</SectionEyebrow>
+      <div className="flex flex-col items-center text-center animate-fade-up">
+        <SectionEyebrow>Booking Q1 · a few spots left</SectionEyebrow>
 
         <h1 className="mt-6 max-w-5xl text-balance text-5xl font-extrabold leading-[1.05] tracking-tighter md:text-7xl lg:text-8xl">
-          Your Website Should <span className="text-gradient">Work as Hard</span> as You Do.
+          Your website should <span className="text-gradient">pull its weight</span>.
         </h1>
         <p className="mt-6 max-w-2xl text-pretty text-lg text-foreground/60">
-          We build lightning-fast websites that convert visitors into customers — using modern design,
-          AI automation, and performance optimization.
+          We design and build websites that turn visitors into paying customers — real design,
+          fast pages, and an AI chatbot that actually helps.
         </p>
 
-        <div className="mt-10 flex w-full flex-col justify-center gap-4 sm:flex-row">
+        <div className="mt-10 flex w-full flex-col justify-center gap-4 sm:flex-row" style={{ animationDelay: "120ms" }}>
           <a
             href="#audit"
-            className="group inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 font-bold text-white shadow-lg shadow-primary/30 transition-all hover:shadow-primary/60"
+            className="group inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 font-bold text-white shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 hover:shadow-primary/60"
           >
-            Get a Free Website Audit
+            Grab a free audit
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
           </a>
           <a
             href="#industries"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-8 py-4 font-bold backdrop-blur transition-all hover:bg-black/5"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-8 py-4 font-bold backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-black/5"
           >
-            See Industry Designs
+            See what we build
           </a>
         </div>
 
@@ -278,12 +278,12 @@ const industries = [
     icon: Zap,
     image: industryElectrical,
     name: "Electrical Contractors",
-    tagline: "Wired to convert emergency calls into booked jobs.",
+    tagline: "Turn emergency calls into booked jobs.",
     features: [
-      "One-tap emergency call CTA",
-      "Service area + licensing badges",
-      "Instant quote request form",
-      "Reviews + trust signals",
+      "One-tap call button up top",
+      "Service area + license badges",
+      "Quick quote form",
+      "Real reviews front and center",
     ],
   },
   {
@@ -291,12 +291,12 @@ const industries = [
     icon: Wrench,
     image: industryPlumbing,
     name: "Plumbing & HVAC",
-    tagline: "Booking-first design for service pros.",
+    tagline: "Built around getting people to book.",
     features: [
       "Online booking widget",
-      "Transparent service menu",
-      "Before/after project gallery",
-      "SMS-ready contact flow",
+      "Clear service menu with prices",
+      "Before/after job gallery",
+      "SMS-friendly contact flow",
     ],
   },
   {
@@ -304,12 +304,12 @@ const industries = [
     icon: Shield,
     image: industryLaw,
     name: "Law Firms",
-    tagline: "Authority-forward design that earns trust on first scroll.",
+    tagline: "Looks the part on the first scroll.",
     features: [
-      "Practice area landing pages",
+      "One page per practice area",
       "Attorney bios + credentials",
-      "Confidential case intake form",
-      "Refined editorial typography",
+      "Private case intake form",
+      "Clean, serious typography",
     ],
   },
   {
@@ -317,12 +317,12 @@ const industries = [
     icon: Sparkles,
     image: industryRestaurant,
     name: "Restaurants & Cafés",
-    tagline: "Mouth-watering visuals that fill your tables.",
+    tagline: "Photos that put people in seats.",
     features: [
-      "Menu + specials showcase",
+      "Menu + weekly specials",
       "Reservation integration",
-      "Location, hours & map",
-      "Gallery + press mentions",
+      "Hours, map, and directions",
+      "Photo gallery + press",
     ],
   },
   {
@@ -330,12 +330,12 @@ const industries = [
     icon: Layout,
     image: industryRealEstate,
     name: "Real Estate Agents",
-    tagline: "Listings that look like the property itself.",
+    tagline: "Listings that look as good as the homes.",
     features: [
-      "Dynamic listings grid",
+      "Live listings grid",
       "Agent + brokerage profile",
-      "Lead capture on every listing",
-      "Neighborhood guides + SEO",
+      "Lead form on every listing",
+      "Neighborhood pages for SEO",
     ],
   },
 ];
