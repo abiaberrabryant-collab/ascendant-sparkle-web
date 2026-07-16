@@ -35,6 +35,13 @@ function AuthPage() {
     }
   }, [isLoading, user, navigate, next]);
 
+  // Same-origin relative next path (e.g. `/.lovable/oauth/consent?authorization_id=...`).
+  // Used to bring the user back to an OAuth consent flow after sign-in/signup.
+  const safeNext = next && next.startsWith("/") && !next.startsWith("//") ? next : undefined;
+  const returnUrl = safeNext
+    ? `${window.location.origin}${safeNext}`
+    : window.location.origin;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -46,7 +53,7 @@ function AuthPage() {
           password,
           options: {
             data: { full_name: fullName },
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: returnUrl,
           },
         });
         if (error) throw error;
@@ -64,7 +71,7 @@ function AuthPage() {
   const handleGoogle = async () => {
     setError(null);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: returnUrl,
     });
     if (result.error) {
       setError(result.error.message ?? "Google sign-in failed");
