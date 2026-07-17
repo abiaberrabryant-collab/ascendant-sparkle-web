@@ -16,12 +16,16 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedChatbotRouteImport } from './routes/_authenticated/chatbot'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as ApiPublicWidgetDotjsRouteImport } from './routes/api/public/widget[.]js'
 import { Route as ApiPublicPerfRouteImport } from './routes/api/public/perf'
+import { Route as ApiPublicClientChatbotRouteImport } from './routes/api/public/client-chatbot'
+import { Route as ApiPublicClientChatRouteImport } from './routes/api/public/client-chat'
 import { Route as ApiPublicChatRouteImport } from './routes/api/public/chat'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -61,6 +65,11 @@ const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedChatbotRoute = AuthenticatedChatbotRouteImport.update({
   id: '/chatbot',
   path: '/chatbot',
@@ -88,9 +97,24 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicWidgetDotjsRoute = ApiPublicWidgetDotjsRouteImport.update({
+  id: '/api/public/widget.js',
+  path: '/api/public/widget.js',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPerfRoute = ApiPublicPerfRouteImport.update({
   id: '/api/public/perf',
   path: '/api/public/perf',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicClientChatbotRoute = ApiPublicClientChatbotRouteImport.update({
+  id: '/api/public/client-chatbot',
+  path: '/api/public/client-chatbot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicClientChatRoute = ApiPublicClientChatRouteImport.update({
+  id: '/api/public/client-chat',
+  path: '/api/public/client-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
@@ -126,12 +150,16 @@ export interface FileRoutesByFullPath {
   '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/chatbot': typeof AuthenticatedChatbotRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/client-chat': typeof ApiPublicClientChatRoute
+  '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
   '/api/public/perf': typeof ApiPublicPerfRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -144,12 +172,16 @@ export interface FileRoutesByTo {
   '/account': typeof AuthenticatedAccountRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/chatbot': typeof AuthenticatedChatbotRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/client-chat': typeof ApiPublicClientChatRoute
+  '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
   '/api/public/perf': typeof ApiPublicPerfRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -164,12 +196,16 @@ export interface FileRoutesById {
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/chatbot': typeof AuthenticatedChatbotRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/client-chat': typeof ApiPublicClientChatRoute
+  '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
   '/api/public/perf': typeof ApiPublicPerfRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -184,12 +220,16 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/chatbot'
+    | '/dashboard'
     | '/auth/reset-password'
     | '/checkout/return'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/chat'
+    | '/api/public/client-chat'
+    | '/api/public/client-chatbot'
     | '/api/public/perf'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -202,12 +242,16 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/chatbot'
+    | '/dashboard'
     | '/auth/reset-password'
     | '/checkout/return'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/chat'
+    | '/api/public/client-chat'
+    | '/api/public/client-chatbot'
     | '/api/public/perf'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -221,12 +265,16 @@ export interface FileRouteTypes {
     | '/_authenticated/account'
     | '/_authenticated/admin'
     | '/_authenticated/chatbot'
+    | '/_authenticated/dashboard'
     | '/auth/reset-password'
     | '/checkout/return'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/api/public/chat'
+    | '/api/public/client-chat'
+    | '/api/public/client-chatbot'
     | '/api/public/perf'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -242,7 +290,10 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicChatRoute: typeof ApiPublicChatRoute
+  ApiPublicClientChatRoute: typeof ApiPublicClientChatRoute
+  ApiPublicClientChatbotRoute: typeof ApiPublicClientChatbotRoute
   ApiPublicPerfRoute: typeof ApiPublicPerfRoute
+  ApiPublicWidgetDotjsRoute: typeof ApiPublicWidgetDotjsRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -297,6 +348,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthResetPasswordRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/chatbot': {
       id: '/_authenticated/chatbot'
       path: '/chatbot'
@@ -332,11 +390,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/widget.js': {
+      id: '/api/public/widget.js'
+      path: '/api/public/widget.js'
+      fullPath: '/api/public/widget.js'
+      preLoaderRoute: typeof ApiPublicWidgetDotjsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/perf': {
       id: '/api/public/perf'
       path: '/api/public/perf'
       fullPath: '/api/public/perf'
       preLoaderRoute: typeof ApiPublicPerfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/client-chatbot': {
+      id: '/api/public/client-chatbot'
+      path: '/api/public/client-chatbot'
+      fullPath: '/api/public/client-chatbot'
+      preLoaderRoute: typeof ApiPublicClientChatbotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/client-chat': {
+      id: '/api/public/client-chat'
+      path: '/api/public/client-chat'
+      fullPath: '/api/public/client-chat'
+      preLoaderRoute: typeof ApiPublicClientChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/chat': {
@@ -374,12 +453,14 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedChatbotRoute: typeof AuthenticatedChatbotRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedChatbotRoute: AuthenticatedChatbotRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -408,7 +489,10 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicChatRoute: ApiPublicChatRoute,
+  ApiPublicClientChatRoute: ApiPublicClientChatRoute,
+  ApiPublicClientChatbotRoute: ApiPublicClientChatbotRoute,
   ApiPublicPerfRoute: ApiPublicPerfRoute,
+  ApiPublicWidgetDotjsRoute: ApiPublicWidgetDotjsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
