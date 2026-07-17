@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Bot, Building2, CheckCircle2, ClipboardList, ExternalLink, Mail, MessageSquare, Phone, Save, Settings, Users } from "lucide-react";
+import { Bot, Building2, CheckCircle2, ClipboardList, ExternalLink, Mail, MessageSquare, Phone, Radar, Save, Settings, Users } from "lucide-react";
 import { getMyOrganization, getOwnerWorkspace, saveMyOrganization, updateOwnerLead } from "@/utils/organization.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -68,9 +68,10 @@ function DashboardPage() {
       <Stat icon={<MessageSquare />} label="Recent chats" value={String(stats.chats)} detail="Last 50 conversations" />
     </section>
 
-    <section className="mt-6 grid gap-4 lg:grid-cols-3">
+    <section className="mt-6 grid gap-4 lg:grid-cols-4">
       <Link to="/chatbot" className="rounded-2xl border border-glass-border bg-glass p-5 transition hover:border-primary/40"><Bot className="size-5 text-primary"/><h2 className="mt-3 font-bold">Chatbot Studio</h2><p className="mt-1 text-sm text-foreground/60">Train it, control its status, and copy the website install code.</p><span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">Manage chatbot <ExternalLink className="size-3" /></span></Link>
       <a href="#leads" className="rounded-2xl border border-glass-border bg-glass p-5 transition hover:border-primary/40"><ClipboardList className="size-5 text-primary"/><h2 className="mt-3 font-bold">Leads & follow-up</h2><p className="mt-1 text-sm text-foreground/60">Track every captured lead, add a note, and mark their next stage.</p><span className="mt-4 inline-flex text-sm font-semibold text-primary">View leads below</span></a>
+      <Link to="/signals" className="rounded-2xl border border-glass-border bg-glass p-5 transition hover:border-primary/40"><Radar className="size-5 text-primary"/><h2 className="mt-3 font-bold">Signal Studio</h2><p className="mt-1 text-sm text-foreground/60">Research public website signals and make review-only email drafts.</p><span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary">Find opportunities <ExternalLink className="size-3" /></span></Link>
       <div className="rounded-2xl border border-glass-border bg-glass p-5"><Settings className="size-5 text-primary"/><h2 className="mt-3 font-bold">No-cost workflow</h2><p className="mt-1 text-sm text-foreground/60">Use the email and phone buttons below to follow up personally. This requires no CRM, automations, or monthly tools.</p></div>
     </section>
 
