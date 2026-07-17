@@ -1,37 +1,54 @@
+## Performance & polish — first release
 
-## Goal
-Let Codex (OpenAI's coding agent) edit this website's source code directly.
+Six focused changes. Ship them in this order; each is independently deployable.
 
-## Why this path
-The MCP server we already built exposes **app data and actions** (conversations, leads, orders) to AI assistants at runtime — it does NOT give Codex access to your source files. Codex edits code by reading/writing a **Git repository**, so the right integration is Lovable's GitHub sync.
+### 1. Lazy-load checkout and chat widget on the home page
+- Convert `CheckoutDialog` import in `src/routes/index.tsx` to `React.lazy` + `Suspense`. Only mount it once a plan is clicked (already gated behind `selectedPlan` state, but the code still ships in the initial JS chunk).
+- Same treatment for `ChatWidget`: swap the static import for `React.lazy`, render inside `<Suspense fallback={null}>`, and only mount after the launcher button is clicked (keep the small launcher button eager so users see it).
+- Expected win: removes Stripe SDK + `react-markdown` + streaming/AI-chat code from the initial home-page bundle.
 
-Once the project is on GitHub, Codex clones the repo, edits files, and opens pull requests. Lovable's two-way sync then pulls those changes back into your project automatically — you keep building in Lovable, Codex works on the same codebase, and both stay in sync in real time.
+### 2. Defer chatbot settings fetch until first interaction
+- `ChatWidget` currently calls `get_public_chatbot_settings` on mount. Move that query into the "open chat" handler and cache it with TanStack Query (`staleTime: Infinity`, keyed `['chatbot-settings']`) so it only runs once per visit and only if the visitor opens chat.
+- If the widget is disabled, the fetch should never run.
 
-## Steps
+### 3. Convert homepage hero/section images to WebP with responsive sizes
+- Audit the 7 JPEGs referenced in `src/routes/index.tsx` (~1.3–1.5 MB total).
+- Add `vite-imagetools` (already documented in the stack) and import each image with `?format=webp&w=640;1024;1600&as=picture` to generate a `<picture>` with WebP + JPEG fallback and a proper `srcset`/`sizes`.
+- Add `loading="lazy"` and `decoding="async"` to every below-the-fold image; keep the LCP hero eager and add a `head().links` `rel="preload"` entry on the index route for its WebP.
+- Target: each image ≤ ~200 KB at 1x.
 
-1. **Connect this project to GitHub** (one-time, done by you)
-   - In Lovable: bottom-left **+** menu in the chat input → **GitHub** → **Connect project**
-   - Authorize the Lovable GitHub App
-   - Pick the GitHub account/org that owns the new repo
-   - Click **Create Repository** — Lovable pushes the current code and turns on two-way sync
+### 4. Reduce animated blur on mobile + respect reduced motion
+- The homepage renders two ~900px blurred gradient blobs plus glass/blur cards that repaint every frame.
+- Gate the animated blob classes behind `md:` (desktop only) and wrap in a `@media (prefers-reduced-motion: reduce)` override that disables the animation.
+- Swap heavy `backdrop-blur-*` utilities on mobile for a plain semi-transparent background.
 
-2. **Give Codex access to that repo** (done in ChatGPT/Codex)
-   - Open Codex → Settings → **Connectors** / **GitHub**
-   - Sign in with the same GitHub account (or grant the Codex GitHub App access to just this repo)
-   - Select the newly created repository
+### 5. Slim the account + admin queries and add indexes
+- `src/routes/account.tsx`: replace `select('*')` on `subscriptions` and `orders` with an explicit column list (only fields actually rendered). Limit `orders` to the last 10 with `.order('created_at', desc).limit(10)`; add a "Show all" button that fetches the rest on demand.
+- Admin lists: replace the `.limit(500)` with cursor pagination (page size 25).
+- Migration: add btree indexes on `subscriptions(user_id, environment, created_at desc)`, `orders(user_id, created_at desc)`, and any admin sort columns used in the queries above. (I will double-check the exact queries before writing the migration.)
 
-3. **Working loop after setup**
-   - Ask Codex to make a change → it opens a pull request on GitHub
-   - Review and merge the PR on GitHub
-   - Lovable auto-syncs the merged changes back into your project within seconds
-   - You can keep editing in Lovable in parallel; commits flow both ways
+### 6. Loading skeletons + minimal perf monitoring
+- Add skeleton components for the account page (subscription card, order list) and Chatbot Studio (settings form, conversations list), rendered via `pendingComponent` on each route.
+- Add a tiny Web Vitals reporter: `web-vitals` package, sends `CLS/LCP/INP/TTFB` to a new `POST /api/public/perf` route that logs to a `perf_metrics` table (user_id nullable, route, metric, value, created_at). No PII. This gives measurable data before/after each release.
 
-## Notes / trade-offs
-- **Paid Lovable plan required to edit code** (viewing is free). GitHub sync itself is free.
-- **Secrets stay in Lovable**, not in the repo — Codex won't see `SUPABASE_SERVICE_ROLE_KEY`, connector keys, etc. If Codex needs to reference a secret, it should read it via `process.env.NAME` in server code; you add the actual value in Lovable.
-- **Migrations**: Codex can write SQL files under `supabase/migrations/`, but they only run when applied through Lovable — mention this to Codex so it doesn't try to run `supabase db push` locally.
-- **Merge conflicts** are possible if you and Codex edit the same file at the same time. Prefer working on different areas concurrently, or let one finish before the other starts.
-- **Alternative if you don't want GitHub**: there isn't a good one today. Codex needs a repo. The only other option is downloading the code as a ZIP (paid plan, Code Editor → Download codebase) and hosting it yourself — but then Lovable stops being the source of truth. GitHub sync is strongly recommended.
+### What I will NOT do in this pass
+- No visual redesign of the home page CTA/spacing/typography — flagged for a follow-up "polish" pass so this release stays focused on speed.
+- No favicon/meta rework unless the audit finds they're actually missing (I'll check during step 3 and fold it in if trivial).
+- No Stripe or auth logic changes.
 
-## What I'll do after you approve
-Nothing to build in the codebase — this is a two-side setup you perform in Lovable's UI and Codex's UI. I'll confirm the plan, and once you've clicked through the GitHub connect flow I can verify the repo is wired correctly and walk you through the Codex side.
+### Order of operations
+1. Steps 1 + 2 together (pure frontend, biggest LCP/TBT win, no schema).
+2. Publish → re-run PageSpeed → record numbers.
+3. Step 3 (images).
+4. Publish → re-check.
+5. Step 4 (mobile blur).
+6. Steps 5 + 6 (DB + monitoring; requires one migration for indexes and one for `perf_metrics`).
+7. Final publish + PageSpeed run.
+
+### Technical notes
+- `React.lazy` requires the target module to have a `default` export; `CheckoutDialog` and `ChatWidget` currently use named exports — I'll add thin `default` re-export shims (`export { CheckoutDialog as default }`) rather than changing every import site.
+- `vite-imagetools` runs at build time and works with the current Vite 7 setup; no runtime cost.
+- Indexes will be added via `supabase--migration` (requires your approval before running).
+- Web Vitals endpoint goes under `/api/public/perf` with a lightweight rate check; no signature needed since it's non-sensitive telemetry, but I'll cap payload size and validate with Zod.
+
+Approve and I'll start with steps 1 + 2.

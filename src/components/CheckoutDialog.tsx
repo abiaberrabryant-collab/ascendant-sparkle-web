@@ -17,7 +17,7 @@ interface Props {
   onClose: () => void;
 }
 
-export function CheckoutDialog({ tier, onClose }: Props) {
+export default function CheckoutDialog({ tier, onClose }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

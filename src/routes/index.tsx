@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   Sparkles,
@@ -23,10 +23,11 @@ import industryPlumbing from "@/assets/industry-plumbing.jpg";
 import industryLaw from "@/assets/industry-law.jpg";
 import industryRestaurant from "@/assets/industry-restaurant.jpg";
 import industryRealEstate from "@/assets/industry-realestate.jpg";
-import { CheckoutDialog } from "@/components/CheckoutDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { submitInquiry } from "@/utils/contact.functions";
 import { ChatWidget } from "@/components/ChatWidget";
+
+const CheckoutDialog = lazy(() => import("@/components/CheckoutDialog"));
 
 
 export const Route = createFileRoute("/")({
@@ -844,7 +845,11 @@ function Pricing() {
           ))}
         </div>
       </div>
-      <CheckoutDialog tier={selectedTier} onClose={() => setSelectedTier(null)} />
+      {selectedTier && (
+        <Suspense fallback={null}>
+          <CheckoutDialog tier={selectedTier} onClose={() => setSelectedTier(null)} />
+        </Suspense>
+      )}
     </section>
   );
 }
