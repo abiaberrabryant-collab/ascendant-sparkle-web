@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/hooks/useAuth";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+import { WebVitalsReporter } from "@/components/WebVitalsReporter";
 
 function NotFoundComponent() {
   return (
@@ -139,6 +140,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <PaymentTestModeBanner />
+        <WebVitalsReporter />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </AuthProvider>
