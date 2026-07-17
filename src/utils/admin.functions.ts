@@ -75,7 +75,7 @@ export const listAllInquiries = createServerFn({ method: "POST" })
     const { from, to, pageSize, page } = pageRange(data);
     const { data: rows, error, count } = await supabaseAdmin
       .from("contact_inquiries")
-      .select("id, name, email, company, phone, message, status, source, created_at", {
+      .select("id, name, email, company, message, status, source, created_at", {
         count: "exact",
       })
       .order("created_at", { ascending: false })
