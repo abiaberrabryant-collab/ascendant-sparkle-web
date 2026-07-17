@@ -68,7 +68,7 @@ export const Route = createFileRoute("/api/public/client-chat")({
         const response = result.toTextStreamResponse();
         const finalHeaders = new Headers(response.headers);
         Object.entries(headers).forEach(([name, value]) => finalHeaders.set(name, value));
-        finalHeaders.set("X-Conversation-Id", conversationId);
+        finalHeaders.set("X-Conversation-Id", conversationId ?? "");
         return new Response(response.body, { status: response.status, headers: finalHeaders });
       },
     },
