@@ -49,9 +49,9 @@ export const Route = createFileRoute("/")({
 function GlowBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute -top-1/2 -left-1/4 size-[900px] rounded-full bg-primary/15 blur-[130px] animate-aurora" />
+      <div className="absolute -top-1/2 -left-1/4 hidden size-[900px] rounded-full bg-primary/15 blur-[130px] motion-safe:md:block motion-safe:md:animate-aurora" />
       <div
-        className="absolute -bottom-1/2 -right-1/4 size-[900px] rounded-full bg-secondary/15 blur-[130px] animate-aurora"
+        className="absolute -bottom-1/2 -right-1/4 hidden size-[900px] rounded-full bg-secondary/15 blur-[130px] motion-safe:md:block motion-safe:md:animate-aurora"
         style={{ animationDirection: "reverse" }}
       />
       <div
