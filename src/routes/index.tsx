@@ -16,13 +16,13 @@ import {
   ChevronDown,
   Loader2,
 } from "lucide-react";
-import beforeSite from "@/assets/before-site.jpg";
-import afterSite from "@/assets/after-site.jpg";
-import industryElectrical from "@/assets/industry-electrical.jpg";
-import industryPlumbing from "@/assets/industry-plumbing.jpg";
-import industryLaw from "@/assets/industry-law.jpg";
-import industryRestaurant from "@/assets/industry-restaurant.jpg";
-import industryRealEstate from "@/assets/industry-realestate.jpg";
+import beforeSite from "@/assets/before-site.webp";
+import afterSite from "@/assets/after-site.webp";
+import industryElectrical from "@/assets/industry-electrical.webp";
+import industryPlumbing from "@/assets/industry-plumbing.webp";
+import industryLaw from "@/assets/industry-law.webp";
+import industryRestaurant from "@/assets/industry-restaurant.webp";
+import industryRealEstate from "@/assets/industry-realestate.webp";
 import { useAuth } from "@/hooks/useAuth";
 import { submitInquiry } from "@/utils/contact.functions";
 import { ChatWidget } from "@/components/ChatWidget";
