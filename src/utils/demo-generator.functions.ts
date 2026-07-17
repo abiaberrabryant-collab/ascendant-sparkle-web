@@ -16,7 +16,19 @@ const DemoSchema = z.object({
   proof: z.array(z.string().min(1).max(45)).min(3).max(3),
   palette: z.object({ primary: z.string().regex(/^#[0-9a-fA-F]{6}$/), accent: z.string().regex(/^#[0-9a-fA-F]{6}$/) }),
 });
-type Demo = z.infer<typeof DemoSchema> & { sourceUrl: string; generatedWithAi: boolean };
+type Industry = "electrical" | "plumbing" | "law" | "restaurant" | "realestate" | "generic";
+type Demo = z.infer<typeof DemoSchema> & { sourceUrl: string; generatedWithAi: boolean; industry: Industry };
+
+function detectIndustry(text: string): Industry {
+  const t = text.toLowerCase();
+  const has = (words: string[]) => words.some((w) => t.includes(w));
+  if (has(["electrician", "electrical contractor", "rewiring", "panel upgrade", "circuit", "wiring", "lighting install"])) return "electrical";
+  if (has(["plumber", "plumbing", "hvac", "furnace", "air conditioning", "water heater", "drain", "heating and cooling", "boiler"])) return "plumbing";
+  if (has(["law firm", "lawyer", "attorney", "legal", "litigation", "counsel", "law office", "practice areas", "personal injury"])) return "law";
+  if (has(["restaurant", "menu", "reservation", "cuisine", "bistro", "café", "cafe", "catering", "chef", "dine-in", "eatery"])) return "restaurant";
+  if (has(["real estate", "realtor", "listing", "for sale", "homes for sale", "mls", "brokerage", "property", "open house"])) return "realestate";
+  return "generic";
+}
 
 function privateAddress(address: string) { return /^(127\.|0\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[0-1])\.|::1$|fc|fd|fe80:)/i.test(address); }
 async function publicUrl(value: string) {
@@ -64,19 +76,20 @@ export const createWebsiteDemo = createServerFn({ method: "POST" })
 
     const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g, " ").trim() ?? "";
     const description = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)?.[1]?.trim() ?? "";
-    const base = fallback(url, title, description);
     const context = visibleText(html).slice(0, 8_000);
+    const industry = detectIndustry(`${title} ${description} ${context}`);
+    const base: Demo = { ...fallback(url, title, description), industry };
     const key = process.env.LOVABLE_API_KEY;
     if (!key) return base;
 
     try {
       const result = await generateText({
         model: createLovableAiGatewayProvider(key)("google/gemini-2.5-flash"),
-        prompt: `Create a premium but believable one-page website concept from this public website content. Return JSON only, no markdown. Do not invent facts, pricing, awards, claims, or contact information. Make copy concise and customer-friendly. Required JSON schema: {"businessName":"","eyebrow":"","headline":"","subheadline":"","primaryCta":"","secondaryCta":"","services":[{"title":"","description":""},{"title":"","description":""},{"title":"","description":""}],"proof":["","", ""],"palette":{"primary":"#RRGGBB","accent":"#RRGGBB"}}. Website URL: ${url}. Existing page title: ${title}. Description: ${description}. Public text: ${context}`,
+        prompt: `Create a premium but believable one-page website concept from this public website content. The business appears to be in the "${industry}" category — tailor the copy to how that kind of business wins customers. Return JSON only, no markdown. Do not invent facts, pricing, awards, claims, or contact information. Make copy concise and customer-friendly. Required JSON schema: {"businessName":"","eyebrow":"","headline":"","subheadline":"","primaryCta":"","secondaryCta":"","services":[{"title":"","description":""},{"title":"","description":""},{"title":"","description":""}],"proof":["","", ""],"palette":{"primary":"#RRGGBB","accent":"#RRGGBB"}}. Website URL: ${url}. Existing page title: ${title}. Description: ${description}. Public text: ${context}`,
       });
       const json = result.text.match(/\{[\s\S]*\}/)?.[0];
       if (!json) return base;
-      return { ...DemoSchema.parse(JSON.parse(json)), sourceUrl: url.toString(), generatedWithAi: true } satisfies Demo;
+      return { ...DemoSchema.parse(JSON.parse(json)), sourceUrl: url.toString(), generatedWithAi: true, industry } satisfies Demo;
     } catch {
       return base;
     }
