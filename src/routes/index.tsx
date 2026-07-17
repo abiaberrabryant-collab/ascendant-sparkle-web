@@ -845,7 +845,11 @@ function Pricing() {
           ))}
         </div>
       </div>
-      <CheckoutDialog tier={selectedTier} onClose={() => setSelectedTier(null)} />
+      {selectedTier && (
+        <Suspense fallback={null}>
+          <CheckoutDialog tier={selectedTier} onClose={() => setSelectedTier(null)} />
+        </Suspense>
+      )}
     </section>
   );
 }
