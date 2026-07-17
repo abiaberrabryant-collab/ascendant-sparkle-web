@@ -159,6 +159,66 @@ export type Database = {
         }
         Relationships: []
       }
+      client_chatbots: {
+        Row: {
+          boundaries: string
+          brand_color: string
+          business_description: string
+          business_name: string
+          created_at: string
+          faq_and_policies: string
+          greeting: string
+          handoff_message: string
+          hours_and_contact: string
+          id: string
+          is_live: boolean
+          lead_questions: string
+          owner_user_id: string
+          services: string
+          tone: string
+          updated_at: string
+          website_url: string
+        }
+        Insert: {
+          boundaries?: string
+          brand_color?: string
+          business_description?: string
+          business_name?: string
+          created_at?: string
+          faq_and_policies?: string
+          greeting?: string
+          handoff_message?: string
+          hours_and_contact?: string
+          id?: string
+          is_live?: boolean
+          lead_questions?: string
+          owner_user_id: string
+          services?: string
+          tone?: string
+          updated_at?: string
+          website_url?: string
+        }
+        Update: {
+          boundaries?: string
+          brand_color?: string
+          business_description?: string
+          business_name?: string
+          created_at?: string
+          faq_and_policies?: string
+          greeting?: string
+          handoff_message?: string
+          hours_and_contact?: string
+          id?: string
+          is_live?: boolean
+          lead_questions?: string
+          owner_user_id?: string
+          services?: string
+          tone?: string
+          updated_at?: string
+          website_url?: string
+        }
+        Relationships: []
+      }
       contact_inquiries: {
         Row: {
           budget: string | null
