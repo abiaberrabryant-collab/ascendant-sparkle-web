@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { readCappedText } from "@/lib/safe-fetch.server";
 
 const UrlInput = z.object({ website_url: z.string().url().max(500) });
 const DraftInput = z.object({ prospect_id: z.string().uuid(), contact_name: z.string().trim().max(120), contact_email: z.string().trim().email().max(255) });
@@ -69,7 +70,7 @@ export const scanSignalProspect = createServerFn({ method: "POST" })
       if (!response.ok) throw new Error(`Website returned ${response.status}.`);
       const length = Number(response.headers.get("content-length") ?? "0");
       if (length > 750_000) throw new Error("That page is too large to scan.");
-      html = (await response.text()).slice(0, 750_000);
+      html = await readCappedText(response, 750_000);
     } catch (error) { throw new Error(error instanceof Error && error.name === "AbortError" ? "The website took too long to respond." : error instanceof Error ? error.message : "Could not scan that website."); }
     finally { clearTimeout(timeout); }
 
