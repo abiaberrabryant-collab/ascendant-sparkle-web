@@ -1,0 +1,82 @@
+import { createServerFn } from "@tanstack/react-start";
+import { generateText } from "ai";
+import { z } from "zod";
+import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+
+const Input = z.object({ website_url: z.string().url().max(500) });
+const DemoSchema = z.object({
+  businessName: z.string().min(1).max(100),
+  eyebrow: z.string().min(1).max(90),
+  headline: z.string().min(1).max(130),
+  subheadline: z.string().min(1).max(280),
+  primaryCta: z.string().min(1).max(40),
+  secondaryCta: z.string().min(1).max(40),
+  services: z.array(z.object({ title: z.string().min(1).max(70), description: z.string().min(1).max(150) })).min(3).max(3),
+  proof: z.array(z.string().min(1).max(45)).min(3).max(3),
+  palette: z.object({ primary: z.string().regex(/^#[0-9a-fA-F]{6}$/), accent: z.string().regex(/^#[0-9a-fA-F]{6}$/) }),
+});
+type Demo = z.infer<typeof DemoSchema> & { sourceUrl: string; generatedWithAi: boolean };
+
+function privateAddress(address: string) { return /^(127\.|0\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[0-1])\.|::1$|fc|fd|fe80:)/i.test(address); }
+async function publicUrl(value: string) {
+  const url = new URL(value);
+  const host = url.hostname.toLowerCase();
+  if (!/^https?:$/.test(url.protocol) || /^(localhost|127\.|0\.0\.0\.0|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(host) || host === "[::1]") throw new Error("Enter a public http or https website URL.");
+  const { lookup } = await import("node:dns/promises");
+  const records = await lookup(host, { all: true });
+  if (!records.length || records.some((record) => privateAddress(record.address))) throw new Error("Enter a public website URL.");
+  return url;
+}
+function visibleText(html: string) { return html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(); }
+function fallback(url: URL, title: string, description: string): Demo {
+  const businessName = title.split(/[|—–-]/)[0].trim().slice(0, 100) || url.hostname.replace(/^www\./, "");
+  return {
+    businessName, eyebrow: "A clearer way to choose", headline: `A stronger first impression for ${businessName}.`,
+    subheadline: description || `A modern website concept built around making it simple for visitors to understand, trust, and contact ${businessName}.`,
+    primaryCta: "Start a conversation", secondaryCta: "See how it works",
+    services: [{ title: "Simple next steps", description: "Clear paths help visitors find exactly what they need." }, { title: "Built for trust", description: "Proof, clarity, and helpful details live where decisions happen." }, { title: "Always available", description: "A trained website assistant can answer common questions around the clock." }],
+    proof: ["Mobile-first experience", "Clear calls to action", "Fast, modern foundation"], palette: { primary: "#2563eb", accent: "#7c3aed" }, sourceUrl: url.toString(), generatedWithAi: false,
+  };
+}
+
+export const createWebsiteDemo = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => Input.parse(data))
+  .handler(async ({ data }) => {
+    let url = await publicUrl(data.website_url);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10_000);
+    let html = "";
+    try {
+      let response: Response | null = null;
+      for (let redirects = 0; redirects < 4; redirects += 1) {
+        response = await fetch(url, { signal: controller.signal, redirect: "manual", headers: { "User-Agent": "AscendantWeb-Demo-Preview/1.0 (+https://ascendantweb.org)" } });
+        if (![301, 302, 303, 307, 308].includes(response.status)) break;
+        const location = response.headers.get("location");
+        if (!location) break;
+        url = await publicUrl(new URL(location, url).toString());
+      }
+      if (!response?.ok) throw new Error(response ? `Website returned ${response.status}.` : "Could not reach that website.");
+      if (Number(response.headers.get("content-length") ?? "0") > 650_000) throw new Error("That page is too large to preview.");
+      html = (await response.text()).slice(0, 650_000);
+    } catch (error) { throw new Error(error instanceof Error && error.name === "AbortError" ? "The website took too long to respond." : error instanceof Error ? error.message : "Could not read that website."); }
+    finally { clearTimeout(timeout); }
+
+    const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g, " ").trim() ?? "";
+    const description = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)?.[1]?.trim() ?? "";
+    const base = fallback(url, title, description);
+    const context = visibleText(html).slice(0, 8_000);
+    const key = process.env.LOVABLE_API_KEY;
+    if (!key) return base;
+
+    try {
+      const result = await generateText({
+        model: createLovableAiGatewayProvider(key)("google/gemini-2.5-flash"),
+        prompt: `Create a premium but believable one-page website concept from this public website content. Return JSON only, no markdown. Do not invent facts, pricing, awards, claims, or contact information. Make copy concise and customer-friendly. Required JSON schema: {"businessName":"","eyebrow":"","headline":"","subheadline":"","primaryCta":"","secondaryCta":"","services":[{"title":"","description":""},{"title":"","description":""},{"title":"","description":""}],"proof":["","", ""],"palette":{"primary":"#RRGGBB","accent":"#RRGGBB"}}. Website URL: ${url}. Existing page title: ${title}. Description: ${description}. Public text: ${context}`,
+      });
+      const json = result.text.match(/\{[\s\S]*\}/)?.[0];
+      if (!json) return base;
+      return { ...DemoSchema.parse(JSON.parse(json)), sourceUrl: url.toString(), generatedWithAi: true } satisfies Demo;
+    } catch {
+      return base;
+    }
+  });

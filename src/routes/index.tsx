@@ -15,6 +15,8 @@ import {
   Check,
   ChevronDown,
   Loader2,
+  Radar,
+  Workflow,
 } from "lucide-react";
 import beforeSite from "@/assets/before-site.webp";
 import afterSite from "@/assets/after-site.webp";
@@ -110,6 +112,7 @@ function Nav() {
               {l.label}
             </a>
           ))}
+          <Link to="/demo" className="text-primary transition-colors hover:text-foreground">Instant demo</Link>
         </div>
         <div className="flex items-center gap-3">
           {user ? (
@@ -242,12 +245,12 @@ function Hero() {
             Grab a free audit
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
           </a>
-          <a
-            href="#industries"
+          <Link
+            to="/demo"
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass px-8 py-4 font-bold backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-black/5"
           >
-            See what we build
-          </a>
+            See your new site
+          </Link>
         </div>
 
       </div>
@@ -682,6 +685,34 @@ function Services() {
             </button>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Product System ---------------- */
+
+const systemSteps = [
+  { icon: Layout, number: "01", title: "Your conversion-ready website", text: "The public-facing home for your brand: fast pages, clear services, trust builders, and simple next steps." },
+  { icon: Bot, number: "02", title: "Your trained website assistant", text: "A chatbot answers common questions, captures callback requests, and routes real opportunities to your dashboard." },
+  { icon: Workflow, number: "03", title: "Your owner command center", text: "Manage business details, review conversations, and keep every customer follow-up organized in one place." },
+  { icon: Radar, number: "04", title: "Your opportunity research", text: "Signal Studio researches one public website at a time and makes review-only drafts—never automatic spam." },
+];
+
+function Systems() {
+  return (
+    <section className="relative overflow-hidden border-y border-glass-border bg-black/[0.02] py-32">
+      <div className="pointer-events-none absolute left-1/2 top-0 h-full w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
+      <div className="relative mx-auto max-w-7xl px-6">
+        <div className="mx-auto max-w-3xl text-center">
+          <MonoLabel tone="secondary">// Your business system, explained</MonoLabel>
+          <h2 className="mt-4 text-4xl font-extrabold tracking-tight md:text-5xl">More than a website. A clearer way to grow.</h2>
+          <p className="mt-4 text-foreground/60">Every part has one job, connects cleanly to the next, and stays under your control. No mystery automations. No confusing dashboards.</p>
+        </div>
+        <div className="relative mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {systemSteps.map(({ icon: Icon, number, title, text }, index) => <div key={title} className="group relative rounded-2xl border border-glass-border bg-glass p-6 backdrop-blur transition-all duration-500 hover:-translate-y-2 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10"><div className="flex items-center justify-between"><div className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary"><Icon className="size-5" /></div><span className="font-mono text-xs text-foreground/35">{number}</span></div><h3 className="mt-6 text-lg font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-foreground/60">{text}</p>{index < systemSteps.length - 1 && <ArrowRight className="absolute -right-7 top-1/2 z-10 hidden size-5 text-primary/50 lg:block" />}</div>)}
+        </div>
+        <div className="mt-10 flex flex-col items-center justify-between gap-5 rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center sm:flex-row sm:text-left"><div><div className="font-semibold">Want to see this applied to your business?</div><p className="mt-1 text-sm text-foreground/60">Paste your website and get an instant polished concept before you commit.</p></div><Link to="/demo" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white shadow-lg shadow-primary/30 transition hover:-translate-y-0.5">Create my demo <ArrowRight className="size-4" /></Link></div>
       </div>
     </section>
   );
@@ -1347,6 +1378,7 @@ function HomePage() {
       <Industries />
       <WhyUs />
       <Services />
+      <Systems />
       <Pricing />
       <Testimonials />
 
