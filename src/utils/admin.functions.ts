@@ -1,6 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+const PAGE_SIZE_DEFAULT = 25;
+const PAGE_SIZE_MAX = 100;
+
+function pageRange(input?: { page?: number; pageSize?: number }) {
+  const page = Math.max(1, input?.page ?? 1);
+  const pageSize = Math.min(Math.max(input?.pageSize ?? PAGE_SIZE_DEFAULT, 1), PAGE_SIZE_MAX);
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+  return { from, to, pageSize, page };
+}
+
 async function assertAdmin(supabase: any, userId: string) {
   const { data } = await supabase
     .from("user_roles")
@@ -13,53 +24,64 @@ async function assertAdmin(supabase: any, userId: string) {
 
 export const listAllOrders = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((data: { page?: number; pageSize?: number } | undefined) => data ?? {})
+  .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
+    const { from, to, pageSize, page } = pageRange(data);
+    const { data: rows, error, count } = await supabaseAdmin
       .from("orders")
-      .select("*")
+      .select("id, user_id, tier, amount_cents, currency, status, environment, created_at", {
+        count: "exact",
+      })
       .order("created_at", { ascending: false })
-      .limit(500);
+      .range(from, to);
     if (error) throw new Error(error.message);
-    return data ?? [];
+    return { rows: rows ?? [], total: count ?? 0, page, pageSize };
   });
 
 export const listAllSubscriptions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((data: { page?: number; pageSize?: number } | undefined) => data ?? {})
+  .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
+    const { from, to, pageSize, page } = pageRange(data);
+    const cols =
+      "id, user_id, status, price_id, cancel_at_period_end, current_period_end, environment, created_at";
+    const withProfiles = await supabaseAdmin
       .from("subscriptions")
-      .select("*, profiles:user_id(email, full_name)")
+      .select(`${cols}, profiles:user_id(email, full_name)`, { count: "exact" })
       .order("created_at", { ascending: false })
-      .limit(500);
-    if (error) {
-      // If join fails (no FK), fall back to plain query.
+      .range(from, to);
+    if (withProfiles.error) {
       const fallback = await supabaseAdmin
         .from("subscriptions")
-        .select("*")
+        .select(cols, { count: "exact" })
         .order("created_at", { ascending: false })
-        .limit(500);
+        .range(from, to);
       if (fallback.error) throw new Error(fallback.error.message);
-      return fallback.data ?? [];
+      return { rows: fallback.data ?? [], total: fallback.count ?? 0, page, pageSize };
     }
-    return data ?? [];
+    return { rows: withProfiles.data ?? [], total: withProfiles.count ?? 0, page, pageSize };
   });
 
 export const listAllInquiries = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((data: { page?: number; pageSize?: number } | undefined) => data ?? {})
+  .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await supabaseAdmin
+    const { from, to, pageSize, page } = pageRange(data);
+    const { data: rows, error, count } = await supabaseAdmin
       .from("contact_inquiries")
-      .select("*")
+      .select("id, name, email, company, phone, message, status, source, created_at", {
+        count: "exact",
+      })
       .order("created_at", { ascending: false })
-      .limit(500);
+      .range(from, to);
     if (error) throw new Error(error.message);
-    return data ?? [];
+    return { rows: rows ?? [], total: count ?? 0, page, pageSize };
   });
 
 export const updateInquiryStatus = createServerFn({ method: "POST" })
