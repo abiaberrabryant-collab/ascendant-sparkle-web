@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateText } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { readCappedText } from "@/lib/safe-fetch.server";
 
 const Input = z.object({ website_url: z.string().url().max(500) });
 const DemoSchema = z.object({
@@ -57,7 +58,7 @@ export const createWebsiteDemo = createServerFn({ method: "POST" })
       }
       if (!response?.ok) throw new Error(response ? `Website returned ${response.status}.` : "Could not reach that website.");
       if (Number(response.headers.get("content-length") ?? "0") > 650_000) throw new Error("That page is too large to preview.");
-      html = (await response.text()).slice(0, 650_000);
+      html = await readCappedText(response, 650_000);
     } catch (error) { throw new Error(error instanceof Error && error.name === "AbortError" ? "The website took too long to respond." : error instanceof Error ? error.message : "Could not read that website."); }
     finally { clearTimeout(timeout); }
 

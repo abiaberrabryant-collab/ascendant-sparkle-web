@@ -183,3 +183,31 @@
     color: var(--color-foreground);
   }
 }
+
+/* Respect the user's reduced-motion preference: neutralize ambient/decorative
+   motion and near-instantly resolve entrance animations so content stays
+   visible. Keeps the site accessible and calm for motion-sensitive users. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Fully stop looping/ambient effects so nothing drifts in the background. */
+  .animate-aurora,
+  .animate-scan,
+  .animate-float,
+  .animate-marquee,
+  .animate-tilt,
+  .animate-pulse-ring,
+  .animate-gradient,
+  .text-gradient {
+    animation: none !important;
+  }
+}
