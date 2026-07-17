@@ -35,23 +35,28 @@ export const createPortalSession = createServerFn({ method: "POST" })
 
 export const getMyBilling = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { environment: StripeEnv }) => data)
+  .inputValidator((data: { environment: StripeEnv; ordersLimit?: number }) => data)
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    const ordersLimit = Math.min(Math.max(data.ordersLimit ?? 10, 1), 100);
 
     const [subsRes, ordersRes] = await Promise.all([
       supabase
         .from("subscriptions")
-        .select("*")
+        .select(
+          "id, status, price_id, cancel_at_period_end, current_period_end, created_at",
+        )
         .eq("user_id", userId)
         .eq("environment", data.environment)
-        .order("created_at", { ascending: false }),
+        .order("created_at", { ascending: false })
+        .limit(5),
       supabase
         .from("orders")
-        .select("*")
+        .select("id, tier, amount_cents, currency, status, created_at")
         .eq("user_id", userId)
         .eq("environment", data.environment)
-        .order("created_at", { ascending: false }),
+        .order("created_at", { ascending: false })
+        .limit(ordersLimit),
     ]);
 
     return {

@@ -63,16 +63,16 @@ export const Route = createFileRoute("/api/public/chat")({
           `\n\nRules: Be concise, warm, and helpful. If you don't know something, say so — never invent facts. If the visitor shows buying intent, ask for their name and email so a human can follow up. Use the /contact page for anything you can't handle.`,
         ].join("");
 
-        const messages: ModelMessage[] = [
-          { role: "system", content: systemPrompt },
-          ...body.messages.map((m) => ({ role: m.role, content: m.content }) as ModelMessage),
-        ];
+        const messages: ModelMessage[] = body.messages.map(
+          (m) => ({ role: m.role, content: m.content }) as ModelMessage,
+        );
 
         const gateway = createLovableAiGatewayProvider(key);
         const model = gateway(settings.model || "google/gemini-2.5-flash");
 
         const result = streamText({
           model,
+          system: systemPrompt,
           messages,
           onFinish: async ({ text }) => {
             await supabaseAdmin.from("chat_messages").insert({

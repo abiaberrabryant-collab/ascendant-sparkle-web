@@ -44,9 +44,9 @@ function AdminPage() {
     setLoading(true);
     Promise.all([listAllOrders(), listAllSubscriptions(), listAllInquiries()])
       .then(([o, s, i]) => {
-        setOrders(o);
-        setSubs(s);
-        setInquiries(i);
+        setOrders(o.rows);
+        setSubs(s.rows);
+        setInquiries(i.rows);
       })
       .catch((e) => setError(e instanceof Error ? e.message : String(e)))
       .finally(() => setLoading(false));

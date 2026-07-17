@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
   Sparkles,
@@ -16,17 +16,18 @@ import {
   ChevronDown,
   Loader2,
 } from "lucide-react";
-import beforeSite from "@/assets/before-site.jpg";
-import afterSite from "@/assets/after-site.jpg";
-import industryElectrical from "@/assets/industry-electrical.jpg";
-import industryPlumbing from "@/assets/industry-plumbing.jpg";
-import industryLaw from "@/assets/industry-law.jpg";
-import industryRestaurant from "@/assets/industry-restaurant.jpg";
-import industryRealEstate from "@/assets/industry-realestate.jpg";
-import { CheckoutDialog } from "@/components/CheckoutDialog";
+import beforeSite from "@/assets/before-site.webp";
+import afterSite from "@/assets/after-site.webp";
+import industryElectrical from "@/assets/industry-electrical.webp";
+import industryPlumbing from "@/assets/industry-plumbing.webp";
+import industryLaw from "@/assets/industry-law.webp";
+import industryRestaurant from "@/assets/industry-restaurant.webp";
+import industryRealEstate from "@/assets/industry-realestate.webp";
 import { useAuth } from "@/hooks/useAuth";
 import { submitInquiry } from "@/utils/contact.functions";
 import { ChatWidget } from "@/components/ChatWidget";
+
+const CheckoutDialog = lazy(() => import("@/components/CheckoutDialog"));
 
 
 export const Route = createFileRoute("/")({
@@ -48,9 +49,9 @@ export const Route = createFileRoute("/")({
 function GlowBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute -top-1/2 -left-1/4 size-[900px] rounded-full bg-primary/15 blur-[130px] animate-aurora" />
+      <div className="absolute -top-1/2 -left-1/4 hidden size-[900px] rounded-full bg-primary/15 blur-[130px] motion-safe:md:block motion-safe:md:animate-aurora" />
       <div
-        className="absolute -bottom-1/2 -right-1/4 size-[900px] rounded-full bg-secondary/15 blur-[130px] animate-aurora"
+        className="absolute -bottom-1/2 -right-1/4 hidden size-[900px] rounded-full bg-secondary/15 blur-[130px] motion-safe:md:block motion-safe:md:animate-aurora"
         style={{ animationDirection: "reverse" }}
       />
       <div
@@ -416,7 +417,7 @@ function BeforeAfter() {
             alt="Modern AscendantWeb redesign"
             width={1200}
             height={1200}
-            loading="lazy"
+            loading="lazy" decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${pos}%` }}>
@@ -425,7 +426,7 @@ function BeforeAfter() {
               alt="Outdated legacy website"
               width={1200}
               height={1200}
-              loading="lazy"
+              loading="lazy" decoding="async"
               className="absolute inset-0 h-full object-cover"
               style={{ width: `${(100 / pos) * 100}%` }}
             />
@@ -497,7 +498,7 @@ function Industries() {
                   alt={`${i.name} website design mockup`}
                   width={1280}
                   height={960}
-                  loading="lazy"
+                  loading="lazy" decoding="async"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
@@ -844,7 +845,11 @@ function Pricing() {
           ))}
         </div>
       </div>
-      <CheckoutDialog tier={selectedTier} onClose={() => setSelectedTier(null)} />
+      {selectedTier && (
+        <Suspense fallback={null}>
+          <CheckoutDialog tier={selectedTier} onClose={() => setSelectedTier(null)} />
+        </Suspense>
+      )}
     </section>
   );
 }

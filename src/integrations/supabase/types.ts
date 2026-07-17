@@ -159,6 +159,66 @@ export type Database = {
         }
         Relationships: []
       }
+      client_chatbots: {
+        Row: {
+          boundaries: string
+          brand_color: string
+          business_description: string
+          business_name: string
+          created_at: string
+          faq_and_policies: string
+          greeting: string
+          handoff_message: string
+          hours_and_contact: string
+          id: string
+          is_live: boolean
+          lead_questions: string
+          owner_user_id: string
+          services: string
+          tone: string
+          updated_at: string
+          website_url: string
+        }
+        Insert: {
+          boundaries?: string
+          brand_color?: string
+          business_description?: string
+          business_name?: string
+          created_at?: string
+          faq_and_policies?: string
+          greeting?: string
+          handoff_message?: string
+          hours_and_contact?: string
+          id?: string
+          is_live?: boolean
+          lead_questions?: string
+          owner_user_id: string
+          services?: string
+          tone?: string
+          updated_at?: string
+          website_url?: string
+        }
+        Update: {
+          boundaries?: string
+          brand_color?: string
+          business_description?: string
+          business_name?: string
+          created_at?: string
+          faq_and_policies?: string
+          greeting?: string
+          handoff_message?: string
+          hours_and_contact?: string
+          id?: string
+          is_live?: boolean
+          lead_questions?: string
+          owner_user_id?: string
+          services?: string
+          tone?: string
+          updated_at?: string
+          website_url?: string
+        }
+        Relationships: []
+      }
       contact_inquiries: {
         Row: {
           budget: string | null
@@ -240,6 +300,39 @@ export type Database = {
           tier?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      perf_metrics: {
+        Row: {
+          created_at: string
+          id: string
+          metric: string
+          navigation_type: string | null
+          rating: string | null
+          route: string
+          user_agent: string | null
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metric: string
+          navigation_type?: string | null
+          rating?: string | null
+          route: string
+          user_agent?: string | null
+          value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metric?: string
+          navigation_type?: string | null
+          rating?: string | null
+          route?: string
+          user_agent?: string | null
+          value?: number
         }
         Relationships: []
       }

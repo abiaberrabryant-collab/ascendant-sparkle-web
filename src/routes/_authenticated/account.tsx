@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { getMyBilling, createPortalSession } from "@/utils/account.functions";
 import { getStripeEnvironment } from "@/lib/stripe";
+import { AccountSkeleton } from "@/components/Skeleton";
 
 export const Route = createFileRoute("/_authenticated/account")({
   head: () => ({
@@ -98,7 +99,7 @@ function AccountPage() {
         </Link>
 
         {loading ? (
-          <div className="mt-10 text-foreground/60">Loading…</div>
+          <AccountSkeleton />
         ) : (
           <>
             <div className="mt-10 rounded-3xl border border-glass-border bg-glass p-8">
