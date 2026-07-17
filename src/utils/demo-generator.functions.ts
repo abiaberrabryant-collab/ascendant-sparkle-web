@@ -48,7 +48,7 @@ function fallback(url: URL, title: string, description: string): Demo {
     subheadline: description || `A modern website concept built around making it simple for visitors to understand, trust, and contact ${businessName}.`,
     primaryCta: "Start a conversation", secondaryCta: "See how it works",
     services: [{ title: "Simple next steps", description: "Clear paths help visitors find exactly what they need." }, { title: "Built for trust", description: "Proof, clarity, and helpful details live where decisions happen." }, { title: "Always available", description: "A trained website assistant can answer common questions around the clock." }],
-    proof: ["Mobile-first experience", "Clear calls to action", "Fast, modern foundation"], palette: { primary: "#2563eb", accent: "#7c3aed" }, sourceUrl: url.toString(), generatedWithAi: false,
+    proof: ["Mobile-first experience", "Clear calls to action", "Fast, modern foundation"], palette: { primary: "#2563eb", accent: "#7c3aed" }, sourceUrl: url.toString(), generatedWithAi: false, industry: "generic",
   };
 }
 
