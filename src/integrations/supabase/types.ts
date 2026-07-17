@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          organization_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          organization_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          organization_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_conversations: {
         Row: {
           created_at: string
@@ -161,6 +199,7 @@ export type Database = {
       }
       client_chatbots: {
         Row: {
+          allowed_domains: string[]
           boundaries: string
           brand_color: string
           business_description: string
@@ -173,6 +212,7 @@ export type Database = {
           id: string
           is_live: boolean
           lead_questions: string
+          organization_id: string | null
           owner_user_id: string
           services: string
           tone: string
@@ -180,6 +220,7 @@ export type Database = {
           website_url: string
         }
         Insert: {
+          allowed_domains?: string[]
           boundaries?: string
           brand_color?: string
           business_description?: string
@@ -192,6 +233,7 @@ export type Database = {
           id?: string
           is_live?: boolean
           lead_questions?: string
+          organization_id?: string | null
           owner_user_id: string
           services?: string
           tone?: string
@@ -199,6 +241,7 @@ export type Database = {
           website_url?: string
         }
         Update: {
+          allowed_domains?: string[]
           boundaries?: string
           brand_color?: string
           business_description?: string
@@ -211,13 +254,22 @@ export type Database = {
           id?: string
           is_live?: boolean
           lead_questions?: string
+          organization_id?: string | null
           owner_user_id?: string
           services?: string
           tone?: string
           updated_at?: string
           website_url?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "client_chatbots_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       contact_inquiries: {
         Row: {
@@ -300,6 +352,71 @@ export type Database = {
           tier?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      organization_memberships: {
+        Row: {
+          created_at: string
+          id: string
+          organization_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_memberships_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          created_at: string
+          id: string
+          industry: string
+          name: string
+          owner_user_id: string
+          service_area: string
+          updated_at: string
+          website_url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          industry?: string
+          name?: string
+          owner_user_id: string
+          service_area?: string
+          updated_at?: string
+          website_url?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          industry?: string
+          name?: string
+          owner_user_id?: string
+          service_area?: string
+          updated_at?: string
+          website_url?: string
         }
         Relationships: []
       }

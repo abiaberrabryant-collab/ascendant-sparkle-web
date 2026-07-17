@@ -3,11 +3,11 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const Settings = z.object({
-  business_name: z.string().trim().min(2).max(120), website_url: z.string().trim().max(500),
+  business_name: z.string().trim().max(120), website_url: z.string().trim().max(500),
   business_description: z.string().trim().max(8000), services: z.string().trim().max(8000),
   hours_and_contact: z.string().trim().max(4000), faq_and_policies: z.string().trim().max(12000),
-  boundaries: z.string().trim().max(8000), handoff_message: z.string().trim().min(1).max(1000),
-  greeting: z.string().trim().min(1).max(500), tone: z.string().trim().min(1).max(160),
+  boundaries: z.string().trim().max(8000), handoff_message: z.string().trim().max(1000),
+  greeting: z.string().trim().max(500), tone: z.string().trim().max(160),
   brand_color: z.string().regex(/^#[0-9a-fA-F]{6}$/), lead_questions: z.string().trim().max(4000), is_live: z.boolean(),
   allowed_domains: z.array(z.string().trim().min(1).max(255)).max(20),
 });
