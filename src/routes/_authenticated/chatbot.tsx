@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Bot, CheckCircle2, Save, ShieldCheck, Sparkles } from "lucide-react";
 import { getMyChatbot, saveMyChatbot } from "@/utils/client-chatbot.functions";
+import { Skeleton } from "@/components/Skeleton";
 
 export const Route = createFileRoute("/_authenticated/chatbot")({
   head: () => ({ meta: [{ title: "Chatbot Studio — AscendantWeb" }, { name: "robots", content: "noindex" }] }), component: ChatbotStudio,
@@ -22,7 +23,20 @@ function ChatbotStudio() {
   useEffect(() => { getMyChatbot().then((result: any) => { setEligible(result.eligible); if (result.chatbot) { const { id, updated_at, created_at, owner_user_id, ...settings } = result.chatbot; setForm(settings); } }).catch((error) => setNotice(error instanceof Error ? error.message : "Could not load your chatbot.")); }, []);
   const update = (key: keyof Form, value: string | boolean) => setForm((current) => current ? { ...current, [key]: value } : current);
   const save = async () => { if (!form) return; setSaving(true); setNotice(""); try { await saveMyChatbot({ data: form }); setNotice("Saved. Your chatbot setup is ready for review."); } catch (error) { setNotice(error instanceof Error ? error.message : "Could not save your changes."); } finally { setSaving(false); } };
-  if (eligible === null) return <main className="min-h-screen bg-background p-10 text-foreground/60">Loading your Chatbot Studio…</main>;
+  if (eligible === null) return (
+    <main className="min-h-screen bg-background px-4 py-10 text-foreground" aria-busy="true">
+      <div className="mx-auto max-w-5xl space-y-6">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-10 w-72" />
+        <Skeleton className="h-4 w-96" />
+        <div className="mt-6 grid gap-4">
+          <Skeleton className="h-32 w-full rounded-2xl" />
+          <Skeleton className="h-32 w-full rounded-2xl" />
+          <Skeleton className="h-32 w-full rounded-2xl" />
+        </div>
+      </div>
+    </main>
+  );
   if (!eligible) return <main className="min-h-screen bg-background px-4 py-16"><div className="mx-auto max-w-xl rounded-3xl border border-glass-border bg-glass p-8 text-center"><Bot className="mx-auto size-10 text-primary" /><h1 className="mt-4 text-3xl font-extrabold">Chatbot Studio is ready when you are</h1><p className="mt-3 text-foreground/60">This workspace is available to customers with an active chatbot plan.</p><Link to="/account" className="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 font-bold text-white">View my account</Link></div></main>;
   if (!form) return null;
   return <main className="min-h-screen bg-background px-4 py-10 text-foreground"><div className="mx-auto max-w-5xl">
