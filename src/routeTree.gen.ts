@@ -18,7 +18,11 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-passw
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedChatbotRouteImport } from './routes/_authenticated/chatbot'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as ApiPublicChatRouteImport } from './routes/api/public/chat'
+import { Route as ApiPublicClientChatRouteImport } from './routes/api/public/client-chat'
+import { Route as ApiPublicClientChatbotRouteImport } from './routes/api/public/client-chatbot'
+import { Route as ApiPublicWidgetDotjsRouteImport } from './routes/api/public/widget[.]js'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -63,10 +67,22 @@ const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
 const AuthenticatedChatbotRoute = AuthenticatedChatbotRouteImport.update({
   id: '/chatbot', path: '/chatbot', getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard', path: '/dashboard', getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
   id: '/api/public/chat',
   path: '/api/public/chat',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicClientChatRoute = ApiPublicClientChatRouteImport.update({
+  id: '/api/public/client-chat', path: '/api/public/client-chat', getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicClientChatbotRoute = ApiPublicClientChatbotRouteImport.update({
+  id: '/api/public/client-chatbot', path: '/api/public/client-chatbot', getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWidgetDotjsRoute = ApiPublicWidgetDotjsRouteImport.update({
+  id: '/api/public/widget.js', path: '/api/public/widget.js', getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
@@ -81,10 +97,14 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/account': typeof AuthenticatedAccountRoute
   '/chatbot': typeof AuthenticatedChatbotRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/client-chat': typeof ApiPublicClientChatRoute
+  '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -93,10 +113,14 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/account': typeof AuthenticatedAccountRoute
   '/chatbot': typeof AuthenticatedChatbotRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/client-chat': typeof ApiPublicClientChatRoute
+  '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -107,10 +131,14 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/chatbot': typeof AuthenticatedChatbotRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/api/public/chat': typeof ApiPublicChatRoute
+  '/api/public/client-chat': typeof ApiPublicClientChatRoute
+  '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -121,10 +149,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/account'
     | '/chatbot'
+    | '/dashboard'
     | '/admin'
     | '/auth/reset-password'
     | '/checkout/return'
     | '/api/public/chat'
+    | '/api/public/client-chat'
+    | '/api/public/client-chatbot'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -133,10 +165,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/account'
     | '/chatbot'
+    | '/dashboard'
     | '/admin'
     | '/auth/reset-password'
     | '/checkout/return'
     | '/api/public/chat'
+    | '/api/public/client-chat'
+    | '/api/public/client-chatbot'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -146,10 +182,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/account'
     | '/_authenticated/chatbot'
+    | '/_authenticated/dashboard'
     | '/_authenticated/admin'
     | '/auth/reset-password'
     | '/checkout/return'
     | '/api/public/chat'
+    | '/api/public/client-chat'
+    | '/api/public/client-chatbot'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -160,6 +200,9 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   ApiPublicChatRoute: typeof ApiPublicChatRoute
+  ApiPublicClientChatRoute: typeof ApiPublicClientChatRoute
+  ApiPublicClientChatbotRoute: typeof ApiPublicClientChatbotRoute
+  ApiPublicWidgetDotjsRoute: typeof ApiPublicWidgetDotjsRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -228,11 +271,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatbotRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/chat': {
       id: '/api/public/chat'
       path: '/api/public/chat'
       fullPath: '/api/public/chat'
       preLoaderRoute: typeof ApiPublicChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/client-chat': {
+      id: '/api/public/client-chat'
+      path: '/api/public/client-chat'
+      fullPath: '/api/public/client-chat'
+      preLoaderRoute: typeof ApiPublicClientChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/client-chatbot': {
+      id: '/api/public/client-chatbot'
+      path: '/api/public/client-chatbot'
+      fullPath: '/api/public/client-chatbot'
+      preLoaderRoute: typeof ApiPublicClientChatbotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/widget.js': {
+      id: '/api/public/widget.js'
+      path: '/api/public/widget.js'
+      fullPath: '/api/public/widget.js'
+      preLoaderRoute: typeof ApiPublicWidgetDotjsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/payments/webhook': {
@@ -248,12 +319,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedChatbotRoute: typeof AuthenticatedChatbotRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedChatbotRoute: AuthenticatedChatbotRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
 }
 
@@ -277,6 +350,9 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
   ApiPublicChatRoute: ApiPublicChatRoute,
+  ApiPublicClientChatRoute: ApiPublicClientChatRoute,
+  ApiPublicClientChatbotRoute: ApiPublicClientChatbotRoute,
+  ApiPublicWidgetDotjsRoute: ApiPublicWidgetDotjsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

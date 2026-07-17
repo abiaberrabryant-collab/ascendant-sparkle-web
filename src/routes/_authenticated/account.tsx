@@ -90,6 +90,9 @@ function AccountPage() {
 
         <h1 className="text-4xl font-extrabold tracking-tight">My Account</h1>
         <p className="mt-2 text-foreground/60">{user?.email}</p>
+        <Link to="/dashboard" className="mt-5 mr-3 inline-flex rounded-xl border border-glass-border px-5 py-3 font-bold hover:bg-white/5">
+          Owner dashboard
+        </Link>
         <Link to="/chatbot" className="mt-5 inline-flex rounded-xl bg-primary px-5 py-3 font-bold text-white shadow-lg shadow-primary/30">
           Open Chatbot Studio
         </Link>

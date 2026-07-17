@@ -9,6 +9,7 @@ const Settings = z.object({
   boundaries: z.string().trim().max(8000), handoff_message: z.string().trim().min(1).max(1000),
   greeting: z.string().trim().min(1).max(500), tone: z.string().trim().min(1).max(160),
   brand_color: z.string().regex(/^#[0-9a-fA-F]{6}$/), lead_questions: z.string().trim().max(4000), is_live: z.boolean(),
+  allowed_domains: z.array(z.string().trim().min(1).max(255)).max(20),
 });
 
 async function hasAccess(db: any, userId: string) {
@@ -19,13 +20,23 @@ async function hasAccess(db: any, userId: string) {
   return Boolean(role || subscription);
 }
 
+async function getOrCreateOrganization(db: any, userId: string) {
+  const { data: existing } = await db.from("organizations").select("id").eq("owner_user_id", userId).maybeSingle();
+  if (existing) return existing.id as string;
+  const { data: created, error } = await db.from("organizations").insert({ owner_user_id: userId, name: "My business" }).select("id").single();
+  if (error || !created) throw new Error(error?.message ?? "Could not create your organization");
+  await db.from("organization_memberships").insert({ organization_id: created.id, user_id: userId, role: "owner" });
+  return created.id as string;
+}
+
 export const getMyChatbot = createServerFn({ method: "GET" }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
   const db = context.supabase as any;
   if (!(await hasAccess(db, context.userId))) return { eligible: false, chatbot: null };
-  const { data, error } = await db.from("client_chatbots").select("*").eq("owner_user_id", context.userId).maybeSingle();
+  const organizationId = await getOrCreateOrganization(db, context.userId);
+  const { data, error } = await db.from("client_chatbots").select("*").eq("organization_id", organizationId).maybeSingle();
   if (error) throw new Error(error.message);
   if (data) return { eligible: true, chatbot: data };
-  const { data: created, error: createError } = await db.from("client_chatbots").insert({ owner_user_id: context.userId }).select("*").single();
+  const { data: created, error: createError } = await db.from("client_chatbots").insert({ owner_user_id: context.userId, organization_id: organizationId }).select("*").single();
   if (createError) throw new Error(createError.message);
   return { eligible: true, chatbot: created };
 });
@@ -33,7 +44,9 @@ export const getMyChatbot = createServerFn({ method: "GET" }).middleware([requir
 export const saveMyChatbot = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator((data: unknown) => Settings.parse(data)).handler(async ({ data, context }) => {
   const db = context.supabase as any;
   if (!(await hasAccess(db, context.userId))) throw new Error("An active chatbot plan is required.");
-  const { error } = await db.from("client_chatbots").update(data).eq("owner_user_id", context.userId);
+  const organizationId = await getOrCreateOrganization(db, context.userId);
+  const { error } = await db.from("client_chatbots").update(data).eq("organization_id", organizationId);
   if (error) throw new Error(error.message);
+  await db.from("audit_logs").insert({ organization_id: organizationId, actor_user_id: context.userId, action: "chatbot.updated", entity_type: "client_chatbot" });
   return { ok: true };
 });
