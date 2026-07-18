@@ -16,6 +16,12 @@ const buffer: Array<{
   navigation_type?: string;
 }> = [];
 
+// Sample a fraction of visitors to keep DB write volume low. Bots and repeat
+// pageviews multiply, so 25% of real users is plenty for signal.
+const SAMPLED = typeof window !== "undefined" && Math.random() < 0.25;
+const MAX_EVENTS_PER_SESSION = 8;
+let sentThisSession = 0;
+
 let flushScheduled = false;
 function schedule() {
   if (flushScheduled) return;
@@ -51,12 +57,14 @@ export function WebVitalsReporter() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
+    if (!SAMPLED) return;
     let cancelled = false;
     (async () => {
       try {
         const { onCLS, onINP, onLCP, onTTFB, onFCP } = await import("web-vitals");
         const report = (name: Metric["name"]) => (m: any) => {
-          if (cancelled) return;
+          if (cancelled || sentThisSession >= MAX_EVENTS_PER_SESSION) return;
+          sentThisSession += 1;
           buffer.push({
             route: pathname,
             metric: name,

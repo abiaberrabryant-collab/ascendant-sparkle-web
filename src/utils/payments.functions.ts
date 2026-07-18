@@ -117,10 +117,14 @@ export const verifyCheckoutSession = createServerFn({ method: "POST" })
     if (!/^cs_[a-zA-Z0-9_]+$/.test(data.sessionId)) throw new Error("Invalid sessionId");
     return data;
   })
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     try {
       const stripe = createStripeClient(data.environment);
       const session = await stripe.checkout.sessions.retrieve(data.sessionId);
+      // Prevent IDOR: only the user who initiated the session may read its details.
+      if (session.metadata?.userId !== context.userId) {
+        return { error: "Checkout session not found" };
+      }
       return {
         status: session.status,
         payment_status: session.payment_status,
