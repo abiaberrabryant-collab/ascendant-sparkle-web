@@ -54,6 +54,7 @@ export type Database = {
       }
       chat_conversations: {
         Row: {
+          chatbot_id: string | null
           created_at: string
           id: string
           page_url: string | null
@@ -62,6 +63,7 @@ export type Database = {
           visitor_name: string | null
         }
         Insert: {
+          chatbot_id?: string | null
           created_at?: string
           id?: string
           page_url?: string | null
@@ -70,6 +72,7 @@ export type Database = {
           visitor_name?: string | null
         }
         Update: {
+          chatbot_id?: string | null
           created_at?: string
           id?: string
           page_url?: string | null
@@ -77,11 +80,20 @@ export type Database = {
           visitor_email?: string | null
           visitor_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "chat_conversations_chatbot_id_fkey"
+            columns: ["chatbot_id"]
+            isOneToOne: false
+            referencedRelation: "client_chatbots"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       chat_leads: {
         Row: {
           budget: string | null
+          chatbot_id: string | null
           conversation_id: string | null
           created_at: string
           email: string | null
@@ -95,6 +107,7 @@ export type Database = {
         }
         Insert: {
           budget?: string | null
+          chatbot_id?: string | null
           conversation_id?: string | null
           created_at?: string
           email?: string | null
@@ -108,6 +121,7 @@ export type Database = {
         }
         Update: {
           budget?: string | null
+          chatbot_id?: string | null
           conversation_id?: string | null
           created_at?: string
           email?: string | null
@@ -120,6 +134,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "chat_leads_chatbot_id_fkey"
+            columns: ["chatbot_id"]
+            isOneToOne: false
+            referencedRelation: "client_chatbots"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "chat_leads_conversation_id_fkey"
             columns: ["conversation_id"]
