@@ -57,12 +57,14 @@ export function WebVitalsReporter() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
+    if (!SAMPLED) return;
     let cancelled = false;
     (async () => {
       try {
         const { onCLS, onINP, onLCP, onTTFB, onFCP } = await import("web-vitals");
         const report = (name: Metric["name"]) => (m: any) => {
-          if (cancelled) return;
+          if (cancelled || sentThisSession >= MAX_EVENTS_PER_SESSION) return;
+          sentThisSession += 1;
           buffer.push({
             route: pathname,
             metric: name,
