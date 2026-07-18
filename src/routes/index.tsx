@@ -882,7 +882,7 @@ const systemSteps = [
   { icon: Layout, number: "01", title: "Your conversion-ready website", text: "The public-facing home for your brand: fast pages, clear services, trust builders, and simple next steps." },
   { icon: Bot, number: "02", title: "Your trained website assistant", text: "A chatbot answers common questions, captures callback requests, and routes real opportunities to your dashboard." },
   { icon: Workflow, number: "03", title: "Your owner command center", text: "Manage business details, review conversations, and keep every customer follow-up organized in one place." },
-  { icon: Radar, number: "04", title: "Your opportunity research", text: "Signal Studio researches one public website at a time and makes review-only drafts — never automatic spam." },
+  { icon: Radar, number: "04", title: "Your opportunity research", text: "Signal Studio watches public buyer-intent feeds and makes review-only drafts — never automatic spam." },
 ];
 
 function Systems() {
