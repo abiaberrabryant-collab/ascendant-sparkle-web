@@ -504,6 +504,380 @@ export type Database = {
         }
         Relationships: []
       }
+      prospect_email_drafts: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          prospect_id: string
+          status: string
+          subject: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          prospect_id: string
+          status?: string
+          subject: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          prospect_id?: string
+          status?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_email_drafts_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "signal_prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospect_signals: {
+        Row: {
+          created_at: string
+          detail: string | null
+          id: string
+          kind: string
+          label: string
+          prospect_id: string
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          kind: string
+          label: string
+          prospect_id: string
+          weight?: number
+        }
+        Update: {
+          created_at?: string
+          detail?: string | null
+          id?: string
+          kind?: string
+          label?: string
+          prospect_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_signals_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "signal_prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signal_campaigns: {
+        Row: {
+          created_at: string
+          id: string
+          ideal_customer: string
+          intent_phrases: string[]
+          is_active: boolean
+          match_keywords: string[]
+          name: string
+          offer: string
+          opt_out_email: string | null
+          organization_id: string
+          postal_address: string | null
+          sender_email: string | null
+          sender_name: string | null
+          service_area: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ideal_customer: string
+          intent_phrases?: string[]
+          is_active?: boolean
+          match_keywords?: string[]
+          name: string
+          offer: string
+          opt_out_email?: string | null
+          organization_id: string
+          postal_address?: string | null
+          sender_email?: string | null
+          sender_name?: string | null
+          service_area?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ideal_customer?: string
+          intent_phrases?: string[]
+          is_active?: boolean
+          match_keywords?: string[]
+          name?: string
+          offer?: string
+          opt_out_email?: string | null
+          organization_id?: string
+          postal_address?: string | null
+          sender_email?: string | null
+          sender_name?: string | null
+          service_area?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signal_campaigns_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signal_opportunities: {
+        Row: {
+          author_name: string | null
+          campaign_id: string
+          company_name: string | null
+          company_website_url: string | null
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          matched_terms: string[]
+          posted_at: string | null
+          score: number
+          source_id: string | null
+          source_url: string
+          status: string
+          title: string
+        }
+        Insert: {
+          author_name?: string | null
+          campaign_id: string
+          company_name?: string | null
+          company_website_url?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          matched_terms?: string[]
+          posted_at?: string | null
+          score?: number
+          source_id?: string | null
+          source_url: string
+          status?: string
+          title: string
+        }
+        Update: {
+          author_name?: string | null
+          campaign_id?: string
+          company_name?: string | null
+          company_website_url?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          matched_terms?: string[]
+          posted_at?: string | null
+          score?: number
+          source_id?: string | null
+          source_url?: string
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signal_opportunities_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "signal_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "signal_opportunities_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "signal_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signal_opportunity_drafts: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          opportunity_id: string
+          status: string
+          subject: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          opportunity_id: string
+          status?: string
+          subject: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          opportunity_id?: string
+          status?: string
+          subject?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signal_opportunity_drafts_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "signal_opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signal_prospects: {
+        Row: {
+          company_name: string
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          id: string
+          organization_id: string
+          page_description: string | null
+          page_title: string | null
+          scanned_at: string | null
+          score: number
+          status: string
+          website_url: string
+        }
+        Insert: {
+          company_name: string
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          id?: string
+          organization_id: string
+          page_description?: string | null
+          page_title?: string | null
+          scanned_at?: string | null
+          score?: number
+          status?: string
+          website_url: string
+        }
+        Update: {
+          company_name?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          id?: string
+          organization_id?: string
+          page_description?: string | null
+          page_title?: string | null
+          scanned_at?: string | null
+          score?: number
+          status?: string
+          website_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signal_prospects_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signal_source_runs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          items_found: number | null
+          opportunities_added: number | null
+          source_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          items_found?: number | null
+          opportunities_added?: number | null
+          source_id: string
+          status: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          items_found?: number | null
+          opportunities_added?: number | null
+          source_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signal_source_runs_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "signal_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      signal_sources: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          feed_url: string
+          id: string
+          is_enabled: boolean
+          last_run_at: string | null
+          name: string
+          source_type: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          feed_url: string
+          id?: string
+          is_enabled?: boolean
+          last_run_at?: string | null
+          name: string
+          source_type?: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          feed_url?: string
+          id?: string
+          is_enabled?: boolean
+          last_run_at?: string | null
+          name?: string
+          source_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "signal_sources_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "signal_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean | null
