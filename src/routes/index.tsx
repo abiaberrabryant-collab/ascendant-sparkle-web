@@ -57,7 +57,6 @@ function SkyDefs() {
     { id: "cloudB", seed: 17, freq: "0.011 0.021", scale: 52 },
     { id: "cloudC", seed: 29, freq: "0.013 0.017", scale: 66 },
   ];
-
   return (
     <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
       <defs>
@@ -196,146 +195,6 @@ function SkyBackground() {
       />
       {/* Sun glow */}
       <div
-=======
-  return (
-    <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
-      <defs>
-        <linearGradient id="cloudFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="52%" stopColor="#f5f8fe" />
-          <stop offset="100%" stopColor="#d6e1f0" />
-        </linearGradient>
-        {filters.map((f) => (
-          <filter key={f.id} id={f.id} x="-35%" y="-35%" width="170%" height="170%">
-            <feTurbulence type="fractalNoise" baseFrequency={f.freq} numOctaves={4} seed={f.seed} stitchTiles="stitch" result="n" />
-            <feDisplacementMap in="SourceGraphic" in2="n" scale={f.scale} xChannelSelector="R" yChannelSelector="G" />
-            <feGaussianBlur stdDeviation={1} />
-          </filter>
-        ))}
-      </defs>
-    </svg>
-  );
-}
-
-/** A realistic cloud: a puff cluster warped by fractal noise, softly shaded,
- *  with a clean symmetric shadow beneath. */
-function Cloud({ w, opacity = 1, filterId }: { w: number; opacity?: number; filterId: string }) {
-  const h = (w * 160) / 260;
-  return (
-    <div style={{ position: "relative", width: w, height: h, opacity }}>
-      <div
-        style={{
-          position: "absolute",
-          left: "16%",
-          right: "16%",
-          bottom: "8%",
-          height: Math.max(10, h * 0.13),
-          borderRadius: "50%",
-          background: "radial-gradient(50% 50% at 50% 50%, oklch(0.5 0.06 262 / 0.2), transparent 72%)",
-          filter: "blur(7px)",
-        }}
-      />
-      <svg
-        viewBox="0 0 260 160"
-        width={w}
-        height={h}
-        aria-hidden="true"
-        style={{ position: "relative", display: "block", overflow: "visible" }}
-      >
-        <g fill="url(#cloudFill)" filter={`url(#${filterId})`}>
-          <ellipse cx="130" cy="118" rx="112" ry="32" />
-          <circle cx="130" cy="82" r="52" />
-          <circle cx="76" cy="102" r="42" />
-          <circle cx="42" cy="116" r="30" />
-          <circle cx="188" cy="100" r="46" />
-          <circle cx="222" cy="116" r="30" />
-          <circle cx="102" cy="66" r="34" />
-          <circle cx="160" cy="60" r="38" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-/** Rolling hills that form the ground at the very bottom of the page. */
-function Ground() {
-  return (
-    <div className="absolute inset-x-0 bottom-0 h-[46vh] min-h-[340px]">
-      {/* horizon haze so the sky melts softly into the land */}
-      <div
-        className="absolute inset-x-0 top-0 h-44"
-        style={{ background: "linear-gradient(180deg, oklch(0.97 0.02 250 / 0.95), transparent)" }}
-      />
-      <svg viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden="true" className="absolute inset-0 h-full w-full">
-        <defs>
-          <linearGradient id="hillBack" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#dcecc9" />
-            <stop offset="100%" stopColor="#cbe2b3" />
-          </linearGradient>
-          <linearGradient id="hillMid" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#c1dda1" />
-            <stop offset="100%" stopColor="#a8cf84" />
-          </linearGradient>
-          <linearGradient id="hillFront" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#9fca75" />
-            <stop offset="100%" stopColor="#82b659" />
-          </linearGradient>
-        </defs>
-        <path d="M0 214 C 240 154, 430 188, 720 204 S 1210 252, 1440 194 L1440 400 L0 400 Z" fill="url(#hillBack)" />
-        <path d="M0 286 C 300 236, 560 306, 850 284 S 1265 262, 1440 304 L1440 400 L0 400 Z" fill="url(#hillMid)" />
-        <path d="M0 344 C 260 306, 620 364, 960 344 S 1305 334, 1440 352 L1440 400 L0 400 Z" fill="url(#hillFront)" />
-      </svg>
-    </div>
-  );
-}
-
-// Edge-biased: larger, opaque clouds hug the left/right margins so they stay
-// clear of the centered text column; small, hazy clouds fill the middle.
-// Each bobs up and down (amp) on its own timing so the sky feels alive.
-// `f` picks one of the shared noise filters so no two clouds look identical.
-const skyClouds = [
-  { top: "2%", left: "-7%", w: 320, op: 0.96, dur: "9s", delay: "0s", amp: "-30px", f: "cloudA" },
-  { top: "4%", left: "70%", w: 360, op: 0.96, dur: "11s", delay: "-2s", amp: "-34px", f: "cloudB" },
-  { top: "8%", left: "24%", w: 150, op: 0.5, dur: "8s", delay: "-3s", amp: "-22px", f: "cloudC" },
-  { top: "11%", left: "48%", w: 130, op: 0.4, dur: "7s", delay: "-1s", amp: "-18px", f: "cloudA" },
-  { top: "14%", left: "88%", w: 230, op: 0.85, dur: "12s", delay: "-5s", amp: "-28px", f: "cloudC" },
-  { top: "18%", left: "-5%", w: 270, op: 0.9, dur: "10s", delay: "-4s", amp: "-30px", f: "cloudB" },
-  { top: "23%", left: "62%", w: 160, op: 0.5, dur: "8s", delay: "-2s", amp: "-20px", f: "cloudA" },
-  { top: "28%", left: "82%", w: 290, op: 0.88, dur: "13s", delay: "-6s", amp: "-32px", f: "cloudB" },
-  { top: "32%", left: "-8%", w: 300, op: 0.9, dur: "11s", delay: "-3s", amp: "-30px", f: "cloudC" },
-  { top: "36%", left: "34%", w: 130, op: 0.42, dur: "7s", delay: "-1s", amp: "-18px", f: "cloudA" },
-  { top: "40%", left: "70%", w: 180, op: 0.6, dur: "9s", delay: "-5s", amp: "-24px", f: "cloudC" },
-  { top: "45%", left: "89%", w: 250, op: 0.85, dur: "12s", delay: "-2s", amp: "-30px", f: "cloudA" },
-  { top: "49%", left: "-6%", w: 290, op: 0.88, dur: "10s", delay: "-6s", amp: "-28px", f: "cloudB" },
-  { top: "53%", left: "48%", w: 140, op: 0.44, dur: "8s", delay: "-3s", amp: "-20px", f: "cloudC" },
-  { top: "57%", left: "78%", w: 270, op: 0.86, dur: "13s", delay: "-4s", amp: "-32px", f: "cloudA" },
-  { top: "61%", left: "-7%", w: 300, op: 0.9, dur: "11s", delay: "-1s", amp: "-30px", f: "cloudB" },
-  { top: "65%", left: "30%", w: 150, op: 0.48, dur: "9s", delay: "-5s", amp: "-22px", f: "cloudC" },
-  { top: "69%", left: "84%", w: 250, op: 0.85, dur: "12s", delay: "-2s", amp: "-30px", f: "cloudB" },
-  { top: "73%", left: "-5%", w: 290, op: 0.88, dur: "10s", delay: "-6s", amp: "-28px", f: "cloudA" },
-  { top: "77%", left: "56%", w: 170, op: 0.5, dur: "8s", delay: "-3s", amp: "-22px", f: "cloudC" },
-  { top: "81%", left: "80%", w: 280, op: 0.88, dur: "13s", delay: "-4s", amp: "-32px", f: "cloudA" },
-  { top: "85%", left: "4%", w: 290, op: 0.9, dur: "11s", delay: "-1s", amp: "-30px", f: "cloudB" },
-  { top: "89%", left: "40%", w: 150, op: 0.48, dur: "9s", delay: "-5s", amp: "-22px", f: "cloudC" },
-  { top: "92%", left: "84%", w: 230, op: 0.82, dur: "12s", delay: "-2s", amp: "-28px", f: "cloudB" },
-  { top: "95%", left: "16%", w: 250, op: 0.82, dur: "10s", delay: "-4s", amp: "-26px", f: "cloudA" },
-  { top: "97%", left: "62%", w: 220, op: 0.8, dur: "11s", delay: "-3s", amp: "-24px", f: "cloudC" },
-];
-
-function SkyBackground() {
-  return (
-    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      {/* Vertical sky: soft blue up high → airy middle → warm horizon near the ground */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(180deg, #b9d4f2 0%, #cbe0f6 13%, #dfebf8 32%, #edf3fb 52%, #f4f1eb 74%, #f7efe2 87%, #edf1e2 100%)",
-        }}
-      />
-      {/* Sun glow */}
-      <div
-
         className="absolute rounded-full"
         style={{
           top: "-5%",
@@ -481,44 +340,37 @@ function Nav() {
           </Link>
         </div>
         <div className="flex items-center gap-3">
-          {user ? (
-            <>
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex"
-                >
-                  Admin
-                </Link>
-              )}
-              <Link
-                to="/account"
-                className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
-              >
-                My account
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/auth"
-                className="rounded-full border border-foreground/20 px-5 py-2 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5"
-              >
-                Sign in
-              </Link>
-
-              <a href="#audit" className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105">
-
-              <a
-                href="#audit"
-                className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
-              >
-
-                Free audit
-              </a>
-            </>
+          {user && isAdmin && (
+            <Link
+              to="/admin"
+              className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex"
+            >
+              Admin
+            </Link>
           )}
+          {user ? (
+            <Link
+              to="/account"
+              className="rounded-full border border-foreground/20 px-5 py-2 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5"
+            >
+              My account
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="rounded-full border border-foreground/20 px-5 py-2 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5"
+            >
+              Sign in
+            </Link>
+          )}
+          <a
+            href="#audit"
+            className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
+          >
+            Free audit
+          </a>
         </div>
+
       </div>
     </nav>
   );
