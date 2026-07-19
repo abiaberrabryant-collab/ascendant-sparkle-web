@@ -1,27 +1,24 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
+import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
+import { sendLeadNotification } from "@/lib/notify.server";
 
-type InquiryInput = {
-  name: string;
-  email: string;
-  source: "contact" | "audit";
-  budget?: string | null;
-  message?: string | null;
-  website_url?: string | null;
-};
+const InquirySchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  email: z.string().trim().email().max(255),
+  source: z.enum(["contact", "audit"]),
+  budget: z.string().trim().max(100).nullable().optional(),
+  message: z.string().trim().max(5000).nullable().optional(),
+  website_url: z.string().trim().url().max(500).or(z.literal("")).nullable().optional(),
+});
 
 export const submitInquiry = createServerFn({ method: "POST" })
-  .inputValidator((data: InquiryInput) => {
-    if (!data.name || data.name.length > 200) throw new Error("Invalid name");
-    if (!data.email || !/^\S+@\S+\.\S+$/.test(data.email)) throw new Error("Invalid email");
-    if (data.source !== "contact" && data.source !== "audit") throw new Error("Invalid source");
-    if (data.message && data.message.length > 5000) throw new Error("Message too long");
-    if (data.website_url && data.website_url.length > 500) throw new Error("URL too long");
-    if (data.budget && data.budget.length > 100) throw new Error("Budget too long");
-    return data;
-  })
+  .inputValidator((data: unknown) => InquirySchema.parse(data))
   .handler(async ({ data }) => {
+    const { rateLimit, clientIp } = await import("@/lib/rate-limit.server");
+    if (!(await rateLimit(`contact:${clientIp(getRequest())}`, 6, 900))) return { error: "Too many submissions. Please try again shortly." };
     const supabase = createClient<Database>(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_PUBLISHABLE_KEY!,
@@ -36,5 +33,13 @@ export const submitInquiry = createServerFn({ method: "POST" })
       website_url: data.website_url ?? null,
     });
     if (error) return { error: error.message };
+    await sendLeadNotification({
+      name: data.name,
+      email: data.email,
+      source: data.source,
+      message: data.message ?? null,
+      website_url: data.website_url ?? null,
+      budget: data.budget ?? null,
+    });
     return { ok: true };
   });

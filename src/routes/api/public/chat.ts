@@ -1,20 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { streamText, type ModelMessage } from "ai";
+import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { readCappedJson } from "@/lib/request-guard.server";
 
-type ChatBody = {
-  conversationId?: string | null;
-  pageUrl?: string | null;
-  messages: Array<{ role: "user" | "assistant"; content: string }>;
-};
+const ChatBodySchema = z.object({
+  conversationId: z.string().uuid().nullable().optional(),
+  pageUrl: z.string().max(2000).nullable().optional(),
+  messages: z.array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(4000) })).min(1).max(20),
+});
 
 export const Route = createFileRoute("/api/public/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const body = (await request.json()) as ChatBody;
-        if (!Array.isArray(body.messages) || body.messages.length === 0) {
+        let body: z.infer<typeof ChatBodySchema>;
+        try {
+          body = ChatBodySchema.parse(await readCappedJson<unknown>(request, 120_000));
+        } catch {
           return new Response("messages required", { status: 400 });
+        }
+        const { rateLimit, clientIp } = await import("@/lib/rate-limit.server");
+        if (!(await rateLimit(`legacy-chat:${clientIp(request)}`, 20, 60))) {
+          return new Response("Too many requests. Please slow down.", { status: 429 });
         }
 
         const key = process.env.LOVABLE_API_KEY;
@@ -91,6 +99,7 @@ export const Route = createFileRoute("/api/public/chat")({
         const headers = new Headers(response.headers);
         headers.set("X-Conversation-Id", conversationId);
         headers.set("Access-Control-Expose-Headers", "X-Conversation-Id");
+        headers.set("Cache-Control", "no-store");
         return new Response(response.body, {
           status: response.status,
           statusText: response.statusText,

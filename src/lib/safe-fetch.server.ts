@@ -11,7 +11,13 @@
  */
 export async function readCappedText(response: Response, maxBytes: number): Promise<string> {
   const reader = response.body?.getReader();
-  if (!reader) return (await response.text()).slice(0, maxBytes);
+  if (!reader) {
+    const declaredLength = Number(response.headers.get("content-length") ?? "0");
+    if (Number.isFinite(declaredLength) && declaredLength > maxBytes) throw new Error("Response is too large.");
+    const text = await response.text();
+    if (new TextEncoder().encode(text).byteLength > maxBytes) throw new Error("Response is too large.");
+    return text;
+  }
 
   const decoder = new TextDecoder();
   let out = "";
@@ -34,5 +40,6 @@ export async function readCappedText(response: Response, maxBytes: number): Prom
     reader.releaseLock?.();
   }
 
+  out += decoder.decode();
   return out.slice(0, maxBytes);
 }

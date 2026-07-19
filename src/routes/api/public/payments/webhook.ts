@@ -67,7 +67,7 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
 }
 
 async function handleCheckoutCompleted(session: any, env: StripeEnv) {
-  await getSupabase().from("orders").insert({
+  await getSupabase().from("orders").upsert({
     user_id: session.metadata?.userId ?? null,
     email: session.customer_details?.email ?? null,
     tier: session.metadata?.tier ?? "unknown",
@@ -80,7 +80,7 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
     currency: session.currency ?? "usd",
     status: session.payment_status ?? "complete",
     environment: env,
-  });
+  }, { onConflict: "stripe_session_id", ignoreDuplicates: true });
 }
 
 // Recurring renewal payments arrive as invoice.paid; record each as an order row.
@@ -109,7 +109,7 @@ async function handleInvoicePaid(invoice: any, env: StripeEnv) {
     userId = (sub?.user_id as string | null) ?? null;
   }
 
-  await getSupabase().from("orders").insert({
+  await getSupabase().from("orders").upsert({
     user_id: userId,
     email: invoice.customer_email ?? null,
     tier,
@@ -122,7 +122,7 @@ async function handleInvoicePaid(invoice: any, env: StripeEnv) {
     currency: invoice.currency ?? "usd",
     status: "paid_renewal",
     environment: env,
-  });
+  }, { onConflict: "stripe_session_id", ignoreDuplicates: true });
 
   // Also update subscription period info from the invoice if present
   if (invoice.subscription && line?.period) {

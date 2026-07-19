@@ -9,38 +9,55 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoRouteImport } from './routes/demo'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
-import { Route as AuthenticatedChatbotRouteImport } from './routes/_authenticated/chatbot'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSignalsRouteImport } from './routes/_authenticated/signals'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedChatbotRouteImport } from './routes/_authenticated/chatbot'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as ApiPublicPerfRouteImport } from './routes/api/public/perf'
-import { Route as ApiPublicChatRouteImport } from './routes/api/public/chat'
-import { Route as ApiPublicClientChatRouteImport } from './routes/api/public/client-chat'
-import { Route as ApiPublicClientChatbotRouteImport } from './routes/api/public/client-chatbot'
 import { Route as ApiPublicWidgetDotjsRouteImport } from './routes/api/public/widget[.]js'
+import { Route as ApiPublicPerfRouteImport } from './routes/api/public/perf'
+import { Route as ApiPublicClientChatbotRouteImport } from './routes/api/public/client-chatbot'
+import { Route as ApiPublicClientChatRouteImport } from './routes/api/public/client-chat'
+import { Route as ApiPublicChatRouteImport } from './routes/api/public/chat'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -67,9 +84,9 @@ const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthenticatedChatbotRoute = AuthenticatedChatbotRouteImport.update({
-  id: '/chatbot',
-  path: '/chatbot',
+const AuthenticatedSignalsRoute = AuthenticatedSignalsRouteImport.update({
+  id: '/signals',
+  path: '/signals',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -77,14 +94,9 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const DemoRoute = DemoRouteImport.update({
-  id: '/demo',
-  path: '/demo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedSignalsRoute = AuthenticatedSignalsRouteImport.update({
-  id: '/signals',
-  path: '/signals',
+const AuthenticatedChatbotRoute = AuthenticatedChatbotRouteImport.update({
+  id: '/chatbot',
+  path: '/chatbot',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -109,19 +121,14 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicWidgetDotjsRoute = ApiPublicWidgetDotjsRouteImport.update({
+  id: '/api/public/widget.js',
+  path: '/api/public/widget.js',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPerfRoute = ApiPublicPerfRouteImport.update({
   id: '/api/public/perf',
   path: '/api/public/perf',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
-  id: '/api/public/chat',
-  path: '/api/public/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicClientChatRoute = ApiPublicClientChatRouteImport.update({
-  id: '/api/public/client-chat',
-  path: '/api/public/client-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicClientChatbotRoute = ApiPublicClientChatbotRouteImport.update({
@@ -129,9 +136,14 @@ const ApiPublicClientChatbotRoute = ApiPublicClientChatbotRouteImport.update({
   path: '/api/public/client-chatbot',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicWidgetDotjsRoute = ApiPublicWidgetDotjsRouteImport.update({
-  id: '/api/public/widget.js',
-  path: '/api/public/widget.js',
+const ApiPublicClientChatRoute = ApiPublicClientChatRouteImport.update({
+  id: '/api/public/client-chat',
+  path: '/api/public/client-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicChatRoute = ApiPublicChatRouteImport.update({
+  id: '/api/public/chat',
+  path: '/api/public/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
@@ -154,10 +166,12 @@ const ApiPublicPaymentsWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/demo': typeof DemoRoute
   '/auth': typeof AuthRouteWithChildren
+  '/demo': typeof DemoRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/account': typeof AuthenticatedAccountRoute
@@ -172,16 +186,18 @@ export interface FileRoutesByFullPath {
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/client-chat': typeof ApiPublicClientChatRoute
   '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
-  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/perf': typeof ApiPublicPerfRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/demo': typeof DemoRoute
   '/auth': typeof AuthRouteWithChildren
+  '/demo': typeof DemoRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/account': typeof AuthenticatedAccountRoute
@@ -196,18 +212,20 @@ export interface FileRoutesByTo {
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/client-chat': typeof ApiPublicClientChatRoute
   '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
-  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/perf': typeof ApiPublicPerfRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/demo': typeof DemoRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/demo': typeof DemoRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms': typeof TermsRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
@@ -222,18 +240,20 @@ export interface FileRoutesById {
   '/api/public/chat': typeof ApiPublicChatRoute
   '/api/public/client-chat': typeof ApiPublicClientChatRoute
   '/api/public/client-chatbot': typeof ApiPublicClientChatbotRoute
-  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/perf': typeof ApiPublicPerfRoute
+  '/api/public/widget.js': typeof ApiPublicWidgetDotjsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/demo'
     | '/auth'
+    | '/demo'
     | '/mcp'
+    | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/account'
@@ -248,16 +268,18 @@ export interface FileRouteTypes {
     | '/api/public/chat'
     | '/api/public/client-chat'
     | '/api/public/client-chatbot'
-    | '/api/public/widget.js'
     | '/api/public/perf'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/demo'
     | '/auth'
+    | '/demo'
     | '/mcp'
+    | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/account'
@@ -272,17 +294,19 @@ export interface FileRouteTypes {
     | '/api/public/chat'
     | '/api/public/client-chat'
     | '/api/public/client-chatbot'
-    | '/api/public/widget.js'
     | '/api/public/perf'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
-    | '/demo'
     | '/_authenticated'
     | '/auth'
+    | '/demo'
     | '/mcp'
+    | '/privacy'
     | '/sitemap.xml'
+    | '/terms'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/account'
@@ -297,18 +321,20 @@ export interface FileRouteTypes {
     | '/api/public/chat'
     | '/api/public/client-chat'
     | '/api/public/client-chatbot'
-    | '/api/public/widget.js'
     | '/api/public/perf'
+    | '/api/public/widget.js'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DemoRoute: typeof DemoRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  DemoRoute: typeof DemoRoute
   McpRoute: typeof McpRoute
+  PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsRoute: typeof TermsRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
@@ -317,13 +343,20 @@ export interface RootRouteChildren {
   ApiPublicChatRoute: typeof ApiPublicChatRoute
   ApiPublicClientChatRoute: typeof ApiPublicClientChatRoute
   ApiPublicClientChatbotRoute: typeof ApiPublicClientChatbotRoute
-  ApiPublicWidgetDotjsRoute: typeof ApiPublicWidgetDotjsRoute
   ApiPublicPerfRoute: typeof ApiPublicPerfRoute
+  ApiPublicWidgetDotjsRoute: typeof ApiPublicWidgetDotjsRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -331,11 +364,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mcp': {
       id: '/mcp'
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -359,13 +406,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo': {
-      id: '/demo'
-      path: '/demo'
-      fullPath: '/demo'
-      preLoaderRoute: typeof DemoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/checkout/return': {
       id: '/checkout/return'
       path: '/checkout/return'
@@ -380,11 +420,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthResetPasswordRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_authenticated/chatbot': {
-      id: '/_authenticated/chatbot'
-      path: '/chatbot'
-      fullPath: '/chatbot'
-      preLoaderRoute: typeof AuthenticatedChatbotRouteImport
+    '/_authenticated/signals': {
+      id: '/_authenticated/signals'
+      path: '/signals'
+      fullPath: '/signals'
+      preLoaderRoute: typeof AuthenticatedSignalsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -394,11 +434,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/signals': {
-      id: '/_authenticated/signals'
-      path: '/signals'
-      fullPath: '/signals'
-      preLoaderRoute: typeof AuthenticatedSignalsRouteImport
+    '/_authenticated/chatbot': {
+      id: '/_authenticated/chatbot'
+      path: '/chatbot'
+      fullPath: '/chatbot'
+      preLoaderRoute: typeof AuthenticatedChatbotRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
@@ -429,25 +469,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/widget.js': {
+      id: '/api/public/widget.js'
+      path: '/api/public/widget.js'
+      fullPath: '/api/public/widget.js'
+      preLoaderRoute: typeof ApiPublicWidgetDotjsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/perf': {
       id: '/api/public/perf'
       path: '/api/public/perf'
       fullPath: '/api/public/perf'
       preLoaderRoute: typeof ApiPublicPerfRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/chat': {
-      id: '/api/public/chat'
-      path: '/api/public/chat'
-      fullPath: '/api/public/chat'
-      preLoaderRoute: typeof ApiPublicChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/client-chat': {
-      id: '/api/public/client-chat'
-      path: '/api/public/client-chat'
-      fullPath: '/api/public/client-chat'
-      preLoaderRoute: typeof ApiPublicClientChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/client-chatbot': {
@@ -457,11 +490,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicClientChatbotRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/widget.js': {
-      id: '/api/public/widget.js'
-      path: '/api/public/widget.js'
-      fullPath: '/api/public/widget.js'
-      preLoaderRoute: typeof ApiPublicWidgetDotjsRouteImport
+    '/api/public/client-chat': {
+      id: '/api/public/client-chat'
+      path: '/api/public/client-chat'
+      fullPath: '/api/public/client-chat'
+      preLoaderRoute: typeof ApiPublicClientChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/chat': {
+      id: '/api/public/chat'
+      path: '/api/public/chat'
+      fullPath: '/api/public/chat'
+      preLoaderRoute: typeof ApiPublicChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/invoke-tool/$tool': {
@@ -519,11 +559,13 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DemoRoute: DemoRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  DemoRoute: DemoRoute,
   McpRoute: McpRoute,
+  PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsRoute: TermsRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
@@ -533,8 +575,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicChatRoute: ApiPublicChatRoute,
   ApiPublicClientChatRoute: ApiPublicClientChatRoute,
   ApiPublicClientChatbotRoute: ApiPublicClientChatbotRoute,
-  ApiPublicWidgetDotjsRoute: ApiPublicWidgetDotjsRoute,
   ApiPublicPerfRoute: ApiPublicPerfRoute,
+  ApiPublicWidgetDotjsRoute: ApiPublicWidgetDotjsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

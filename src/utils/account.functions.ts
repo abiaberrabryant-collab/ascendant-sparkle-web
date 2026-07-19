@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
 
@@ -6,8 +7,14 @@ type PortalResult = { url: string } | { error: string };
 
 export const createPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { returnUrl: string; environment: StripeEnv }) => data)
+  .inputValidator((data: { returnUrl: string; environment: StripeEnv }) => {
+    const url = new URL(data.returnUrl);
+    if (!/^https?:$/.test(url.protocol)) throw new Error("Invalid return URL");
+    if (data.environment !== "sandbox" && data.environment !== "live") throw new Error("Invalid payment environment");
+    return data;
+  })
   .handler(async ({ data, context }): Promise<PortalResult> => {
+    if (new URL(data.returnUrl).origin !== new URL(getRequest().url).origin) return { error: "Return URL must stay on this site" };
     const { supabase, userId } = context;
 
     const { data: sub } = await supabase

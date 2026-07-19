@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
@@ -35,6 +36,8 @@ const LeadSchema = z.object({
 export const captureChatLead = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => LeadSchema.parse(d))
   .handler(async ({ data }) => {
+    const { rateLimit, clientIp } = await import("@/lib/rate-limit.server");
+    if (!(await rateLimit(`legacy-lead:${clientIp(getRequest())}`, 8, 900))) throw new Error("Too many lead submissions. Please try again shortly.");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("chat_leads").insert({
       conversation_id: data.conversationId ?? null,

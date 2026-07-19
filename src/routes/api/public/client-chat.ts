@@ -1,12 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { streamText, type ModelMessage } from "ai";
+import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { checkRateLimit, rateLimitResponse, readCappedJson } from "@/lib/request-guard.server";
 
-type ChatBody = {
-  key?: string; conversationId?: string | null; pageUrl?: string;
-  messages?: Array<{ role: "user" | "assistant"; content: string }>;
-  lead?: { name?: string; email?: string; phone?: string; message?: string };
-};
+const ChatBodySchema = z.object({
+  key: z.string().trim().min(16).max(200).optional(),
+  conversationId: z.string().uuid().nullable().optional(),
+  pageUrl: z.string().max(2000).optional(),
+  messages: z.array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(4000) })).max(20).optional(),
+  lead: z.object({ name: z.string().max(120).optional(), email: z.string().max(255).optional(), phone: z.string().max(40).optional(), message: z.string().max(2000).optional() }).optional(),
+}).refine((body) => Boolean(body.lead) || Boolean(body.messages?.length), "A message or lead is required.");
 
 function host(value: string) {
   try { return new URL(value).hostname.toLowerCase(); } catch { return ""; }
@@ -24,6 +28,8 @@ export const Route = createFileRoute("/api/public/client-chat")({
       OPTIONS: async ({ request }) => {
         const key = new URL(request.url).searchParams.get("key");
         if (!key) return new Response(null, { status: 400 });
+        const requestLimit = checkRateLimit(request, "client-chat-options", key, 60, 300_000);
+        if (!requestLimit.allowed) return rateLimitResponse(requestLimit.retryAfter);
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
         const { data } = await db.from("client_chatbots").select("allowed_domains").eq("embed_key", key).maybeSingle();
@@ -31,9 +37,23 @@ export const Route = createFileRoute("/api/public/client-chat")({
         return new Response(null, { status: headers ? 204 : 403, headers: headers ?? undefined });
       },
       POST: async ({ request }) => {
-        const body = (await request.json()) as ChatBody;
-        body.key ??= new URL(request.url).searchParams.get("key") ?? undefined;
-        if (!body.key || (!Array.isArray(body.messages) && !body.lead) || (body.messages && (body.messages.length === 0 || body.messages.length > 20))) return new Response("Invalid chat request", { status: 400 });
+        const requestLimit = checkRateLimit(request, "client-chat", "request", 120, 60_000);
+        if (!requestLimit.allowed) return rateLimitResponse(requestLimit.retryAfter);
+        let body: z.infer<typeof ChatBodySchema>;
+        try {
+          const raw = await readCappedJson<unknown>(request, 120_000);
+          const input = raw && typeof raw === "object" ? raw as Record<string, unknown> : {};
+          body = ChatBodySchema.parse({ ...input, key: input.key ?? new URL(request.url).searchParams.get("key") ?? undefined });
+        } catch {
+          return new Response("Invalid chat request", { status: 400 });
+        }
+        if (!body.key) return new Response("Missing chatbot key", { status: 400 });
+        const { rateLimit, clientIp } = await import("@/lib/rate-limit.server");
+        const limit = body.lead ? 8 : 30;
+        const windowSeconds = body.lead ? 900 : 60;
+        if (!(await rateLimit(`client-chat:${body.lead ? "lead" : "message"}:${body.key}:${clientIp(request)}`, limit, windowSeconds))) {
+          return new Response("Too many requests. Please slow down.", { status: 429 });
+        }
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
         const { data: bot } = await db
@@ -64,10 +84,11 @@ export const Route = createFileRoute("/api/public/client-chat")({
           });
           if (error) return new Response("Could not save your details", { status: 500, headers });
           await db.from("chat_conversations").update({ visitor_name: String(body.lead.name ?? "").trim().slice(0, 120) || null, visitor_email: email }).eq("id", leadConversationId);
-          return Response.json({ ok: true, conversationId: leadConversationId }, { headers });
+          return Response.json({ ok: true, conversationId: leadConversationId }, { headers: { ...headers, "Cache-Control": "no-store" } });
         }
 
-        const sanitized = body.messages!.map((message) => ({ role: message.role, content: String(message.content).slice(0, 4000) }));
+        const sanitized = body.messages!.map((message) => ({ role: message.role, content: message.content.trim().slice(0, 4000) })).filter((message) => message.content);
+        if (!sanitized.length) return new Response("A message is required", { status: 400, headers });
         let conversationId = body.conversationId ?? null;
         if (conversationId) {
           const { data: existing } = await db.from("chat_conversations").select("id").eq("id", conversationId).eq("chatbot_id", bot.id).maybeSingle();
@@ -95,6 +116,7 @@ export const Route = createFileRoute("/api/public/client-chat")({
         const finalHeaders = new Headers(response.headers);
         Object.entries(headers).forEach(([name, value]) => finalHeaders.set(name, value));
         finalHeaders.set("X-Conversation-Id", conversationId ?? "");
+        finalHeaders.set("Cache-Control", "no-store");
         return new Response(response.body, { status: response.status, headers: finalHeaders });
       },
     },

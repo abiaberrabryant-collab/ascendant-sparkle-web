@@ -4,7 +4,8 @@ import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { readCappedText } from "@/lib/safe-fetch.server";
 
-const Input = z.object({ website_url: z.string().url().max(500) });
+const ShowcaseTemplateSchema = z.enum(["auto", "electrical", "plumbing", "law", "restaurant", "realestate"]);
+const Input = z.object({ website_url: z.string().url().max(500), template: ShowcaseTemplateSchema.default("auto") });
 const DemoSchema = z.object({
   businessName: z.string().min(1).max(100),
   eyebrow: z.string().min(1).max(90),
@@ -16,33 +17,79 @@ const DemoSchema = z.object({
   proof: z.array(z.string().min(1).max(45)).min(3).max(3),
   palette: z.object({ primary: z.string().regex(/^#[0-9a-fA-F]{6}$/), accent: z.string().regex(/^#[0-9a-fA-F]{6}$/) }),
 });
-type Demo = z.infer<typeof DemoSchema> & { sourceUrl: string; generatedWithAi: boolean };
+type Industry = "electrical" | "plumbing" | "law" | "restaurant" | "realestate" | "generic";
+type ShowcaseTemplate = z.infer<typeof ShowcaseTemplateSchema>;
+type DemoTemplate = Exclude<ShowcaseTemplate, "auto">;
+type Demo = z.infer<typeof DemoSchema> & { sourceUrl: string; generatedWithAi: boolean; industry: Industry; templateId: DemoTemplate };
 
-function privateAddress(address: string) { return /^(127\.|0\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[0-1])\.|::1$|fc|fd|fe80:)/i.test(address); }
+function detectIndustry(text: string): Industry {
+  const t = text.toLowerCase();
+  const has = (words: string[]) => words.some((w) => t.includes(w));
+  if (has(["electrician", "electrical contractor", "rewiring", "panel upgrade", "circuit", "wiring", "lighting install"])) return "electrical";
+  if (has(["plumber", "plumbing", "hvac", "furnace", "air conditioning", "water heater", "drain", "heating and cooling", "boiler"])) return "plumbing";
+  if (has(["law firm", "lawyer", "attorney", "legal", "litigation", "counsel", "law office", "practice areas", "personal injury"])) return "law";
+  if (has(["restaurant", "menu", "reservation", "cuisine", "bistro", "café", "cafe", "catering", "chef", "dine-in", "eatery"])) return "restaurant";
+  if (has(["real estate", "realtor", "listing", "for sale", "homes for sale", "mls", "brokerage", "property", "open house"])) return "realestate";
+  return "generic";
+}
+
+function privateAddress(address: string) {
+  const value = address.toLowerCase();
+  if (value.startsWith("::ffff:")) return privateAddress(value.slice(7));
+  const octets = value.split(".").map(Number);
+  if (octets.length === 4 && octets.every((part) => Number.isInteger(part) && part >= 0 && part <= 255)) {
+    const [first, second] = octets;
+    return first === 0 || first === 10 || first === 127 || (first === 169 && second === 254) || (first === 172 && second >= 16 && second <= 31) || (first === 192 && second === 168) || (first === 100 && second >= 64 && second <= 127) || (first === 198 && (second === 18 || second === 19)) || first >= 224;
+  }
+  return value === "::" || value === "::1" || /^(fc|fd|fe8[0-9a-f]:)/i.test(value);
+}
 async function publicUrl(value: string) {
   const url = new URL(value);
   const host = url.hostname.toLowerCase();
-  if (!/^https?:$/.test(url.protocol) || /^(localhost|127\.|0\.0\.0\.0|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(host) || host === "[::1]") throw new Error("Enter a public http or https website URL.");
+  if (!/^https?:$/.test(url.protocol) || /^(localhost|127\.|0\.0\.0\.0|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(host) || host === "[::1]" || url.username || url.password) throw new Error("Enter a public http or https website URL.");
   const { lookup } = await import("node:dns/promises");
   const records = await lookup(host, { all: true });
   if (!records.length || records.some((record) => privateAddress(record.address))) throw new Error("Enter a public website URL.");
   return url;
 }
 function visibleText(html: string) { return html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(); }
-function fallback(url: URL, title: string, description: string): Demo {
+function templateFor(industry: Industry, requested: ShowcaseTemplate): DemoTemplate {
+  if (requested !== "auto") return requested;
+  return industry === "generic" ? "plumbing" : industry;
+}
+
+function templateDirection(template: DemoTemplate) {
+  const directions: Record<DemoTemplate, string> = {
+    electrical: "dark, high-contrast emergency-service layout with electric blue accents, a bold immediate call button, trust badges, and practical service tiles",
+    plumbing: "bright, reassuring home-services layout with a booking panel in the hero, deep blue accents, clear availability cues, and service cards",
+    law: "calm editorial legal layout with warm ivory space, deep forest ink, elegant serif headlines, restrained gold details, and consultation-focused proof",
+    restaurant: "immersive hospitality layout with deep wine tones, refined serif headlines, generous imagery space, menu cards, and a reservation-first call to action",
+    realestate: "light, editorial real-estate layout with sage accents, a property-search style hero, an agent card, and listing-inspired proof cards",
+  };
+  return directions[template];
+}
+
+function fallback(url: URL, title: string, description: string, industry: Industry, templateId: DemoTemplate): Demo {
   const businessName = title.split(/[|—–-]/)[0].trim().slice(0, 100) || url.hostname.replace(/^www\./, "");
   return {
     businessName, eyebrow: "A clearer way to choose", headline: `A stronger first impression for ${businessName}.`,
     subheadline: description || `A modern website concept built around making it simple for visitors to understand, trust, and contact ${businessName}.`,
     primaryCta: "Start a conversation", secondaryCta: "See how it works",
     services: [{ title: "Simple next steps", description: "Clear paths help visitors find exactly what they need." }, { title: "Built for trust", description: "Proof, clarity, and helpful details live where decisions happen." }, { title: "Always available", description: "A trained website assistant can answer common questions around the clock." }],
-    proof: ["Mobile-first experience", "Clear calls to action", "Fast, modern foundation"], palette: { primary: "#2563eb", accent: "#7c3aed" }, sourceUrl: url.toString(), generatedWithAi: false,
+    proof: ["Mobile-first experience", "Clear calls to action", "Fast, modern foundation"], palette: { primary: "#2563eb", accent: "#7c3aed" }, sourceUrl: url.toString(), generatedWithAi: false, industry, templateId,
   };
 }
 
 export const createWebsiteDemo = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => Input.parse(data))
   .handler(async ({ data }) => {
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const req = getRequest();
+    const { rateLimit, clientIp } = await import("@/lib/rate-limit.server");
+    if (!(await rateLimit(`demo:${clientIp(req)}`, 8, 3600))) {
+      throw new Error("You've reached the demo limit for now — please try again in a little while.");
+    }
+
     let url = await publicUrl(data.website_url);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10_000);
@@ -64,19 +111,21 @@ export const createWebsiteDemo = createServerFn({ method: "POST" })
 
     const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.replace(/\s+/g, " ").trim() ?? "";
     const description = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)?.[1]?.trim() ?? "";
-    const base = fallback(url, title, description);
     const context = visibleText(html).slice(0, 8_000);
+    const industry = detectIndustry(`${title} ${description} ${context}`);
+    const templateId = templateFor(industry, data.template);
+    const base = fallback(url, title, description, industry, templateId);
     const key = process.env.LOVABLE_API_KEY;
     if (!key) return base;
 
     try {
       const result = await generateText({
         model: createLovableAiGatewayProvider(key)("google/gemini-2.5-flash"),
-        prompt: `Create a premium but believable one-page website concept from this public website content. Return JSON only, no markdown. Do not invent facts, pricing, awards, claims, or contact information. Make copy concise and customer-friendly. Required JSON schema: {"businessName":"","eyebrow":"","headline":"","subheadline":"","primaryCta":"","secondaryCta":"","services":[{"title":"","description":""},{"title":"","description":""},{"title":"","description":""}],"proof":["","", ""],"palette":{"primary":"#RRGGBB","accent":"#RRGGBB"}}. Website URL: ${url}. Existing page title: ${title}. Description: ${description}. Public text: ${context}`,
+        prompt: `Create a premium but believable one-page website concept from this public website content. The business appears to be in the "${industry}" category — tailor the copy to how that kind of business wins customers. The preview will use AscendantWeb's ${templateId} showcase model: ${templateDirection(templateId)}. Match its hierarchy and conversion intent, but do not copy any brand names, claims, images, or text from an example. Return JSON only, no markdown. Do not invent facts, pricing, awards, claims, or contact information. Make copy concise and customer-friendly. Required JSON schema: {"businessName":"","eyebrow":"","headline":"","subheadline":"","primaryCta":"","secondaryCta":"","services":[{"title":"","description":""},{"title":"","description":""},{"title":"","description":""}],"proof":["","", ""],"palette":{"primary":"#RRGGBB","accent":"#RRGGBB"}}. Website URL: ${url}. Existing page title: ${title}. Description: ${description}. Public text: ${context}`,
       });
       const json = result.text.match(/\{[\s\S]*\}/)?.[0];
       if (!json) return base;
-      return { ...DemoSchema.parse(JSON.parse(json)), sourceUrl: url.toString(), generatedWithAi: true } satisfies Demo;
+      return { ...DemoSchema.parse(JSON.parse(json)), sourceUrl: url.toString(), generatedWithAi: true, industry, templateId } satisfies Demo;
     } catch {
       return base;
     }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { checkRateLimit, rateLimitResponse, readCappedJson } from "@/lib/request-guard.server";
 
 const MetricSchema = z.object({
   route: z.string().max(200),
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/api/public/perf")({
       POST: async ({ request }) => {
         let body: unknown;
         try {
-          body = await request.json();
+          body = await readCappedJson<unknown>(request, 24_000);
         } catch {
           return new Response("Bad JSON", { status: 400 });
         }
@@ -27,6 +28,8 @@ export const Route = createFileRoute("/api/public/perf")({
         if (!parsed.success) {
           return new Response("Bad payload", { status: 400 });
         }
+        const limit = checkRateLimit(request, "perf", "global", 60, 5 * 60_000);
+        if (!limit.allowed) return rateLimitResponse(limit.retryAfter);
         const ua = request.headers.get("user-agent")?.slice(0, 500) ?? null;
         const rows = parsed.data.metrics.map((m) => ({
           route: m.route,

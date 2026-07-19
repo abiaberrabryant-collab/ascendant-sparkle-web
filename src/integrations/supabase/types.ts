@@ -85,7 +85,9 @@ export type Database = {
           conversation_id: string | null
           created_at: string
           email: string | null
+          follow_up_note: string | null
           id: string
+          last_contacted_at: string | null
           message: string | null
           name: string | null
           phone: string | null
@@ -96,7 +98,9 @@ export type Database = {
           conversation_id?: string | null
           created_at?: string
           email?: string | null
+          follow_up_note?: string | null
           id?: string
+          last_contacted_at?: string | null
           message?: string | null
           name?: string | null
           phone?: string | null
@@ -107,7 +111,9 @@ export type Database = {
           conversation_id?: string | null
           created_at?: string
           email?: string | null
+          follow_up_note?: string | null
           id?: string
+          last_contacted_at?: string | null
           message?: string | null
           name?: string | null
           phone?: string | null
