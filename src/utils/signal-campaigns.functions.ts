@@ -231,9 +231,12 @@ function computeMatch(item: FeedItem, campaign: any) {
   const userIntents = normalizeTerms(campaign.intent_phrases ?? []).filter((term) => haystack.includes(term));
   if (!keywords.length && !userIntents.length) return null;
   // Only surface people who WANT the service — exclude sellers, ads, and news.
+  // Buyer language is REQUIRED. Topic keywords/intent phrases alone are NOT
+  // enough: sellers use the same words ("affordable web design"), so matching a
+  // phrase can never by itself qualify a post as a buyer. The post must contain
+  // actual asking-for-help language AND must not read as a seller/ad.
   const intent = scoreBuyerIntent(haystack);
-  const wantsService = intent.isBuyer || userIntents.length > 0;
-  if (!wantsService || intent.isSeller) return null;
+  if (!intent.isBuyer || intent.isSeller) return null;
   const recentBonus = item.postedAt && Date.now() - new Date(item.postedAt).getTime() < 1000 * 60 * 60 * 24 * 14 ? 10 : 0;
   const score = Math.min(100, intent.intentHits.length * 22 + userIntents.length * 18 + keywords.length * 8 + recentBonus);
   return { matchedTerms: [...new Set([...intent.intentHits, ...userIntents, ...keywords])], score: Math.max(20, score) };
@@ -333,8 +336,8 @@ type Candidate = { item: FeedItem; match: { matchedTerms: string[]; score: numbe
 async function aiFilterBuyers(candidates: Candidate[], campaign: any): Promise<Candidate[]> {
   const key = process.env.LOVABLE_API_KEY;
   if (!key || candidates.length === 0) return candidates;
-  const head = candidates.slice(0, 25);
-  const tail = candidates.slice(25);
+  const head = candidates.slice(0, 40);
+  const tail = candidates.slice(40);
   try {
     const list = head.map((entry, index) => `${index}. ${entry.item.title} :: ${entry.item.excerpt.slice(0, 400)}`).join("\n");
     const prompt = [

@@ -52,6 +52,17 @@ const SELLER_PATTERNS: RegExp[] = [
   /\blicensed and insured\b/,
   /\bbest (prices|rates) (in|around)\b/,
   /\bcall for a free\b/,
+  /\b(we|i) (build|create|design|make|develop) (websites|sites|web)\b/,
+  /\b(web|website) (design|development) (services|company|agency|studio|solutions)\b/,
+  /\bget (a|your) (free )?quote\b/,
+  /\bstarting (at|from) \$?\d+/,
+  /\bavailable for (work|hire|projects|freelance)\b/,
+  /\bfreelance (web|website|designer|developer|dev)\b/,
+  /\bview (my|our) portfolio\b/,
+  /\bfollow (me|us) (on|for)\b/,
+  /\bpromo(tion)?\b/,
+  /\bsubscribe\b/,
+  /\bwe can help you\b/,
 ];
 
 export type IntentResult = { isBuyer: boolean; isSeller: boolean; intentHits: string[] };
