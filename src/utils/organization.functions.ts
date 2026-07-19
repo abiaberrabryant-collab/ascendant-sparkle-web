@@ -42,7 +42,7 @@ export const saveMyOrganization = createServerFn({ method: "POST" }).middleware(
   if (existing) {
     const { error } = await db.from("organizations").update(data).eq("id", existing.id);
     if (error) throw new Error(error.message);
-    await db.from("audit_logs").insert({ organization_id: existing.id, actor_user_id: context.userId, action: "organization.updated", entity_type: "organization", entity_id: existing.id });
+    await db.rpc("log_audit_event", { _organization_id: existing.id, _action: "organization.updated", _entity_type: "organization", _entity_id: existing.id });
     return { id: existing.id };
   }
   const { data: created, error } = await db.from("organizations").insert({ ...data, owner_user_id: context.userId }).select("id").single();
