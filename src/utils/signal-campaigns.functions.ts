@@ -173,13 +173,6 @@ function campaignSearchQuery(campaign: { match_keywords?: string[]; intent_phras
     .join(" OR ");
 }
 
-function googleNewsFeedUrl(campaign: { match_keywords?: string[]; intent_phrases?: string[] }) {
-  const query = campaignSearchQuery(campaign);
-  return query
-    ? `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`
-    : null;
-}
-
 // Reddit publishes public search RSS — a strong source for people ASKING for
 // services. This monitors it (ToS-friendly, no scraping / no API key).
 function redditSearchFeedUrl(campaign: { match_keywords?: string[]; intent_phrases?: string[] }) {
@@ -189,16 +182,31 @@ function redditSearchFeedUrl(campaign: { match_keywords?: string[]; intent_phras
     : null;
 }
 
-// Managed default feeds seeded/refreshed for every campaign. Users can disable
-// or add their own permitted feeds alongside these.
+// Reddit search scoped to communities where people actively HIRE and ask for
+// recommendations — e.g. r/forhire "[Hiring]" posts and small-business owners
+// looking for a website. This biases hard toward buyers, not chatter or ads.
+const BUYER_SUBREDDITS =
+  "forhire+slavelabour+DoneDirtCheap+smallbusiness+Entrepreneur+webdev+web_design+juststart";
+function redditCommunitiesFeedUrl(campaign: { match_keywords?: string[]; intent_phrases?: string[] }) {
+  const query = campaignSearchQuery(campaign);
+  return query
+    ? `https://www.reddit.com/r/${BUYER_SUBREDDITS}/search.rss?q=${encodeURIComponent(query)}&restrict_sr=1&sort=new&type=link`
+    : null;
+}
+
+// Managed default feeds seeded/refreshed for every campaign. All buyer-leaning
+// and ToS-safe. Users can disable these or add their own permitted feeds
+// (e.g. a local Craigslist "gigs" RSS) alongside them.
 function defaultCampaignFeeds(campaign: { match_keywords?: string[]; intent_phrases?: string[] }) {
   return [
     { name: "Reddit discussions feed", feed_url: redditSearchFeedUrl(campaign) },
-    { name: "Google News topic feed", feed_url: googleNewsFeedUrl(campaign) },
+    { name: "Reddit hiring & help communities", feed_url: redditCommunitiesFeedUrl(campaign) },
   ].filter((feed): feed is { name: string; feed_url: string } => Boolean(feed.feed_url));
 }
 
 async function ensureDefaultCampaignSource(db: any, campaign: any) {
+  // Retire the legacy news feed — it surfaced articles/press (sellers), not buyers.
+  await db.from("signal_sources").delete().eq("campaign_id", campaign.id).ilike("feed_url", "%news.google.com%");
   const feeds = defaultCampaignFeeds(campaign);
   if (!feeds.length) return;
   const { data: existing, error: existingError } = await db
@@ -366,6 +374,9 @@ export const runSignalCampaign = createServerFn({ method: "POST" })
     const db = context.supabase as any;
     const organizationId = await getOrganizationId(db, context.userId);
     const campaign = await getCampaign(db, organizationId, data.campaign_id);
+    // Reconcile default feeds each run: drops the legacy news feed and keeps the
+    // buyer-leaning Reddit feeds fresh with the campaign's current terms.
+    await ensureDefaultCampaignSource(db, campaign);
     const { data: sources, error } = await db.from("signal_sources").select("*").eq("campaign_id", campaign.id).eq("is_enabled", true);
     if (error) throw new Error(error.message);
     if (!sources?.length) throw new Error("Add at least one permitted RSS or Atom feed before running this campaign.");
