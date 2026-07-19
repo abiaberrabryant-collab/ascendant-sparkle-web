@@ -342,24 +342,23 @@ function Nav() {
           </Link>
         </div>
         <div className="flex items-center gap-3">
+          {user && isAdmin && (
+            <Link
+              to="/admin"
+              className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex"
+            >
+              Admin
+            </Link>
+          )}
           {user ? (
-            <>
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  className="hidden rounded-lg border border-glass-border px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex"
-                >
-                  Admin
-                </Link>
-              )}
-              <Link
-                to="/account"
-                className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
-              >
-                My account
-              </Link>
-            </>
+            <Link
+              to="/account"
+              className="rounded-full border border-foreground/20 px-5 py-2 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5"
+            >
+              My account
+            </Link>
           ) : (
+
             <>
               <Link
                 to="/auth"
@@ -376,8 +375,22 @@ function Nav() {
                 Free audit
               </a>
             </>
+
+            <Link
+              to="/auth"
+              className="rounded-full border border-foreground/20 px-5 py-2 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5"
+            >
+              Sign in
+            </Link>
           )}
+          <a
+            href="#audit"
+            className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
+          >
+            Free audit
+          </a>
         </div>
+
       </div>
     </nav>
   );
