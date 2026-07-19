@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { readCappedText } from "@/lib/request-guard.server";
 
 const getEnv = (key: string): string => {
   const value = process.env[key];
@@ -60,7 +61,7 @@ export async function verifyWebhook(
   env: StripeEnv,
 ): Promise<{ type: string; data: { object: any } }> {
   const signature = req.headers.get("stripe-signature");
-  const body = await req.text();
+  const body = await readCappedText(req, 2_000_000);
   const secret =
     env === "sandbox"
       ? getEnv("PAYMENTS_SANDBOX_WEBHOOK_SECRET")

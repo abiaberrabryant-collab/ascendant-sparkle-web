@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { checkRateLimit, rateLimitResponse } from "@/lib/request-guard.server";
 
 function hostname(value: string) {
   try {
@@ -25,7 +26,9 @@ export const Route = createFileRoute("/api/public/client-chatbot")({
     handlers: {
       OPTIONS: async ({ request }) => {
         const key = new URL(request.url).searchParams.get("key");
-        if (!key) return new Response(null, { status: 400 });
+        if (!key || key.length > 200) return new Response(null, { status: 400 });
+        const limit = checkRateLimit(request, "chatbot-config", key, 120, 5 * 60_000);
+        if (!limit.allowed) return rateLimitResponse(limit.retryAfter);
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
         const { data } = await db.from("client_chatbots").select("allowed_domains").eq("embed_key", key).maybeSingle();
@@ -34,7 +37,9 @@ export const Route = createFileRoute("/api/public/client-chatbot")({
       },
       GET: async ({ request }) => {
         const key = new URL(request.url).searchParams.get("key");
-        if (!key) return new Response("Missing chatbot key", { status: 400 });
+        if (!key || key.length > 200) return new Response("Missing chatbot key", { status: 400 });
+        const limit = checkRateLimit(request, "chatbot-config", key, 120, 5 * 60_000);
+        if (!limit.allowed) return rateLimitResponse(limit.retryAfter);
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const db = supabaseAdmin as any;
         const { data: bot } = await db
@@ -45,7 +50,7 @@ export const Route = createFileRoute("/api/public/client-chatbot")({
         if (!bot?.is_live) return new Response("Chatbot is unavailable", { status: 404 });
         const headers = corsHeaders(request, bot.allowed_domains ?? []);
         if (!headers) return new Response("This domain is not connected to this chatbot", { status: 403 });
-        return Response.json({ businessName: bot.business_name, greeting: bot.greeting, brandColor: bot.brand_color }, { headers });
+        return Response.json({ businessName: bot.business_name, greeting: bot.greeting, brandColor: bot.brand_color }, { headers: { ...headers, "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600" } });
       },
     },
   },

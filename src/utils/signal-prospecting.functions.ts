@@ -7,14 +7,21 @@ const UrlInput = z.object({ website_url: z.string().url().max(500) });
 const DraftInput = z.object({ prospect_id: z.string().uuid(), contact_name: z.string().trim().max(120), contact_email: z.string().trim().email().max(255) });
 
 function isPrivateAddress(address: string) {
-  return /^(127\.|0\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[0-1])\.|::1$|fc|fd|fe80:)/i.test(address);
+  const value = address.toLowerCase();
+  if (value.startsWith("::ffff:")) return isPrivateAddress(value.slice(7));
+  const octets = value.split(".").map(Number);
+  if (octets.length === 4 && octets.every((part) => Number.isInteger(part) && part >= 0 && part <= 255)) {
+    const [first, second] = octets;
+    return first === 0 || first === 10 || first === 127 || (first === 169 && second === 254) || (first === 172 && second >= 16 && second <= 31) || (first === 192 && second === 168) || (first === 100 && second >= 64 && second <= 127) || (first === 198 && (second === 18 || second === 19)) || first >= 224;
+  }
+  return value === "::" || value === "::1" || /^(fc|fd|fe8[0-9a-f]:)/i.test(value);
 }
 
 async function validatePublicUrl(value: string) {
   const url = new URL(value);
   const host = url.hostname.toLowerCase();
   const isPrivateHost = /^(localhost|127\.|0\.0\.0\.0|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(host) || host === "[::1]";
-  if (!/^https?:$/.test(url.protocol) || isPrivateHost) throw new Error("Enter a public http or https website URL.");
+  if (!/^https?:$/.test(url.protocol) || isPrivateHost || url.username || url.password) throw new Error("Enter a public http or https website URL.");
   const { lookup } = await import("node:dns/promises");
   const records = await lookup(host, { all: true });
   if (!records.length || records.some((record) => isPrivateAddress(record.address))) throw new Error("Enter a public website URL.");
