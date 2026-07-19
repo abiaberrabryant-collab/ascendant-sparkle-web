@@ -5,6 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 import { readCappedText } from "@/lib/safe-fetch.server";
 import { scoreBuyerIntent } from "@/lib/signal-intent.server";
+import { searchReddit } from "@/lib/reddit.server";
 
 const CampaignInput = z.object({
   id: z.string().uuid().optional(),
@@ -173,49 +174,74 @@ function campaignSearchQuery(campaign: { match_keywords?: string[]; intent_phras
     .join(" OR ");
 }
 
-// Reddit publishes public search RSS — a strong source for people ASKING for
-// services. This monitors it (ToS-friendly, no scraping / no API key).
-function redditSearchFeedUrl(campaign: { match_keywords?: string[]; intent_phrases?: string[] }) {
-  const query = campaignSearchQuery(campaign);
-  return query
-    ? `https://www.reddit.com/search.rss?q=${encodeURIComponent(query)}&sort=new&type=link`
-    : null;
-}
-
-// Reddit search scoped to communities where people actively HIRE and ask for
-// recommendations — e.g. r/forhire "[Hiring]" posts and small-business owners
-// looking for a website. This biases hard toward buyers, not chatter or ads.
+// Communities where people actively HIRE and ask for recommendations — e.g.
+// r/forhire "[Hiring]" posts and small-business owners looking for help. Queried
+// through Reddit's official API (see reddit.server.ts) so it never hits the
+// public-RSS 429 wall.
 const BUYER_SUBREDDITS =
   "forhire+slavelabour+DoneDirtCheap+smallbusiness+Entrepreneur+webdev+web_design+juststart";
-function redditCommunitiesFeedUrl(campaign: { match_keywords?: string[]; intent_phrases?: string[] }) {
-  const query = campaignSearchQuery(campaign);
-  return query
-    ? `https://www.reddit.com/r/${BUYER_SUBREDDITS}/search.rss?q=${encodeURIComponent(query)}&restrict_sr=1&sort=new&type=link`
-    : null;
+
+// Reddit runs through the official API. We keep a source row marked with an
+// oauth.reddit.com URL so the RSS loop recognises it and calls the API instead.
+const REDDIT_API_SOURCE = { name: "Reddit (official API)", feed_url: "https://oauth.reddit.com/search" };
+
+// Craigslist "gigs" carries real local "I need X" posts and, unlike Reddit's
+// public RSS, is reachable from a server. Keyed to the campaign's service area.
+const CRAIGSLIST_SITES: Record<string, string> = {
+  "new york": "newyork", nyc: "newyork", brooklyn: "newyork", manhattan: "newyork", queens: "newyork",
+  "los angeles": "losangeles", "long beach": "losangeles", "san francisco": "sfbay", "bay area": "sfbay",
+  "san jose": "sfbay", oakland: "sfbay", chicago: "chicago", houston: "houston", phoenix: "phoenix",
+  mesa: "phoenix", philadelphia: "philadelphia", philly: "philadelphia", "san antonio": "sanantonio",
+  "san diego": "sandiego", dallas: "dallas", "fort worth": "dallas", austin: "austin",
+  jacksonville: "jacksonville", columbus: "columbus", charlotte: "charlotte", indianapolis: "indianapolis",
+  seattle: "seattle", denver: "denver", boston: "boston", nashville: "nashville", "el paso": "elpaso",
+  detroit: "detroit", "oklahoma city": "oklahomacity", portland: "portland", "las vegas": "lasvegas",
+  vegas: "lasvegas", memphis: "memphis", louisville: "louisville", baltimore: "baltimore",
+  milwaukee: "milwaukee", albuquerque: "albuquerque", tucson: "tucson", fresno: "fresno",
+  sacramento: "sacramento", "kansas city": "kansascity", atlanta: "atlanta", omaha: "omaha",
+  "colorado springs": "cosprings", raleigh: "raleigh", miami: "miami", "fort lauderdale": "miami",
+  minneapolis: "minneapolis", "saint paul": "minneapolis", tulsa: "tulsa", tampa: "tampa",
+  "new orleans": "neworleans", cleveland: "cleveland", honolulu: "honolulu", washington: "washingtondc",
+  "washington dc": "washingtondc", orlando: "orlando", "st louis": "stlouis", "saint louis": "stlouis",
+  pittsburgh: "pittsburgh", cincinnati: "cincinnati", "salt lake city": "saltlakecity",
+  riverside: "inlandempire", "san bernardino": "inlandempire", buffalo: "buffalo", richmond: "richmond",
+};
+function craigslistSite(serviceArea?: string): string | null {
+  const value = (serviceArea ?? "").toLowerCase().trim();
+  if (!value) return null;
+  for (const [name, site] of Object.entries(CRAIGSLIST_SITES)) if (value.includes(name)) return site;
+  const slug = value.replace(/[^a-z]/g, "");
+  return slug.length >= 4 ? slug : null;
+}
+function craigslistFeedUrl(campaign: { match_keywords?: string[]; intent_phrases?: string[]; service_area?: string }) {
+  const site = craigslistSite(campaign.service_area);
+  if (!site) return null;
+  const term = normalizeTerms([...(campaign.match_keywords ?? []), ...(campaign.intent_phrases ?? [])])[0] ?? "website";
+  return `https://${site}.craigslist.org/search/ggg?query=${encodeURIComponent(term)}&format=rss`;
 }
 
-// Managed default feeds seeded/refreshed for every campaign. All buyer-leaning
-// and ToS-safe. Users can disable these or add their own permitted feeds
-// (e.g. a local Craigslist "gigs" RSS) alongside them.
-function defaultCampaignFeeds(campaign: { match_keywords?: string[]; intent_phrases?: string[] }) {
-  return [
-    { name: "Reddit discussions feed", feed_url: redditSearchFeedUrl(campaign) },
-    { name: "Reddit hiring & help communities", feed_url: redditCommunitiesFeedUrl(campaign) },
-  ].filter((feed): feed is { name: string; feed_url: string } => Boolean(feed.feed_url));
-}
-
+// Managed sources reconciled onto every campaign run: disables the retired
+// news/RSS-Reddit feeds and ensures the Reddit-API and Craigslist sources exist.
 async function ensureDefaultCampaignSource(db: any, campaign: any) {
-  // Retire the legacy news feed — it surfaced articles/press (sellers), not buyers.
-  await db.from("signal_sources").delete().eq("campaign_id", campaign.id).ilike("feed_url", "%news.google.com%");
-  const feeds = defaultCampaignFeeds(campaign);
-  if (!feeds.length) return;
+  // Disable unreliable auto feeds we no longer use (news + public Reddit RSS
+  // that 429s). Disable rather than delete so run history stays intact.
+  await db
+    .from("signal_sources")
+    .update({ is_enabled: false })
+    .eq("campaign_id", campaign.id)
+    .or("feed_url.ilike.*news.google.com*,feed_url.ilike.*www.reddit.com*,feed_url.ilike.*old.reddit.com*");
+
+  const managed: Array<{ name: string; feed_url: string }> = [REDDIT_API_SOURCE];
+  const craigslist = craigslistFeedUrl(campaign);
+  if (craigslist) managed.push({ name: "Craigslist local gigs", feed_url: craigslist });
+
   const { data: existing, error: existingError } = await db
     .from("signal_sources")
     .select("id,name")
     .eq("campaign_id", campaign.id);
   if (existingError) throw new Error(existingError.message);
   const byName = new Map((existing ?? []).map((source: { id: string; name: string }) => [source.name, source]));
-  for (const feed of feeds) {
+  for (const feed of managed) {
     const found = byName.get(feed.name) as { id: string } | undefined;
     if (found) {
       const { error } = await db.from("signal_sources").update({ feed_url: feed.feed_url, is_enabled: true }).eq("id", found.id);
@@ -374,56 +400,75 @@ export const runSignalCampaign = createServerFn({ method: "POST" })
     const db = context.supabase as any;
     const organizationId = await getOrganizationId(db, context.userId);
     const campaign = await getCampaign(db, organizationId, data.campaign_id);
-    // Reconcile default feeds each run: drops the legacy news feed and keeps the
-    // buyer-leaning Reddit feeds fresh with the campaign's current terms.
+    // Reconcile managed sources each run: disables the retired news/RSS-Reddit
+    // feeds and ensures the Reddit-API and Craigslist sources are present.
     await ensureDefaultCampaignSource(db, campaign);
-    const { data: sources, error } = await db.from("signal_sources").select("*").eq("campaign_id", campaign.id).eq("is_enabled", true);
+    const { data: sourceRows, error } = await db.from("signal_sources").select("*").eq("campaign_id", campaign.id).eq("is_enabled", true);
     if (error) throw new Error(error.message);
-    if (!sources?.length) throw new Error("Add at least one permitted RSS or Atom feed before running this campaign.");
+    const sources = (sourceRows ?? []) as Array<{ id: string; name: string; feed_url: string }>;
+    if (!sources.length) throw new Error("Add at least one source before running this campaign.");
+
     let itemsFound = 0;
     let opportunitiesAdded = 0;
     const errors: string[] = [];
+
+    // Shared pipeline: score → drop already-seen → AI buyer-gate → insert.
+    const persist = async (sourceId: string, items: FeedItem[]) => {
+      const matches = items
+        .map((item) => ({ item, match: computeMatch(item, campaign) }))
+        .filter((entry): entry is Candidate => Boolean(entry.match));
+      const urls = [...new Set(matches.map((entry) => entry.item.url))];
+      const { data: existing } = urls.length
+        ? await db.from("signal_opportunities").select("source_url").eq("campaign_id", campaign.id).in("source_url", urls)
+        : { data: [] };
+      const existingUrls = new Set((existing ?? []).map((entry: any) => entry.source_url));
+      const freshMatches = matches.filter((entry) => !existingUrls.has(entry.item.url));
+      const confirmedMatches = await aiFilterBuyers(freshMatches, campaign);
+      const fresh = confirmedMatches.map(({ item, match }) => ({
+        campaign_id: campaign.id,
+        source_id: sourceId,
+        source_url: item.url,
+        title: item.title,
+        excerpt: item.excerpt,
+        author_name: item.author,
+        posted_at: item.postedAt,
+        matched_terms: match.matchedTerms,
+        score: match.score,
+      }));
+      if (fresh.length) {
+        const { error: insertError } = await db.from("signal_opportunities").insert(fresh);
+        if (insertError) throw new Error(insertError.message);
+      }
+      return { found: matches.length, added: fresh.length };
+    };
+
     for (const source of sources) {
+      const isRedditApi = String(source.feed_url).includes("oauth.reddit.com");
       try {
-        const { xml, resolvedUrl } = await fetchPublicFeed(source.feed_url);
-        const matches = parseFeed(xml, resolvedUrl)
-          .map((item) => ({ item, match: computeMatch(item, campaign) }))
-          .filter((entry): entry is { item: FeedItem; match: { matchedTerms: string[]; score: number } } => Boolean(entry.match));
-        itemsFound += matches.length;
-        const urls = [...new Set(matches.map((entry) => entry.item.url))];
-        const { data: existing } = urls.length
-          ? await db.from("signal_opportunities").select("source_url").eq("campaign_id", campaign.id).in("source_url", urls)
-          : { data: [] };
-        const existingUrls = new Set((existing ?? []).map((entry: any) => entry.source_url));
-        const freshMatches = matches.filter((entry) => !existingUrls.has(entry.item.url));
-        const confirmedMatches = await aiFilterBuyers(freshMatches, campaign);
-        const fresh = confirmedMatches.map(({ item, match }) => ({
-          campaign_id: campaign.id,
-          source_id: source.id,
-          source_url: item.url,
-          title: item.title,
-          excerpt: item.excerpt,
-          author_name: item.author,
-          posted_at: item.postedAt,
-          matched_terms: match.matchedTerms,
-          score: match.score,
-        }));
-        if (fresh.length) {
-          const { error: insertError } = await db.from("signal_opportunities").insert(fresh);
-          if (insertError) throw new Error(insertError.message);
-          opportunitiesAdded += fresh.length;
+        let items: FeedItem[];
+        if (isRedditApi) {
+          items = await searchReddit(campaignSearchQuery(campaign), { subreddits: BUYER_SUBREDDITS, limit: 60 });
+          if (!items.length && !process.env.REDDIT_CLIENT_ID) {
+            throw new Error("Reddit API key not set — add REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET in project settings to enable this source.");
+          }
+        } else {
+          const { xml, resolvedUrl } = await fetchPublicFeed(source.feed_url);
+          items = parseFeed(xml, resolvedUrl);
         }
+        const { found, added } = await persist(source.id, items);
+        itemsFound += found;
+        opportunitiesAdded += added;
         await Promise.all([
           db.from("signal_sources").update({ last_run_at: new Date().toISOString() }).eq("id", source.id),
-          db.from("signal_source_runs").insert({ source_id: source.id, status: "success", items_found: matches.length, opportunities_added: fresh.length }),
+          db.from("signal_source_runs").insert({ source_id: source.id, status: "success", items_found: found, opportunities_added: added }),
         ]);
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Could not process this feed.";
+      } catch (runError) {
+        const message = runError instanceof Error ? runError.message : "Could not process this source.";
         errors.push(source.name + ": " + message);
         await db.from("signal_source_runs").insert({ source_id: source.id, status: "error", error_message: message });
       }
     }
-    if (errors.length === sources.length) throw new Error(errors.join(" "));
+    if (errors.length === sources.length && opportunitiesAdded === 0) throw new Error(errors.join(" "));
     return { itemsFound, opportunitiesAdded, errors };
   });
 
