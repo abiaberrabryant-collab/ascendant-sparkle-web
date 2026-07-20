@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_rate_limits: {
+        Row: {
+          bucket: string
+          count: number
+          reset_at: string
+        }
+        Insert: {
+          bucket: string
+          count?: number
+          reset_at: string
+        }
+        Update: {
+          bucket?: string
+          count?: number
+          reset_at?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -952,6 +970,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      consume_rate_limit: {
+        Args: { p_key: string; p_limit: number; p_window_seconds: number }
+        Returns: boolean
+      }
       get_public_chatbot_settings: {
         Args: never
         Returns: {
