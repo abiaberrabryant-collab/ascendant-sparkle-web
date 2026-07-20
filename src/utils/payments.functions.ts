@@ -147,6 +147,11 @@ export const verifyCheckoutSession = createServerFn({ method: "POST" })
         }
       }
       if (sessionUserId !== context.userId && !ownsCustomer) return { error: "Checkout session not found" };
+=======
+      // Prevent IDOR: only the user who initiated the session may read its details.
+      if (session.metadata?.userId !== context.userId) {
+        return { error: "Checkout session not found" };
+      }
       return {
         status: session.status,
         payment_status: session.payment_status,

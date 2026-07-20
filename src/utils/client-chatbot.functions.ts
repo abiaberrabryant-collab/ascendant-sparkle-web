@@ -47,6 +47,6 @@ export const saveMyChatbot = createServerFn({ method: "POST" }).middleware([requ
   const organizationId = await getOrCreateOrganization(db, context.userId);
   const { error } = await db.from("client_chatbots").update(data).eq("organization_id", organizationId);
   if (error) throw new Error(error.message);
-  await db.from("audit_logs").insert({ organization_id: organizationId, actor_user_id: context.userId, action: "chatbot.updated", entity_type: "client_chatbot" });
+  await db.rpc("log_audit_event", { _organization_id: organizationId, _action: "chatbot.updated", _entity_type: "client_chatbot", _entity_id: null });
   return { ok: true };
 });
