@@ -22,6 +22,11 @@ const widget = String.raw`(() => {
 
   fetch(api + "/client-chatbot?key=" + encodeURIComponent(key))
     .then((response) => response.ok ? response.json() : Promise.reject())
+    .then((rawConfig) => {
+      const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[character]));
+      const safeColor = /^#[0-9a-f]{6}$/i.test(String(rawConfig.brandColor)) ? String(rawConfig.brandColor) : "#3b82f6";
+      const config = { ...rawConfig, businessName: escapeHtml(String(rawConfig.businessName).slice(0, 120)), brandColor: safeColor };
+
     .then((config) => {
       const name = esc(config.businessName);
       const color = safeColor(config.brandColor);
@@ -54,7 +59,7 @@ export const Route = createFileRoute("/api/public/widget.js")({
       GET: async () => new Response(widget, {
         headers: {
           "content-type": "application/javascript; charset=utf-8",
-          "cache-control": "public, max-age=300",
+          "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
           "access-control-allow-origin": "*",
         },
       }),

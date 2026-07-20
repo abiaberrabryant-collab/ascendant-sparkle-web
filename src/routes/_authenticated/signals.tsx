@@ -1,3 +1,4 @@
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
@@ -34,6 +35,21 @@ import {
 } from "@/utils/signal-campaigns.functions";
 
 export const Route = createFileRoute("/_authenticated/signals")({
+  // Signal Studio is an internal AscendantWeb prospecting tool, not a client
+  // feature. Restrict it to admin accounts; everyone else goes to their dashboard.
+  beforeLoad: async () => {
+    const { supabase } = await import("@/integrations/supabase/client");
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData.user;
+    if (!user) throw redirect({ to: "/auth", search: { next: "/signals" } });
+    const { data: role } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (!role) throw redirect({ to: "/dashboard" });
+  },
   head: () => ({
     meta: [
       { title: "Signal Studio — AscendantWeb" },

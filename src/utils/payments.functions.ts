@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
@@ -16,6 +17,13 @@ const TIER_CONFIG: Record<Tier, { setup: string; monthly: string; name: string }
 };
 
 type CheckoutSessionResult = { clientSecret: string } | { error: string };
+
+function safeReturnUrl(value: string, expectedOrigin?: string) {
+  const url = new URL(value);
+  if (!/^https?:$/.test(url.protocol)) throw new Error("Invalid return URL");
+  if (expectedOrigin && url.origin !== expectedOrigin) throw new Error("Return URL must stay on this site");
+  return url.toString();
+}
 
 async function resolveOrCreateCustomer(
   stripe: Stripe,
@@ -62,6 +70,8 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
   .inputValidator(
     (data: { tier: Tier; returnUrl: string; environment: StripeEnv }) => {
       if (!TIER_CONFIG[data.tier]) throw new Error("Invalid tier");
+      if (data.environment !== "sandbox" && data.environment !== "live") throw new Error("Invalid payment environment");
+      safeReturnUrl(data.returnUrl);
       return data;
     },
   )
@@ -90,7 +100,7 @@ export const createTierCheckoutSession = createServerFn({ method: "POST" })
       const session = await stripe.checkout.sessions.create({
         mode: "subscription",
         ui_mode: "embedded_page",
-        return_url: data.returnUrl,
+        return_url: safeReturnUrl(data.returnUrl, new URL(getRequest().url).origin),
         customer: customerId,
         line_items: [
           { price: monthlyPrice.id, quantity: 1 },
@@ -115,12 +125,29 @@ export const verifyCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { sessionId: string; environment: StripeEnv }) => {
     if (!/^cs_[a-zA-Z0-9_]+$/.test(data.sessionId)) throw new Error("Invalid sessionId");
+    if (data.environment !== "sandbox" && data.environment !== "live") throw new Error("Invalid payment environment");
     return data;
   })
   .handler(async ({ data, context }) => {
     try {
       const stripe = createStripeClient(data.environment);
       const session = await stripe.checkout.sessions.retrieve(data.sessionId);
+      const sessionUserId = session.metadata?.userId;
+      let ownsCustomer = false;
+      if (!sessionUserId || sessionUserId !== context.userId) {
+        const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id;
+        if (customerId) {
+          const { data: subscriptions } = await context.supabase
+            .from("subscriptions")
+            .select("stripe_customer_id")
+            .eq("user_id", context.userId)
+            .eq("environment", data.environment)
+            .limit(10);
+          ownsCustomer = (subscriptions ?? []).some((subscription: { stripe_customer_id: string }) => subscription.stripe_customer_id === customerId);
+        }
+      }
+      if (sessionUserId !== context.userId && !ownsCustomer) return { error: "Checkout session not found" };
+=======
       // Prevent IDOR: only the user who initiated the session may read its details.
       if (session.metadata?.userId !== context.userId) {
         return { error: "Checkout session not found" };

@@ -15,7 +15,6 @@ import {
   Check,
   ChevronDown,
   Loader2,
-  Radar,
   Workflow,
   Gauge,
 } from "lucide-react";
@@ -57,6 +56,7 @@ function SkyDefs() {
     { id: "cloudB", seed: 17, freq: "0.011 0.021", scale: 52 },
     { id: "cloudC", seed: 29, freq: "0.013 0.017", scale: 66 },
   ];
+
   return (
     <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
       <defs>
@@ -195,6 +195,7 @@ function SkyBackground() {
       />
       {/* Sun glow */}
       <div
+
         className="absolute rounded-full"
         style={{
           top: "-5%",
@@ -356,19 +357,24 @@ function Nav() {
               My account
             </Link>
           ) : (
-            <Link
-              to="/auth"
-              className="rounded-full border border-foreground/20 px-5 py-2 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5"
-            >
-              Sign in
-            </Link>
+
+            <>
+              <Link
+                to="/auth"
+                className="rounded-full border border-foreground/20 px-5 py-2 text-sm font-bold text-foreground transition-colors hover:bg-foreground/5"
+              >
+                Sign in
+              </Link>
+
+              <a
+                href="#audit"
+                className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
+              >
+
+                Free audit
+              </a>
+            </>
           )}
-          <a
-            href="#audit"
-            className="rounded-full bg-foreground px-5 py-2 text-sm font-bold text-background transition-transform hover:scale-105"
-          >
-            Free audit
-          </a>
         </div>
 
       </div>
@@ -575,7 +581,7 @@ function BeforeAfter() {
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
     window.addEventListener("mousemove", onMove);
-    window.addEventListener("touchmove", onMove);
+    window.addEventListener("touchmove", onMove, { passive: true });
     return () => {
       window.removeEventListener("mouseup", onUp);
       window.removeEventListener("touchend", onUp);
@@ -759,7 +765,7 @@ const whyItems = [
   { icon: Layout, title: "Modern design", desc: "Clean, current design that feels good to use." },
   { icon: Smartphone, title: "Mobile responsive", desc: "Looks right on phones, tablets, and desktops." },
   { icon: Zap, title: "Fast pages", desc: "Loads quickly, feels snappy — how it should." },
-  { icon: Search, title: "SEO optimization", desc: "Technical and on-page SEO handled from day one." },
+  { icon: Search, title: "Local SEO", desc: "Rank in local search and the Google map pack." },
   { icon: Bot, title: "AI chatbot", desc: "Answers questions, qualifies leads, books calls." },
   { icon: Users, title: "Lead capture", desc: "Forms and pages built to actually convert." },
   { icon: Shield, title: "Managed hosting", desc: "SSL, CDN, backups, and boring reliability." },
@@ -794,32 +800,32 @@ function WhyUs() {
 
 const services = [
   {
-    id: "custom",
+    id: "convert",
     icon: Layout,
-    title: "Custom Website Development",
-    tagline: "Custom sites built from scratch.",
-    bullets: ["Custom design", "Editable CMS", "Fast by default", "SEO fundamentals"],
+    title: "Websites that convert",
+    tagline: "Turn the visitors you already get into calls and form fills.",
+    bullets: ["Conversion-first design", "Click-to-call + smart forms", "Fast, mobile-perfect pages", "Trust signals that close"],
   },
   {
-    id: "redesign",
-    icon: Rocket,
-    title: "Website Redesign",
-    tagline: "Take an old site and make it earn its keep.",
-    bullets: ["UX audit + strategy", "Modern rebuild", "Content migration", "Zero downtime launch"],
-  },
-  {
-    id: "ai",
-    icon: Bot,
-    title: "AI Chatbots",
-    tagline: "A chatbot that actually knows your business.",
-    bullets: ["FAQ + support", "Lead qualification", "Booking + CRM sync", "Quote generation"],
-  },
-  {
-    id: "seo",
+    id: "getfound",
     icon: Search,
-    title: "SEO & Performance",
-    tagline: "Rank higher. Load faster. Convert more.",
-    bullets: ["Technical SEO", "On-page optimization", "Core Web Vitals tuning", "Schema markup"],
+    title: "Get found on Google",
+    tagline: "Show up when local customers search for what you do.",
+    bullets: ["Google Business Profile setup", "Local + map-pack SEO", "Service-area pages", "Schema markup"],
+  },
+  {
+    id: "capture",
+    icon: Bot,
+    title: "Capture every lead",
+    tagline: "An AI chatbot plus instant alerts so nothing slips through.",
+    bullets: ["24/7 AI chatbot", "Lead qualification", "Instant email alerts", "Booking + CRM sync"],
+  },
+  {
+    id: "grow",
+    icon: Rocket,
+    title: "Grow with ads & reviews",
+    tagline: "Pour more high-intent traffic in — and turn happy clients into proof.",
+    bullets: ["Automated review requests", "Google Local Services Ads", "Search ads management", "Retargeting (add-on)"],
   },
 ];
 
@@ -827,7 +833,7 @@ function Services() {
   const [open, setOpen] = useState<string | null>("ai");
   return (
     <section id="services" className="mx-auto max-w-7xl px-6 py-28 md:py-32">
-      <SectionHead eyebrow="Services" title="Four things we do — really well." />
+      <SectionHead eyebrow="How we grow your leads" title="Four ways we bring you customers." />
       <div className="grid gap-5 md:grid-cols-2">
         {services.map((s, idx) => {
           const isOpen = open === s.id;
@@ -882,7 +888,7 @@ const systemSteps = [
   { icon: Layout, number: "01", title: "Your conversion-ready website", text: "The public-facing home for your brand: fast pages, clear services, trust builders, and simple next steps." },
   { icon: Bot, number: "02", title: "Your trained website assistant", text: "A chatbot answers common questions, captures callback requests, and routes real opportunities to your dashboard." },
   { icon: Workflow, number: "03", title: "Your owner command center", text: "Manage business details, review conversations, and keep every customer follow-up organized in one place." },
-  { icon: Radar, number: "04", title: "Your opportunity research", text: "Signal Studio researches one public website at a time and makes review-only drafts — never automatic spam." },
+  { icon: Search, number: "04", title: "Your local growth engine", text: "Local SEO, Google Business Profile, and automated review requests help the right customers find you — and choose you." },
 ];
 
 function Systems() {
@@ -951,17 +957,17 @@ const websiteTiers: Tier[] = [
     id: "basic",
     code: "01 / Basic",
     name: "Basic",
-    price: "$1,250",
+    price: "$2,000",
     cadence: "one-time + $150/mo",
-    desc: "A clean, fast site for getting online properly.",
+    desc: "A fast, conversion-ready site that gets you found and gets you calls.",
     features: [
-      "Up to 5 pages",
-      "Fully mobile responsive",
-      "Modern custom design",
-      "Contact form + email delivery",
-      "Basic on-page SEO",
-      "Analytics + SSL",
-      "$150/mo maintenance + basic AI chatbot",
+      "Up to 5 pages, custom designed",
+      "Conversion-first layout + click-to-call",
+      "Google Business Profile setup",
+      "Local + on-page SEO foundations",
+      "AI chatbot + instant lead alerts",
+      "Analytics, SSL + managed hosting",
+      "$150/mo maintenance + AI chatbot",
       "Live in 1–2 weeks",
     ],
     cta: "Start with Basic",
@@ -970,18 +976,17 @@ const websiteTiers: Tier[] = [
     id: "advanced",
     code: "02 / Advanced",
     name: "Advanced",
-    price: "$1,750",
+    price: "$2,500",
     cadence: "one-time + $200/mo",
-    desc: "For growing businesses that need more room and more features.",
+    desc: "For growing businesses that want to rank locally and convert more.",
     features: [
       "Everything in Basic",
-      "Up to 12 pages",
-      "Advanced custom design system",
-      "Blog + editable CMS",
-      "Booking or lead-capture flow",
-      "CRM / email integration",
-      "Advanced SEO + speed tuning",
-      "$200/mo maintenance + AI chatbot (business-trained)",
+      "Up to 12 pages + blog / CMS",
+      "Advanced conversion design system",
+      "Local SEO + Google map-pack optimization",
+      "Automated review requests",
+      "Booking / lead capture + CRM sync",
+      "$200/mo maintenance + business-trained chatbot",
       "Live in 2–3 weeks",
     ],
     cta: "Choose Advanced",
@@ -991,17 +996,16 @@ const websiteTiers: Tier[] = [
     id: "ascendant",
     code: "03 / Ascendant",
     name: "Ascendant",
-    price: "$2,000",
+    price: "$2,900",
     cadence: "one-time + $250/mo",
-    desc: "Our top build. Everything on the table, nothing held back.",
+    desc: "Our top build — everything working together to drive leads.",
     features: [
       "Everything in Advanced",
-      "Unlimited pages",
-      "Premium bespoke design + animations",
-      "Custom features & dashboards",
-      "Advanced integrations & automations",
-      "Premium SEO + schema markup",
-      "$250/mo maintenance + full AI chatbot with priority support",
+      "Unlimited pages + premium bespoke design",
+      "Priority local SEO + schema markup",
+      "Managed Google Ads setup (ad spend separate)",
+      "Custom features, dashboards & integrations",
+      "$250/mo maintenance + full chatbot, priority support",
       "Live in 3–4 weeks",
     ],
     cta: "Go Ascendant",
@@ -1286,7 +1290,7 @@ function TextArea({
 
 const faqs = [
   { q: "How long does a website take?", a: "Basic sites ship in 1–2 weeks. Advanced builds land in 2–3 weeks. Ascendant flagship projects take 3–4 weeks." },
-  { q: "How much does it cost?", a: "Basic is $1,250, Advanced is $1,750, and Ascendant is $2,000 one-time. Each includes an ongoing plan ($150/$200/$250 per month) covering maintenance and your AI chatbot." },
+  { q: "How much does it cost?", a: "Basic is $2,000, Advanced is $2,500, and Ascendant is $2,900 one-time. Each includes an ongoing plan ($150/$200/$250 per month) covering maintenance, your AI chatbot, and lead-growth work like local SEO and reviews." },
   { q: "Do you offer hosting?", a: "Yes — premium managed hosting on globally distributed edge infrastructure with 99.99% uptime, SSL, and CDN included." },
   { q: "What's included in the monthly plan?", a: "Updates, security monitoring, automated backups, uptime monitoring, small content edits, and your AI chatbot running 24/7." },
   { q: "Can I update it myself?", a: "Absolutely. We build on modern CMS options so your team can edit copy, images, and posts without touching code." },
@@ -1416,9 +1420,9 @@ function Contact() {
                 <Label>Project budget</Label>
                 <select value={form.budget} onChange={(e) => setForm({ ...form, budget: e.target.value })} className="field mt-1.5">
                   <option value="">Select…</option>
-                  <option>Basic — $1,250 + $150/mo</option>
-                  <option>Advanced — $1,750 + $200/mo</option>
-                  <option>Ascendant — $2,000 + $250/mo</option>
+                  <option>Basic — $2,000 + $150/mo</option>
+                  <option>Advanced — $2,500 + $200/mo</option>
+                  <option>Ascendant — $2,900 + $250/mo</option>
                   <option>Not sure yet</option>
                 </select>
               </label>

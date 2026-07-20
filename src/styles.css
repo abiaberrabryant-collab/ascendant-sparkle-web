@@ -133,6 +133,14 @@
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
+@keyframes cloud-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(var(--amp, -26px)); }
+}
+@keyframes float-3d {
+  0%, 100% { transform: translateY(0) rotateX(14deg) rotateY(0deg); }
+  50% { transform: translateY(-22px) rotateX(-10deg) rotateY(180deg); }
+}
 
 @keyframes cloud-drift {
   0%, 100% { transform: translateY(0); }
@@ -202,6 +210,12 @@
   -webkit-background-clip: text;
   background-clip: text;
   animation: shimmer 6s linear infinite;
+}
+@utility animate-cloud {
+  animation: cloud-drift 26s ease-in-out infinite;
+}
+@utility animate-float-3d {
+  animation: float-3d 20s ease-in-out infinite;
 }
 
 @utility animate-cloud {
