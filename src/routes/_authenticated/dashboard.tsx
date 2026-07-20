@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Bot, Building2, CheckCircle2, ClipboardList, ExternalLink, Mail, MessageSquare, Phone, Save, Settings, Users } from "lucide-react";
+import { Bot, Building2, CheckCircle2, ClipboardList, ExternalLink, Mail, MessageSquare, Phone, Radar, Save, Settings, Users } from "lucide-react";
 import { getMyOrganization, getOwnerWorkspace, saveMyOrganization, updateOwnerLead } from "@/utils/organization.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
