@@ -80,6 +80,12 @@ function AdminPage() {
           <Link to="/account" className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
             ← My account
           </Link>
+          <Link
+            to="/signals"
+            className="inline-flex items-center gap-2 rounded-xl border border-primary/30 px-4 py-2 text-sm font-bold text-primary transition hover:bg-primary/10"
+          >
+            Signal Studio →
+          </Link>
         </div>
 
         <h1 className="text-4xl font-extrabold tracking-tight">Admin</h1>
